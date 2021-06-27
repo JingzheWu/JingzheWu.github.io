@@ -1,137 +1,804 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  
-  
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"youfindme.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="冰河的个人网站">
+<meta property="og:type" content="website">
+<meta property="og:title" content="冰河">
+<meta property="og:url" content="https://youfindme.cn/index.html">
+<meta property="og:site_name" content="冰河">
+<meta property="og:description" content="冰河的个人网站">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="冰河">
+<meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://youfindme.cn/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>冰河</title>
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">冰河</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
     
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
 
-  
-<meta name="generator" content="Hexo 5.4.0"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
+          <div class="content index posts-expand">
+            
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.cn/2021/06/27/%E6%B5%85%E8%B0%88JavaScript%E4%B8%AD%E7%9A%84AOP%E5%92%8C%E8%A3%85%E9%A5%B0%E5%99%A8/">
 
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-test-my-site" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/06/27/test-my-site/" class="article-date">
-  <time class="dt-published" datetime="2021-06-27T10:01:25.000Z" itemprop="datePublished">2021-06-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/06/27/test-my-site/">test_my_site</a>
-    </h1>
-  
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
 
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/27/%E6%B5%85%E8%B0%88JavaScript%E4%B8%AD%E7%9A%84AOP%E5%92%8C%E8%A3%85%E9%A5%B0%E5%99%A8/" class="post-title-link" itemprop="url">浅谈JavaScript中的AOP和装饰器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-27 21:21:27 / 修改时间：21:21:33" itemprop="dateCreated datePublished" datetime="2021-06-27T21:21:27+08:00">2021-06-27</time>
+            </span>
+
+          
+
+        </div>
       </header>
+
     
-    <div class="e-content article-entry" itemprop="articleBody">
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        
+          <h1 id="浅谈JavaScript中的AOP和装饰器"><a href="#浅谈JavaScript中的AOP和装饰器" class="headerlink" title="浅谈JavaScript中的AOP和装饰器"></a>浅谈JavaScript中的AOP和装饰器</h1><blockquote>
+<p>AOP在其他编程语言中应用较多，在js中却应用较少，由于最近参与的项目中涉及到性能打点上报、容器化销毁等，开始探索和了解无侵入地监控或修改代码的方式，趁此机会深入学习了一下AOP与装饰器</p>
+</blockquote>
+<h3 id="一、什么是AOP"><a href="#一、什么是AOP" class="headerlink" title="一、什么是AOP"></a>一、什么是AOP</h3><p>AOP（Aspect-Oriented Programming），即<strong>面向切面编程</strong>，是一种编程范式，与之对应的有OOP（Object-Oriented Programming）面向对象编程。在JavaScript开发中，面向对象编程不管是ES5中直接操作原型还是ES6+中的class语法糖，大家用的比较多也应该都挺熟悉，但是相对而言，AOP用的就没那么多了。</p>
+<p>对于OOP，我们在开发过程中往往是对类和对象通过继承进行<strong>纵向拓展</strong>，但是在AOP中则更侧重于把对象、方法作为切面，对原对象、方法进行<strong>无侵入</strong>的<strong>横向拓展</strong>，下面我们以一些简单的例子和代码来讲一下AOP。</p>
+<p>假设我们有一个按钮，绑定了一个点击事件处理函数<code>handleClick</code>，现在需要对按钮增加点击上报，很简单，只需要在<code>handleClick</code>中调用一下上报函数就可以了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const report = (message) =&gt; &#123;</span><br><span class="line">    console.log(`上报了信息：$&#123;message&#125;`);</span><br><span class="line">&#125;</span><br><span class="line">const handleClick = (e) =&gt; &#123;</span><br><span class="line">    // do something...</span><br><span class="line">    report(&#x27;一条信息&#x27;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果以后又需要增加对这个函数运行时间的上报，那么就需要在函数开头和结尾各自计算一下时间，但是想一下，这样做带来的坏处是显而易见的，一是<strong>不利于拓展</strong>，每次增加新的点都需要改一次<code>handleClick</code>函数，改的越多越不利于后期维护；二是<strong>有悖于单一职责原则</strong>，<code>handleClick</code>里处理了大量非按钮的逻辑，同样增加了维护难度。这时候AOP就是一个很好的解决办法了。</p>
+<h3 id="二、ES6-之前的实现"><a href="#二、ES6-之前的实现" class="headerlink" title="二、ES6+之前的实现"></a>二、ES6+之前的实现</h3><p>在ES5以及ES6+的装饰器出现之前，我们往往是这样做的（这里用了ES6的部分语法），通过修改<code>Function</code>构造函数的原型，给原型增加两个方法<code>before</code>和<code>after</code>，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Function.prototype.before = function(beforeFn, beforeFnArgs) &#123;</span><br><span class="line">    const self = this;</span><br><span class="line">    return function() &#123;</span><br><span class="line">        beforeFn.call(this, beforeFnArgs, ...arguments);</span><br><span class="line">        return self.apply(this, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Function.prototype.after = function(afterFn, afterFnArgs) &#123;</span><br><span class="line">    const self = this;</span><br><span class="line">    return function() &#123;</span><br><span class="line">        const ret = self.apply(this, arguments);</span><br><span class="line">        afterFn.call(this, afterFnArgs, ...arguments);</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这两个方法，实现在任意一个函数执行前后，执行我们自己自定义的行为，以达<strong>到装饰或拦截</strong>原函数、对象行为的目的。现在，实现上面点击上报的方式变成了这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const report = (message) =&gt; &#123;</span><br><span class="line">    console.log(`上报了信息：$&#123;message&#125;`);</span><br><span class="line">&#125;</span><br><span class="line">let handleClick = function(e) &#123;</span><br><span class="line">    // do something...</span><br><span class="line">&#125;;</span><br><span class="line">handleClick = handleClick.after(report, &#x27;一条信息&#x27;);</span><br></pre></td></tr></table></figure>
+<p>和修改原型类似的，我们还可以用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0">高阶函数HOF</a>来实现一个上报函数执行时间的函数（<code>before</code>和<code>after</code>本质上也是高阶函数，只不过是定义在<code>Function</code>原型上的高阶函数）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const reportExeTime = (fn) =&gt; &#123;</span><br><span class="line">    return function() &#123;</span><br><span class="line">        let beforeTime;</span><br><span class="line">        return fn.before(() =&gt; &#123;beforeTime = Date.now()&#125;).after(() =&gt; &#123;report(`$&#123;Date.now() - beforeTime&#125;`)&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">handleClick = reportExeTime(handleClick);</span><br></pre></td></tr></table></figure>
+<p>假设之后还要增加其他和业务逻辑无关的埋点、统计、监控等逻辑，只需要通过类似的方式来装饰原函数即可，而无需修改原函数。通过这种方式，我们实现了对原函数无侵入的横向拓展，是一种比继承更具弹性的代替方案。</p>
+<p>其实到这里，很多小伙伴已经意识到了，在前端开发中已经有很多地方已经用到过AOP这种思想了，例如React的高阶组件HOC、Redux的中间件等，都是这种思想的体现。</p>
+<h3 id="三、ES6-通过装饰器实现"><a href="#三、ES6-通过装饰器实现" class="headerlink" title="三、ES6+通过装饰器实现"></a>三、ES6+通过装饰器实现</h3><p>上面说的是ES6+中装饰器出现前AOP的实现方式，然而装饰器（Decorators）的出现给我们提供了另一种更为优雅的实现方式（本质上和高阶函数类似），虽然到目前为止这个特性也还只是在<a target="_blank" rel="noopener" href="https://github.com/tc39/proposal-decorators">提案的第二阶段</a>，还未真正引入到ES标准中，但是通过Babel（&gt; 7.1.0）或者使用<a target="_blank" rel="noopener" href="https://www.tslang.cn/docs/handbook/decorators.html">TypeScript</a>，就可以提前使用这个特性。</p>
+<p>关于装饰器的定义和使用方法已经有很多资料讲解了，这里不做过多介绍，我们来看下用装饰器怎么实现上面的逻辑。很容易想到，这里需要的是<strong>方法装饰</strong>器，首先定义一个上报的方法装饰器<code>withReport</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const withReport = (target, keyName, descriptor) =&gt; &#123;</span><br><span class="line">    const originFn = descriptor.value;</span><br><span class="line">    descriptor.value = function() &#123;</span><br><span class="line">        const ret = originFn.apply(this, arguments);</span><br><span class="line">        console.log(&#x27;上报了信息&#x27;); // 数据上报</span><br><span class="line">    &#125;</span><br><span class="line">    return descriptor;</span><br><span class="line">&#125;</span><br><span class="line">class MyClass &#123;</span><br><span class="line">    @withReport</span><br><span class="line">    handleClick(e) &#123;</span><br><span class="line">        // do something...</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者我们还可以仿照上面的<code>before</code>和<code>after</code>，分别实现一个方法前置和后置<strong>装饰器工厂</strong>来执行任意前置后置方法，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">const before = (beforeFn, beforeFnArgs) =&gt; &#123;</span><br><span class="line">    return function(target, keyName, descriptor) &#123;</span><br><span class="line">        const originFn = descriptor.value;</span><br><span class="line">        descriptor.value = function() &#123;</span><br><span class="line">            beforeFn.call(this, beforeFnArgs, ...arguments);</span><br><span class="line">            return originFn.apply(this, arguments);</span><br><span class="line">        &#125;</span><br><span class="line">        return descriptor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">const after = (afterFn, afterFnArgs) =&gt; &#123;</span><br><span class="line">    return function(target, keyName, descriptor) &#123;</span><br><span class="line">        const originFn = descriptor.value;</span><br><span class="line">        descriptor.value = function() &#123;</span><br><span class="line">            const ret = originFn.apply(this, arguments);</span><br><span class="line">            afterFn.call(this, afterFnArgs, ...arguments);</span><br><span class="line">            return ret;</span><br><span class="line">        &#125;</span><br><span class="line">        return descriptor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样我们可以方便地传入一个<code>report</code>函数来实现上报：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const report = (message) =&gt; &#123;</span><br><span class="line">    console.log(`上报了信息：$&#123;message&#125;`);</span><br><span class="line">&#125;</span><br><span class="line">class MyClass &#123;</span><br><span class="line">    @after(report, &#x27;一条信息&#x27;)</span><br><span class="line">    handleClick(e) &#123;</span><br><span class="line">        // do something...</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于后续增加的其他非业务相关逻辑，也可以通过多个装饰器组合来实现，如上报函数执行时间：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">const reportExeTime = (target, keyName, descriptor) =&gt; &#123;</span><br><span class="line">    const originFn = descriptor.value;</span><br><span class="line">    descriptor.value = function() &#123;</span><br><span class="line">        const beforeTime = Date.now();</span><br><span class="line">        const ret = originFn.apply(this, arguments);</span><br><span class="line">        report(`$&#123;Date.now() - beforeTime&#125;`);</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">    return descriptor;</span><br><span class="line">&#125;</span><br><span class="line">class MyClass &#123;</span><br><span class="line">    @after(report, &#x27;一条信息&#x27;) // 这个装饰器后执行</span><br><span class="line">    @reportExeTime // 这个装饰器先执行</span><br><span class="line">    handleClick(e) &#123;</span><br><span class="line">        // do something...</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过装饰器，我们更优雅地实现了AOP，对方法进行横向拓展，而且不会像之前那样直接修改<code>Function</code>原型（确实是一种不太好的方式，污染原型链），装饰器之所以可以做到这一点是因为它并不是在运行时改变类、属性、方法的行为，而是在代码编译的时候就修改了，所以本质上来讲，装饰器就是一个<strong>在编译时运行的语法糖函数</strong>。</p>
+<h3 id="四、-AOP与装饰者模式和职责链模式"><a href="#四、-AOP与装饰者模式和职责链模式" class="headerlink" title="四、 AOP与装饰者模式和职责链模式"></a>四、 AOP与装饰者模式和职责链模式</h3><p>上面提到了，我们可以通过AOP来拓展函数或对象的行为，可以达到<strong>装饰或拦截</strong>原函数、对象行为的目的，对应的有两个设计模式，分别是<strong>装饰者模式</strong>和<strong>职责链模式</strong>（详见《JavaScript设计模式与开发实践》），AOP在这两种模式中的应用有一个明显的区别，就是能否阻断/覆盖原函数、对象的行为。有一点要声明的是，AOP只是实现这两种设计模式的其中一种方式，并不是唯一的实现方式，这里只是探讨在两种模式中AOP的应用。</p>
+<p>对于装饰者模式，上面的几个示例都是很好的例子，不管是修改原型实现还是装饰器实现，都是通过<code>before</code>和<code>after</code>这两个来横向（区别于纵向的继承）的拓展原函数的能力，这里的<code>before</code>和<code>after</code>都是<strong>静默执行</strong>的，即<code>before</code>和<code>after</code>里执行的函数都不会阻断后续函数的执行或者覆盖原函数的返回值。应用场景也比较多，如上报、计时、日志等等，这也是AOP应用的比较多的场景。</p>
+<p>然而对于职责链模式，对于<code>before</code>和<code>after</code>的能力要求则变成了：<code>before</code>和<code>after</code>里执行的函数可以阻断后续函数的执行，或<code>before</code>和<code>after</code>里执行的函数的返回值可以覆盖原函数的返回值。对应的代码实现变成了类似于下面这种：</p>
+<ul>
+<li>修改原型实现<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Function.prototype.before = function(beforeFn, beforeFnArgs) &#123;</span><br><span class="line">    const self = this;</span><br><span class="line">    return function() &#123;</span><br><span class="line">        const beforeRet = beforeFn.call(this, beforeFnArgs, ...arguments);</span><br><span class="line">        if (!beforeRet) &#123; // 如果不合法则阻断后续操作，这里为了表示方便这样简写</span><br><span class="line">            return beforeRet;</span><br><span class="line">        &#125;</span><br><span class="line">        return self.apply(this, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Function.prototype.after = function(afterFn, afterFnArgs) &#123;</span><br><span class="line">    const self = this;</span><br><span class="line">    return function() &#123;</span><br><span class="line">        const ret = self.apply(this, arguments);</span><br><span class="line">        if (ret) &#123; // 返回值符合条件时才返回，这里为了表示方便这样简写</span><br><span class="line">            return ret;</span><br><span class="line">        &#125;</span><br><span class="line">        return afterFn.call(this, afterFnArgs, ...arguments); // 在原函数返回值不符合条件时，执行after后续函数，覆盖原函数返回值</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>装饰器实现<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">const before = (beforeFn, beforeFnArgs) =&gt; &#123;</span><br><span class="line">    return function(target, keyName, descriptor) &#123;</span><br><span class="line">        const originFn = descriptor.value;</span><br><span class="line">        descriptor.value = function() &#123;</span><br><span class="line">            const beforeRet = beforeFn.call(this, beforeFnArgs, ...arguments);</span><br><span class="line">            if (!beforeRet) &#123; // 如果不合法则阻断后续操作，这里为了表示方便这样写</span><br><span class="line">                return beforeRet;</span><br><span class="line">            &#125;</span><br><span class="line">            return originFn.apply(this, arguments);</span><br><span class="line">        &#125;</span><br><span class="line">        return descriptor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">const after = (afterFn, afterFnArgs) =&gt; &#123;</span><br><span class="line">    return function(target, keyName, descriptor) &#123;</span><br><span class="line">        const originFn = descriptor.value;</span><br><span class="line">        descriptor.value = function() &#123;</span><br><span class="line">            const ret = originFn.apply(this, arguments);</span><br><span class="line">            if (ret) &#123; // 返回值符合条件时才返回，这里为了表示方便这样简写</span><br><span class="line">                return ret;</span><br><span class="line">            &#125;</span><br><span class="line">            return afterFn.call(this, afterFnArgs, ...arguments); // 在原函数返回值不符合条件时，执行after后续函数，覆盖原函数返回值</span><br><span class="line">        &#125;</span><br><span class="line">        return descriptor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这种也有很多应用场景，最常见的就是表单等的校验，如传入的值不合法，则阻断后续函数执行，或者在原函数返回值不符合要求时，则用after里函数的返回值来覆盖。</li>
+</ul>
+<h3 id="五、-结语"><a href="#五、-结语" class="headerlink" title="五、 结语"></a>五、 结语</h3><p>其实除了上面提到的，我们还可以拓展下思路，上面对于函数的修饰，都是需要项目中的每个开发者手动在方法、类等前面显式调用，那么对于一些基础、通用的修饰方法，能否在打包构建时，通过打包构建插件分析语法树自动地给代码里的特定方法、类增加修饰，这个值得我们进一步思考探索。</p>
+
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/06/27/test-my-site/" data-id="ckqf1jgvg0001m8nwhk5tgf6j" data-title="test_my_site" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
 
-
-
-  
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/06/27/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2021-06-27T09:59:38.624Z" itemprop="datePublished">2021-06-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
-        
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/06/27/hello-world/">Hello World</a>
-    </h1>
+  
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.cn/2021/06/27/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/27/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%A1/" class="post-title-link" itemprop="url">git命令小计</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-27 21:20:42 / 修改时间：21:20:52" itemprop="dateCreated datePublished" datetime="2021-06-27T21:20:42+08:00">2021-06-27</time>
+            </span>
+
+          
+
+        </div>
       </header>
+
     
-    <div class="e-content article-entry" itemprop="articleBody">
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+          <ul>
+<li><p><code>git init</code>初始化一个本地git仓库repository</p>
+</li>
+<li><p><code>git status</code>查看状态</p>
+</li>
+<li><p><code>git add &lt;file&gt;</code>将工作区修改加到暂存区（stage）</p>
+</li>
+<li><p><code>git commit -m &quot;&lt;some message&gt;&quot;</code>将暂存区（stage）提交到仓库（repository）并写一些备忘信息</p>
+</li>
+<li><p><code>git reset --hard HEAD^</code>或者<code>git reset --hard HEAD~1</code>将工作区退回到仓库（repository）中上一个版本</p>
+</li>
+<li><p><code>git checkout -- &lt;file&gt;</code>将工作区中file文件的修改撤销，包括把删除的file复原（在添加到stage之前才有效，如果将工作区文件的修改add到了stage，那么再使用这个命令就会无效，这时应该先把stage的unstage撤销掉再使用上面的命令）</p>
+</li>
+<li><p><code>git reset HEAD &lt;file&gt;</code>将添加至stage的file文件unstage掉</p>
+</li>
+<li><p><code>git rm &lt;file&gt;</code>把file从repository中删除，之后再用commit就行</p>
+</li>
+<li><p><code>git remote add origin git@server-name:path/repo-name.git</code>关联一个远程库</p>
+</li>
+<li><p><code>git push -u origin master</code>第一次将本地的repository的master分支推送到远程，以后再push就不用加-u了</p>
+</li>
+<li><p><code>git clone  git@server-name:path/repo-name.git</code>从远程仓库clone一个仓库到本地，同时会关联到远程仓库</p>
+</li>
+<li><p><code>git clone -b &lt;branchName&gt;  git@server-name:path/repo-name.git</code>从远程clone指定分支到本地</p>
+</li>
+<li><p><code>git branch &lt;name&gt;</code>创建一个名为name的分支</p>
+</li>
+<li><p><code>git checkout &lt;name&gt;</code>切换到name分支上</p>
+</li>
+<li><p><code>git chekout -b &lt;name&gt;</code>上面两条命令合并之后的简写，即创建一个名为name的分支并切换到那个分支</p>
+</li>
+<li><p><code>git branch</code>查看本地所有分支，当前所在分支前面有一个*号</p>
+</li>
+<li><p><code>git branch -r</code>查看远程所有分支</p>
+</li>
+<li><p><code>git branch -a</code>查看本地和远程所有分支</p>
+</li>
+<li><p><code>git branch -d &lt;name&gt;</code>删除名为name的分支</p>
+</li>
+<li><p><code>git branch -D &lt;name&gt;</code>强行删除名为name的分支，用d删除的话，如果name分支没有被合并就无法删除，那么就要用D</p>
+</li>
+<li><p><code>git merge &lt;name&gt;</code>将指定name的分支合并到当前分支，其实就是把当前分支的内容更新为指定name分支的内容（前提是name分支的修改是上次commit之后最新的修改，或者说在上次commit之后name分支commit的次数比当前分支commit的次数多），如果name分支和当前分支的修改都是在上次commit之后最新的修改且内容不一样（或者说这两个分支自上次commit之后各自commit的次数是一样的），那么 就会产生冲突，需要解决冲突才能在当前分支上完成合并。解决冲突的方法就行修改当前分支内容，确定你想要当前分支的内容，然后再在当前分支上add和commit一次就可以了，这时，当前分支会比name分支多一次提交，也就是当前分支的修改比name分支的修改要新（如果此时你切换到name分支上，再merge当前分支，那么就会直接合并了，因为当前分支比name分支要新）</p>
+</li>
+<li><p><code>git merge &lt;name&gt;</code>时，如果name分支没有当前分支新，那么就会提示Already up to date，就是说当前分支比起name分支是新的。</p>
+</li>
+<li><p><code>git log</code>查看提交的日志信息</p>
+</li>
+<li><p><code>git log --pretty=oneline</code>查看只有一行的简略日志信息</p>
+</li>
+<li><p><code>git log --graph</code>查看日志信息的图示信息</p>
+</li>
+<li><p><code>git log --graph --pretty=oneline --abbrev-commit</code></p>
+</li>
+<li><p><code>git merge --no-ff</code>表示在系统采取fast-forward时让系统采用普通合并方式，而不是采用快速合并，普通合并会多一次commit，这样在以后查看时能够看到合并历史，而fast-forward合并则看不到曾经做过的合并</p>
+</li>
+<li><p>分支管理策略：一般来说都是一个master分支，这个分支只用来发布新版本，不在上面干活，应该新建一个dev分支，平时都在dev上面干活，每个人一个分支，之后合并到dev上面就行，要发布时就把dev合并到master分支上即可。</p>
+</li>
+<li><p><code>git stash</code>把当前工作现场先存起来（不是add也不是commit），可以暂时去做其他事，之后（主要应用场景是当前手头工作没做完不能commit，但是又有紧急的bug需要切换到其他分支上去修复）</p>
+</li>
+<li><p><code>git stash list</code>查看所有存起来的工作现场</p>
+</li>
+<li><p><code>git stash apply &lt;指定stash&gt;</code>或者<code>git stash pop &lt;指定stash&gt;</code>，两者区别就是前者恢复工作现场后stash list当中并不删除指定stash，而后者就是直接将stash list中的pop出去删除了。</p>
+</li>
+<li><p><code>git remote</code>查看远程库信息，远程库默认名字是origin，<code>git remote -v</code>查看更详细的信息</p>
+</li>
+<li><p><code>git push origin &lt;brancName&gt;</code>将分支推送到远程的branch分支上</p>
+</li>
+<li><p>如果在git clone时不指定branch名称，那么clone下来的只会包含远程的master分支，在这之后如果要切换到远程的某一分支上，例如dev分支，那么就需要<code>git checkout -b dev origin/dev</code>，用这个命令创建本地的dev分支，然后就可以在这个dev上修改，并在之后随时push</p>
+</li>
+<li><p>如果多个人同时关联了远程库（多人协作时），在push的时候，发现有人已经向remote推送了他的提交，而你对同样的文件做了修改，那么在push的时候就会报错rejected推送失败，因为有冲突，所以这时候应该git pull拉取最新的提交并（自动地）在本地合并，产生冲突，然后本地解决冲突之后再add、commit，再push。</p>
+</li>
+<li><p><code>git pull</code>从远程拉取最新的修改到本地并合并，如果有冲突则需要在本地解决。git pull相当于git fetch加上merge</p>
+</li>
+<li><p>接着上面的说，如果本地解决冲突再push上去之后，其他的人是不会自动的获得更新消息的，就是说别人使用git status会提示up to date with origin/<branchName>，他们需要git fetch或者git pull之后才能获取到远程最新的变动</p>
+</li>
+<li><p><code>git fetch</code>从远程取回所有分支的更新（但不会自动合并）</p>
+</li>
+<li><p><code>git fetch origin &lt;branchName&gt;</code>从远程取回branchName分支的更新（但不会自动合并）。使用fetch之后就可以用git status查看到本地和远程之后的变动了。</p>
+</li>
+<li><p><code>git rebase</code> <a target="_blank" rel="noopener" href="https://blog.csdn.net/wangnan9279/article/details/79287631">变基</a></p>
+</li>
+<li><p><code>git diff &lt;filename&gt;</code>不带参数就是比较工作区和stage中filename文件的不同</p>
+</li>
+<li><p><code>git diff --cached &lt;filename&gt;</code>比较stage和repository中filename文件的不同</p>
+</li>
+<li><p><code>git diff HEAD &lt;filename&gt;</code>比较工作区和repository中filename文件的不同</p>
+</li>
+<li><p>标签</p>
+</li>
+<li><p><code>git add .</code>只添加当前目录下的更改</p>
+</li>
+<li><p><code>git add -A</code>添加repository中所有目录下的修改</p>
+</li>
+<li><p>在本地新建一个分支再push到远端：<code>git checkout -b newbranch</code>，<code>git push origin newbranch</code></p>
+</li>
+<li><p><code>git cherry-pick &lt;commitid&gt;</code>、<code>git cherry-pick &lt;commitid1&gt;..&lt;commitid2&gt;</code>这里的<code>&lt;commitid&gt;</code>一般来说不是当前分支上的，而是另一个分支上的<code>&lt;commitid&gt;</code>，用于将另一个分支上的提交commit（或者说复制到、摘抄到）到当前分支，详见：<a target="_blank" rel="noopener" href="https://blog.csdn.net/w958796636/article/details/78492017">git 场景——从一个分支cherry-pick一个或多个commit到另一个分支</a></p>
+</li>
+<li><p>对于添加了.gitignore的文件，仍然会被trace到的解决方法：</p>
+<p>  <code>git rm --cached dir_name/file_name</code></p>
+<p>  原因是添加了 .gitignore 忽略这些路径后， 由于这个路径是已经增加到过仓库管理中，所以尽管已经在 ignore 列表里，依然 会被 git trace 到每个文件的变化。这时只需删除已缓存的trace就可以了。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.cn/2021/06/27/%E8%B0%88%E8%B0%88DNS%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/27/%E8%B0%88%E8%B0%88DNS%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">谈谈DNS协议</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-27 21:11:53 / 修改时间：21:19:49" itemprop="dateCreated datePublished" datetime="2021-06-27T21:11:53+08:00">2021-06-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>DNS协议</strong>也可以称为DNS服务，全称是<strong>Domain Name System</strong>，即<strong>域名系统</strong>，和HTTP协议一样，也是一个位于<strong>应用层</strong>的协议（服务），它是基于运输层的UDP协议的，关于网络协议的分层介绍，见<a href="">这里</a>（还没有写好，先放这里一个空链接）。<br>从DNS的名字我们就可以知道，它提供域名映射到IP地址的服务，那么在我们详细说DNS协议之前，先来大致讲讲互联网的<strong>域名结构</strong>。</p>
+<h4 id="1-域名结构"><a href="#1-域名结构" class="headerlink" title="1. 域名结构"></a>1. 域名结构</h4><p>我们都知道，在互联网中，每一台计算机想要访问互联网，都需要一个IP地址来进行网络通信，可以是形如<code>192.168.1.1</code>这样的点分十进制的IPv4地址，也可以是形如<code>[0:0:0:0:0:0:0:1]</code>这样方括号包围的十六进制的IPv6地址，但是这些地址不便于记忆，所以就产生了域名这种方便人们记住的东西（当然你要是记忆力好能记住IP地址，在浏览器地址栏输入URL的时候，也可以直接用IP地址替换掉域名，效果是一样的）。</p>
+<p>域名也可以叫做主机名。这里我们先给出一个域名，例如<code>www.abc.com</code>，以这个域名为例，来看一下域名的结构。</p>
+<p>域名采用层次化的结构，其中<code>com</code>是顶级域名，<code>abc</code>是二级域名，<code>www</code>是三级域名，从语法上来说，每个域名都是几个不同层级的名字用<code>.</code>连接起来的组合，<strong>域名不区分大小写字母</strong>，所以<code>www.ABC.com</code>和<code>www.abc.com</code>是一样的，按照规定来说，域名有长度限制，这里就不再细讲。</p>
+<p>上面提到，<code>com</code>是一个顶级域名（TLD，Top Level Domain），除了<code>com</code>之外，顶级域名还有好多，一般来说可以分为：</p>
+<ul>
+<li><p>国家顶级域名</p>
+<p>  如<code>cn</code>表示中国，<code>us</code>表示美国，<code>uk</code>表示英国，当然还有一些特殊地区也有所谓的国家顶级域名，比如<code>hk</code>表示香港</p>
+</li>
+<li><p>通用顶级域名</p>
+<p>  如<code>com</code>表示公司企业，<code>net</code>表示网络服务机构，<code>org</code>表示非营利组织，<code>edu</code>表示美国教育机构（中国的教育机构一般来说是<code>xxx.edu.cn</code>），<code>gov</code>表示美国政府部门（中国的政府部门一般来说是<code>xxx.gov.cn</code>）等。</p>
+</li>
+<li><p>基础结构域名</p>
+<p>  不常见，不做叙述。</p>
+</li>
+</ul>
+<p>所以说，在中国，企业的域名一般可以是<code>xxx.com</code>、<code>xxx.com.cn</code>、<code>xxx.cn</code>。</p>
+<p>下面这个域名树，清晰地展示了互联网的域名空间：<br><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/%E4%BA%92%E8%81%94%E7%BD%91%E7%9A%84%E5%9F%9F%E5%90%8D%E7%BB%93%E6%9E%84.png" alt="互联网的域名结构"></p>
+<p>在图中，<code>edu.cn</code>下面，划分除了很多三级域名，如<code>tsinghua</code>、<code>pku</code>等，一旦某个单位有了一个域名，它就可以自己决定是否要进一步划分下属的子域，域名树的树叶节点就是单台计算机的名字，不能再继续划分了，例如<code>mail</code>和<code>www</code>这两台计算机的完整域名分别为<code>mail.tsinghua.edu.cn</code>和<code>www.tsinghua.edu.cn</code>（这里起什么名字都可以，一般来说，人们愿意把用作邮件服务器的计算机叫做mail，把用作网站的服务器叫做www）。</p>
+<p>到这里，我们已经知道了为什么要有域名以及域名的结构，域名就是为了便于人们记忆而产生的，但是域名是方便人们记忆了，计算机反而不好处理了，它更善于处理IP地址这种东西，所以这里就用到了我们要讲的DNS协议，用来把域名映射到IP地址，在了解DNS解析域名的过程之前，我们还需要了解一下域名服务器这种东西（怎么这么多东西，写个博客好麻烦啊23333）。</p>
+<h4 id="2-域名服务器（DNS服务器）"><a href="#2-域名服务器（DNS服务器）" class="headerlink" title="2. 域名服务器（DNS服务器）"></a>2. 域名服务器（DNS服务器）</h4><p>上面说到了域名体系的树状结构，为了实现域名系统，我们首先想到的就是在域名树的每个节点都设置一台对应的服务器，这样就可以了，但是这样做的后果就是导致域名服务器太多，域名系统的运行效率太低，所以，通常是将好多个节点划分为一个区，用分区的方式来实现域名系统，如下图：<br><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/DNS%E5%88%86%E5%8C%BA.png" alt="DNS分区"></p>
+<p>其中，(a)是abc这个公司只设置了一个分区的样子，(b)是abc公司设置了两个分区的样子，这两个区分别为<code>abc.com</code>和<code>y.abc.com</code>，这两个区对应了两个<strong>权限域名服务器</strong>（后面还会提到）。下图可以看出域名服务器的层次结构：<br><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/%E5%9F%9F%E5%90%8D%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png" alt="域名服务器的层次结构"></p>
+<p>由上图可以看出，根据域名服务器起的作用，可以把域名服务器分为四种不同的类型：</p>
+<ul>
+<li><p>根域名服务器</p>
+<p>  根域名服务器对应的是域名树中的根节点，是最高层次的域名服务器，但是并不是只有一台，而是有好多台，总共有13个不同IP地址的根域名服务器，用a到m来表示，如<code>a.rootservers.net</code>，每个IP地址对应一套装置，一套装置在世界不同地点安装了服务器，总之，数量很多，当访问根域名服务器时，往往就是由路由器找到最近的根域名服务器访问。</p>
+<p>  一般来说，每台根域名服务器都知道所有的顶级域名服务器的域名以及IP地址，但往往也只知道这些，所以访问根域名服务器一般只能得到顶级域名服务器的IP地址，而不能直接知晓你要找的具体服务器的IP。一般来讲，如果要通过互联网解析域名，本地域名服务器首先访问的就是根域名服务器，下面还会讲到。</p>
+</li>
+<li><p>顶级域名服务器</p>
+<p>  顶级域名服务器负责管理在顶级域名下的所有二级域名，例如<code>cn</code>是顶级域名服务器，管理<code>edu</code>、<code>gov</code>等二级域名，当接收到查询请求时，要么给出最终结果（即具体IP地址），要么给出下一步应该访问的权限域名服务器的IP地址。</p>
+</li>
+<li><p>权限域名服务器</p>
+<p>  权限域名服务器上面已经提到过一次了，就是每个域名分区对应一个服务器就叫做权限域名服务器。当接收到DNS查询请求时，如果可以给出具体的IP地址就给出（例如前面的<code>abc.com</code>可以给出<code>v.x.abc.com</code>的IP地址，所以直接返回），如果不可以，就把下一步要访问的权限域名服务器的IP地址返回（如<code>abc.com</code>不能给出<code>t.y.abc.com</code>的IP，就会把<code>y.abc.com</code>这个权限域名服务器的IP地址返回）。</p>
+</li>
+<li><p>本地域名服务器</p>
+<p>  可能有人已经发现了，上面的图中并没有本地域名服务器这一层级结构，这是因为本地域名服务器（有时候也叫作首选域名服务器或者默认域名服务器）不属于域名树的层次结构，但是相当重要。当一台计算机要进行DNS查询的时候，就会将查询的请求发给本地域名服务器。</p>
+<p>  一般来说，一个互联网服务提供商（ISP）或者是一个大学（甚至是一个系）都有一个本地域名服务器，也就是说，当你再学校内使用校园网时，你的本地域名服务器并不是指你自己的电脑，因为你的系或者你的学校，都共用一个本地域名服务器。</p>
+</li>
+</ul>
+<h4 id="3-域名解析过程"><a href="#3-域名解析过程" class="headerlink" title="3. 域名解析过程"></a>3. 域名解析过程</h4><p>在了解了上面的域名结构以及域名服务器之后，我们来看一下域名的解析过程，总的来讲，主机向本地域名服务器的域名查询一般采用递归查询，而本地域名服务器向根域名服务器的查询一般采用迭代查询。</p>
+<p>概念其实很简单，递归查询就是如果主机向本地域名服务器查询IP，本地域名服务器不知道IP地址，这是本地域名服务器就代替主机称为DNS客户，向根域名服务器进行下一步查询。而迭代查询就是，在本地域名服务器向根域名服务器查询时，根域名服务器要么给出最终的IP地址，要么给出下一步本地域名服务器要访问的顶级域名服务器的IP地址，之后本地域名服务器再去访问相应的顶级域名服务器（而不是让根域名服务器代替本地域名服务器去进行下一步查询）。简单来说，递归查询返回具体IP地址或者报错没找到，迭代查询返回具体IP地址或者返回下一步的IP地址。如下图：</p>
+<p><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/%E5%9F%9F%E5%90%8D%E8%BF%AD%E4%BB%A3%E6%9F%A5%E8%AF%A2.jpg" alt="域名迭代查询"></p>
+<p>当然，我们也可以指定查询方式让查询过程全程使用递归查询，如下图：<br><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/%E5%9F%9F%E5%90%8D%E9%80%92%E5%BD%92%E6%9F%A5%E8%AF%A2.jpg" alt="域名递归查询"></p>
+<p>下面以一个例子说说明在无缓存的情况下（下面会谈到缓存），通过DNS来查询域名的步骤，假设域名为<code>m.xyz.com</code>的主机想要查询<code>y.abc.com</code>这个域名对应的IP地址，那么他就会按照域名查询方式1（上图）中的方式进行查询：</p>
+<ol>
+<li>主机<code>m.xyz.com</code>先向本地域名服务器<code>dns.xyz.com</code>进行递归查询。</li>
+<li>本地域名服务器无法给出IP地址，所以本地域名服务器向（离自己最近的）根域名服务器查询，这是的查询已经变为了迭代查询。</li>
+<li>根域名服务器根据本地域名服务器发送的报文，知道了下一步应该查询的是哪个顶级域名服务器，这时根域名服务器告诉本地域名服务器，下一步应该查询的顶级域名服务器<code>dns.com</code>的IP地址。</li>
+<li>本地域名服务器向顶级域名服务器<code>dns.com</code>发送请求查询。</li>
+<li>顶级域名服务器<code>dns.com</code>告诉本地域名服务器，下一步应该查询的权限域名服务器<code>dns.abc.com</code>的IP地址。</li>
+<li>本地域名服务器向权限域名服务器<code>dns.abc.com</code>发送请求查询。</li>
+<li>权限域名服务器<code>dns.abc.com</code>告诉本地域名服务器想要查询的域名<code>y.abc.com</code>的IP地址。</li>
+<li>本地域名服务器在拿到IP地址后，将IP地址返回给主机<code>m.xyz.com</code>。<br>这就是域名查询的具体过程，因为DNS协议的基于UDP协议，所以上述8个步骤中，总共使用了8个UDP报文。</li>
+</ol>
+<p>上面提到，这是在没有缓存的情况下的DNS查询，实际上，为了提高查询的效率以及降低根域名服务器的负荷，一般来说域名服务器中都有高速缓存，用来记录最近查询过的域名的缓存，如果在查询域名时，有想要的域名到IP的映射缓存，并且缓存没有过期，那么就直接将缓存中域名映射的IP地址返回，省去了接下来的查询。只有在没有缓存或者缓存过期了才会进行下一步的查询。实际上，不知域名服务器有缓存，每台计算机甚至浏览器都会对域名到IP的映射进行缓存，这样一来大大加快的DNS的查询速度。</p>
+<p>上面这些就是DNS协议的大概了，如果觉得有哪里写的不对的，还请多多指教。</p>
+<p>参考书籍：《计算机网络》谢希仁</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.cn/2021/06/27/%E5%85%B3%E4%BA%8EJavaScript%E4%B8%ADthis%E7%9A%84%E8%BD%AF%E7%BB%91%E5%AE%9A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/27/%E5%85%B3%E4%BA%8EJavaScript%E4%B8%ADthis%E7%9A%84%E8%BD%AF%E7%BB%91%E5%AE%9A/" class="post-title-link" itemprop="url">关于JavaScript中this的软绑定</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-27 21:11:06 / 修改时间：21:11:13" itemprop="dateCreated datePublished" datetime="2021-06-27T21:11:06+08:00">2021-06-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="首先，什么是软绑定？"><a href="#首先，什么是软绑定？" class="headerlink" title="首先，什么是软绑定？"></a>首先，什么是软绑定？</h4><p>所谓软绑定，是和硬绑定相对应的一个词，在详细解释软绑定之前，我们先来看看硬绑定。在JavaScript中，this的绑定是动态的，在函数被调用的时候绑定，它指向什么完全取决于函数在哪里调用，情况比较复杂，光是绑定规则就有默认绑定、隐式绑定、显式绑定、new绑定等，而硬绑定是显式绑定中的一种，通常情况下是通过调用函数的<code>apply()</code>、<code>call()</code>或者ES5里提供的<code>bind()</code>方法来实现硬绑定的。</p>
+<h4 id="硬绑定有什么问题，为什么需要软绑定"><a href="#硬绑定有什么问题，为什么需要软绑定" class="headerlink" title="硬绑定有什么问题，为什么需要软绑定"></a>硬绑定有什么问题，为什么需要软绑定</h4><p>上述三个方法好是好，可以按照自己的想法将函数的this强制绑定到指定的对象上（除了使用new绑定可以改变硬绑定外），但是硬绑定存在一个问题，就是会降低函数的灵活性，并且在硬绑定之后无法再使用隐式绑定或者显式绑定来修改this的指向。</p>
+<p>在这种情况下，被称为软绑定的实现就出现了，也就是说，通过软绑定，我们希望this在默认情况下不再指向全局对象（非严格模式）或<code>undefined</code>（严格模式），而是指向两者之外的一个对象（这点和硬绑定的效果相同），但是同时又保留了隐式绑定和显式绑定在之后可以修改this指向的能力。</p>
+<h4 id="软绑定的具体实现"><a href="#软绑定的具体实现" class="headerlink" title="软绑定的具体实现"></a>软绑定的具体实现</h4><p>在这里，我用的是《你不知道的JavaScript 上》中的软绑定的代码实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">if(!Function.prototype.softBind)&#123;</span><br><span class="line">    Function.prototype.softBind=function(obj)&#123;</span><br><span class="line">        var fn=this;</span><br><span class="line">        var args=Array.prototype.slice.call(arguments,1);</span><br><span class="line">        var bound=function()&#123;</span><br><span class="line">            return fn.apply(</span><br><span class="line">                (!this||this===(window||global))?obj:this,</span><br><span class="line">                args.concat.apply(args,arguments)</span><br><span class="line">            );</span><br><span class="line">        &#125;;</span><br><span class="line">        bound.prototype=Object.create(fn.prototype);</span><br><span class="line">        return bound;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们先来看一下效果，之后再讨论它的实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function foo()&#123;</span><br><span class="line">    console.log(&quot;name: &quot;+this.name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var obj1=&#123;name:&quot;obj1&quot;&#125;,</span><br><span class="line">    obj2=&#123;name:&quot;obj2&quot;&#125;,</span><br><span class="line">    obj3=&#123;name:&quot;obj3&quot;&#125;;</span><br><span class="line"></span><br><span class="line">var fooOBJ=foo.softBind(obj1);</span><br><span class="line">fooOBJ();//&quot;name: obj1&quot; 在这里软绑定生效了，成功修改了this的指向，将this绑定到了obj1上</span><br><span class="line"></span><br><span class="line">obj2.foo=foo.softBind(obj1);</span><br><span class="line">obj2.foo();//&quot;name: obj2&quot; 在这里软绑定的this指向成功被隐式绑定修改了，绑定到了obj2上</span><br><span class="line"></span><br><span class="line">fooOBJ.call(obj3);//&quot;name: obj3&quot; 在这里软绑定的this指向成功被硬绑定修改了，绑定到了obj3上</span><br><span class="line"></span><br><span class="line">setTimeout(obj2.foo,1000);//&quot;name: obj1&quot;</span><br><span class="line">/*回调函数相当于一个隐式的传参，如果没有软绑定的话，这里将会应用默认绑定将this绑定到全局环</span><br><span class="line">境上，但有软绑定，这里this还是指向obj1*/</span><br></pre></td></tr></table></figure>
+<p>可以看到软绑定生效了。下面我们来具体看一下<code>softBind()</code>的实现。</p>
+<p>在第一行，先通过判断，如果函数的原型上没有<code>softBind()</code>这个方法，则添加它，然后通过<code>Array.prototype.slice.call(arguments,1)</code>获取传入的外部参数，这里这样做其实为了函数柯里化，也就是说，允许在软绑定的时候，事先设置好一些参数，在调用函数的时候再传入另一些参数（关于函数柯里化大家可以去网上搜一下详细的讲解）最后返回一个<code>bound</code>函数形成一个闭包，这时候，在函数调用<code>softBind()</code>之后，得到的就是<code>bound</code>函数，例如上面的<code>var fooOBJ=foo.softBind(obj1)</code>。</p>
+<p>在<code>bound</code>函数中，首先会判断调用软绑定之后的函数（如fooOBJ）的调用位置，或者说它的this的指向，如果<code>!this</code>（this指向undefined）或者<code>this===(window||global)</code>（this指向全局对象），那么就将函数的this绑定到传入<code>softBind</code>中的参数obj上。如果此时this不指向undefind或者全局对象，那么就将this绑定到现在正在指向的函数（即隐式绑定或显式绑定）。<code>fn.apply</code>的第二个参数则是运行<code>foo</code>所需要的参数，由上面的args（外部参数）和内部的arguments（内部参数）连接成，也就是上面说的柯里化。</p>
+<p>其实在第一遍看这个函数时，也有点迷，有一些疑问，比如<code>var fn=this</code>这句，在<code>foo</code>通过<code>foo.softBind()</code>调用<code>softBind</code>的时候，fn到底指向谁呢？是指向foo还是指向softBind？我们可以写个demo测试，然后可以很清晰地看出fn指向什么：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var a=2;</span><br><span class="line">function foo()&#123;</span><br><span class="line">&#125;</span><br><span class="line">foo.a=3;</span><br><span class="line">Function.prototype.softBind=function()&#123;</span><br><span class="line">    var fn=this;</span><br><span class="line">    return function()&#123;</span><br><span class="line">        console.log(fn.a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Function.prototype.a=4;</span><br><span class="line">Function.prototype.softBind.a=5;</span><br><span class="line"></span><br><span class="line">foo.softBind()();//3</span><br><span class="line">Function.prototype.softBind()();//4</span><br></pre></td></tr></table></figure>
+<p>可以看出，fn（或者说this）的指向还是遵循this的绑定规则的，<code>softBind</code>函数定义在Function的原型<code>Function.prototype</code>中，但是JavaScript中函数永远不会“属于”某个对象（不像其他语言如java中类里面定义的方法那样），只是对象内部引用了这个函数，所以在通过下面两种方式调用时，fn（或者说this）分别隐式绑定到了<code>foo</code>和<code>Function.prototype</code>，所以分别输出3和4。后面的<code>fn.apply()</code>也就相当于<code>foo.apply()</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.cn/2021/06/27/%E8%8E%B7%E5%8F%96%E6%88%96%E6%93%8D%E4%BD%9CDOM%E5%85%83%E7%B4%A0%E7%89%B9%E6%80%A7%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/27/%E8%8E%B7%E5%8F%96%E6%88%96%E6%93%8D%E4%BD%9CDOM%E5%85%83%E7%B4%A0%E7%89%B9%E6%80%A7%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">获取或操作DOM元素特性的几种方式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-27 21:10:18 / 修改时间：21:10:35" itemprop="dateCreated datePublished" datetime="2021-06-27T21:10:18+08:00">2021-06-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <ol>
+<li><p>通过元素的属性</p>
+<p> 可以直接通过元素属性获取或操作特性，但是只有公认的特性（非自定义的特性），例如<code>id</code>、<code>title</code>、<code>style</code>、<code>align</code>、<code>className</code>等，注意，因为在ECMAScript中，<code>class</code>是保留字（在ES6中成了关键字），所以就不能再用<code>class</code>这个属性名来表示元素的CSS类名了，只能换成<code>className</code>。</p>
+</li>
+<li><p>通过<code>getAttribute()</code>、<code>setAttribute()</code>、<code>removeAttribute()</code></p>
+<p> 也可以通过这三个DOM方法来操作DOM元素的特性，例如</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let div = document.getElementById(&quot;my-div&quot;);</span><br><span class="line">div.getAttribute(&quot;id&quot;);                 // 获取id</span><br><span class="line">div.getAttribute(&quot;title&quot;);              // 获取title</span><br><span class="line">div.getAttribute(&quot;class&quot;);              // 获取元素的CSS类名，因为是传参数给getAttrbute函数，所以可以用class</span><br><span class="line">div.getAttribute(&quot;dat-my-attribute&quot;);   // 获取自定义特性</span><br><span class="line">div.setAttribute(&quot;id&quot;,&quot;anotherId&quot;);     // 设置id</span><br><span class="line">div.removeAttribute(&quot;title&quot;);           // 删除title</span><br></pre></td></tr></table></figure>
+<p> 从上面可以看出来，用这种方法，不仅可以获取到公认的特性，也可以获取自定义的特性。不过有两类特殊的特性，在通过属性获取和通过方法获取时获取到的却不一样，一类是<code>style</code>，通过属性访问获取到的是一个对象，通过<code>getAttribute</code>获取到的是CSS文本；另一类就是事件处理程序如<code>onclick</code>，通过属性获取，得到的是一个函数，而通过<code>getAttribute</code>获取得到的则是相应函数代码的字符串。</p>
+</li>
+<li><p>通过元素的<code>attributes</code>属性</p>
+<p> Element类型的DOM元素都有一个<code>attributes</code>属性，如<code>div.attributes</code>，这样获取到的是一个NamedNodeMap，是一个动态的集合，和数组类似，也有<code>length</code>属性、可以通过下标访问遍历等,通常用途就是遍历元素特性，里面存放的是多个Att节点，每个节点的<code>nodeName</code>就是特性名称，<code>nodeValue</code>就是特性的值。它有一些方法，如下：</p>
+<ul>
+<li><code>getNamedItem(name)</code>：返回<code>nodeName</code>为name的节点</li>
+<li><code>setNamedItem(node)</code>：向集合中插入一个Attr节点</li>
+<li><code>removeNamedItem(name)</code>：删除集合中<code>nodeName</code>为name的节点</li>
+<li><code>item(pos)</code>：返回位于数字pos位置的节点<br>例如要获取id，有如下代码<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let div = document.getElementById(&quot;my-div&quot;);</span><br><span class="line">div.attributes.getNamedItem(&quot;id&quot;).nodeValue;</span><br><span class="line">div.attributes[&quot;id&quot;].nodeValue;                 //后两行代码都可以获取到id，下面为简写形式</span><br></pre></td></tr></table></figure>
+从上面可以看出，这种方式最麻烦，所以平时基本不用，一般在遍历元素的特性时才会用到。<br>上面三种方式中，方式1是最常使用的，其次是2，最后才是第三种方式。</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.cn/2021/06/27/%E7%BD%91%E9%A1%B5%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BDjs%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/27/%E7%BD%91%E9%A1%B5%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BDjs%E6%96%87%E4%BB%B6/" class="post-title-link" itemprop="url">网页性能优化之异步加载js文件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-27 21:01:37 / 修改时间：21:06:20" itemprop="dateCreated datePublished" datetime="2021-06-27T21:01:37+08:00">2021-06-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一个网页的有很多地方可以进行性能优化，比较常见的一种方式就是异步加载js脚本文件。在谈异步加载之前，先来看看浏览器加载js文件的原理。</p>
+<blockquote>
+<p>浏览器加载 JavaScript 脚本，主要通过<code>&lt;script&gt;</code>元素完成。正常的网页加载流程是这样的。</p>
+<ol>
+<li>浏览器一边下载 HTML 网页，一边开始解析。也就是说，不等到下载完，就开始解析。</li>
+<li>解析过程中，浏览器发现<code>&lt;script&gt;</code>元素，就暂停解析，把网页渲染的控制权转交给 JavaScript 引擎。</li>
+<li>如果<code>&lt;script&gt;</code>元素引用了外部脚本，就下载该脚本再执行，否则就直接执行代码。</li>
+<li>JavaScript 引擎执行完毕，控制权交还渲染引擎，恢复解析 HTML 网页。</li>
+</ol>
+<p>加载外部脚本时，浏览器会暂停页面渲染，等待脚本下载并执行完成后，再继续渲染。原因是 JavaScript 代码可以修改 DOM，所以必须把控制权让给它，否则会导致复杂的线程竞赛的问题。</p>
+</blockquote>
+<p>上面所说的，就是我们平时最常见到的，将<code>&lt;script&gt;</code>标签放到<code>&lt;head&gt;</code>中的做法，这样的加载方式叫做<strong>同步加载</strong>，或者叫阻塞加载，因为在加载js脚本文件时，会阻塞浏览器解析HTML文档，等到下载并执行完毕之后，才会接着解析HTML文档。如果加载时间过长（比如下载时间太长），就会造成浏览器“假死”，页面一片空白。而且，放在<code>&lt;head&gt;</code>中同步加载的js文件中不能对DOM进行操作，否则会产生错误，因为这个时候HTML还没有进行解析，DOM还没有生成。由此看来，同步加载带来的体验往往并不好。</p>
+<p>下面我们来看几种异步加载的方式。</p>
+<ol>
+<li><p><strong>将<code>&lt;script&gt;</code>标签放到<code>&lt;body&gt;</code>底部</strong></p>
+<p> 严格来说，这并不算是异步加载，但是这也是常见的通过改变js加载方式来提升页面性能的一种方式，所以也就放到这里来说。</p>
+<p> 将<code>&lt;script&gt;</code>放到<code>&lt;body&gt;</code>底部，解决上上面说到的几个问题，一是不会造成页面解析的阻塞，就算加载时间过长用户也可以看到页面而不是一片空白，而且这时候可以在脚本中操作DOM。</p>
+</li>
+<li><p><strong><code>defer</code>属性</strong></p>
+<p> 通过给<code>&lt;script&gt;</code>标签设置<code>defer</code>属性，将脚本文件设置为延迟加载，当浏览器遇到带有<code>defer</code>属性的<code>&lt;script&gt;</code>标签时，会再开启一个线程去下载js文件，同时继续解析HTML文档，等等HTML全部解析完毕DOM加载完成之后，再去执行加载好的js文件。</p>
+<p> 这种方式只适用于引用外部js文件的<code>&lt;script&gt;</code>标签，可以保证多个js文件的执行顺序就是它们在页面中出现的顺序，但是要注意，添加<code>defer</code>属性的js文件不应该使用<code>document.write()</code>方法。</p>
+</li>
+<li><p><strong><code>async</code>属性</strong></p>
+<p> <code>async</code>属性和<code>defer</code>属性类似，也是会开启一个线程去下载js文件，但和<code>defer</code>不同的时，它会在下载完成后立刻执行，而不是会等到DOM加载完成之后再执行，所以还是有可能会造成阻塞。</p>
+<p> 同样的，<code>async</code>也是只适用于外部js文件，也不能在js中使用<code>document.write()</code>方法，但是对多个带有<code>async</code>的js文件，它不能像defer那样保证按顺序执行，它是哪个js文件先下载完就先执行哪个。</p>
+</li>
+<li><p><strong>动态创建<code>&lt;script&gt;</code>标签</strong></p>
+<p> 可以通过动态地创建<code>&lt;script&gt;</code>标签来实现异步加载js文件，例如下面代码：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(function()&#123;</span><br><span class="line">    var scriptEle = document.createElement(&quot;script&quot;);</span><br><span class="line">    scriptEle.type = &quot;text/javasctipt&quot;;</span><br><span class="line">    scriptEle.async = true;</span><br><span class="line">    scriptEle.src = &quot;http://cdn.bootcss.com/jquery/3.0.0-beta1/jquery.min.js&quot;;</span><br><span class="line">    var x = document.getElementsByTagName(&quot;head&quot;)[0];</span><br><span class="line">    x.insertBefore(scriptEle, x.firstChild); </span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p> 或者</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(function()&#123;</span><br><span class="line">    if(window.attachEvent)&#123;</span><br><span class="line">        window.attachEvent(&quot;load&quot;, asyncLoad);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        window.addEventListener(&quot;load&quot;, asyncLoad);</span><br><span class="line">    &#125;</span><br><span class="line">    var asyncLoad = function()&#123;</span><br><span class="line">        var ga = document.createElement(&#x27;script&#x27;); </span><br><span class="line">        ga.type = &#x27;text/javascript&#x27;; </span><br><span class="line">        ga.async = true; </span><br><span class="line">        ga.src = (&#x27;https:&#x27; == document.location.protocol ? &#x27;https://ssl&#x27; : &#x27;http://www&#x27;) + &#x27;.google-analytics.com/ga.js&#x27;; </span><br><span class="line">        var s = document.getElementsByTagName(&#x27;script&#x27;)[0]; </span><br><span class="line">        s.parentNode.insertBefore(ga, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p> 上面两种方法中，第一种方式执行完之前会阻止onload事件的触发，因为添加了<code>async</code>属性的异步脚本一定会在页面的load事件前执行，而现在很多页面的代码都在onload时还执行额外的渲染工作，所以还是会阻塞部分页面的初始化处理。第二种则不会阻止onload事件的触发。</p>
+<p> 这里要简要说明一下<code>window.DOMContentLoaded</code>和<code>window.onload</code>这两个事件的区别，前者是在DOM解析完毕之后触发，这时候DOM解析完毕，JavaScript可以获取到DOM引用，但是页面中的一些资源比如图片、视频等还没有加载完，作用同jQuery中的ready事件。后者则是页面完全加载完毕，包括各种资源。</p>
+</li>
+</ol>
+<p>说完了这几种常见的异步加载js脚本的方式，再来看最后一个问题，什么时候用<code>defer</code>，什么时候用<code>async</code>呢？一般来说，两者之间的选择则是看脚本之间是否有依赖关系，有依赖的话应当要保证执行顺序，应当使用<code>defer</code>没有依赖的话使用<code>async</code>，同时使用的话<code>defer</code>失效。要注意的是两者都不应该使用<code>document.write()</code>，这个导致整个页面被清除重写。</p>
+<p>下面一幅图表明了同步加载以及<code>defer</code>、<code>async</code>加载时的区别，其中绿色线代表 HTML 解析，蓝色线代表网络读取js脚本，红色线代表js脚本执行时间：<br><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/js-load.jpg" alt="js-load"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.cn/2021/06/27/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/27/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-27 17:59:38" itemprop="dateCreated datePublished" datetime="2021-06-27T17:59:38+08:00">2021-06-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
@@ -147,103 +814,169 @@
 
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/06/27/hello-world/" data-id="ckqf1jgvd0000m8nwdm8l48tq" data-title="Hello World" class="article-share-link">Share</a>
-      
-      
-      
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">冰河</p>
+  <div class="site-description" itemprop="description">冰河的个人网站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">冰河</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
     </footer>
   </div>
-  
-</article>
-
-
 
   
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li></ul>
-    </div>
-  </div>
+<script src="/js/schemes/pisces.js"></script>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2021/06/27/test-my-site/">test_my_site</a>
-          </li>
-        
-          <li>
-            <a href="/2021/06/27/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
+<script src="/js/next-boot.js"></script>
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 John Doe<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
 
 
 
 
 
-  </div>
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
 </body>
 </html>
