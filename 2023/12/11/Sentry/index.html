@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"youfindme.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、前言Sentry大家应该都不陌生，即便没有使用过，也应该听过Sentry的大名。 作为一个实时事件日志监控平台，Sentry可以记录和聚合我们应用中的报错、打点等，不管是Sentry自动捕获的错误，还是我们主动上报的错误，都可以在Sentry提供的可视化平台看到，方便开发者及时发现、分析和排查应用中存在的问题。 但是在使用Sentry的过程中，我们发现了一些使用起来不那么方便的地方，这个就是我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sentry治理之Issue分组（Issue Grouping）">
+<meta property="og:url" content="https://youfindme.top/2023/12/11/Sentry/index.html">
+<meta property="og:site_name" content="冰河">
+<meta property="og:description" content="一、前言Sentry大家应该都不陌生，即便没有使用过，也应该听过Sentry的大名。 作为一个实时事件日志监控平台，Sentry可以记录和聚合我们应用中的报错、打点等，不管是Sentry自动捕获的错误，还是我们主动上报的错误，都可以在Sentry提供的可视化平台看到，方便开发者及时发现、分析和排查应用中存在的问题。 但是在使用Sentry的过程中，我们发现了一些使用起来不那么方便的地方，这个就是我">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/discover.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/issues.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/repeat_issues.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/merge_issues.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_detail_json.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/upgrade_grouping.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/mixed_call_stack.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/merge_issues.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/stack_trace_rules.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/fingerprint_rules.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_before_rename.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_after_rename.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/title_changed_in_json.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/finger_print_in_json.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/old_version_custom_title_in_json.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/built_in_filters.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/custom_filters.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/filterd_issues.png">
+<meta property="article:published_time" content="2023-12-11T05:05:23.000Z">
+<meta property="article:modified_time" content="2023-12-28T08:08:35.042Z">
+<meta property="article:author" content="冰河">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.youfindme.cn/blog/sentry_issue_grouping/discover.png">
+
+<link rel="canonical" href="https://youfindme.top/2023/12/11/Sentry/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sentry治理之Issue分组（Issue Grouping） | 冰河</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">冰河</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2023/12/11/Sentry/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sentry治理之Issue分组（Issue Grouping）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-11 13:05:23" itemprop="dateCreated datePublished" datetime="2023-12-11T13:05:23+08:00">2023-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>Sentry大家应该都不陌生，即便没有使用过，也应该听过Sentry的大名。</p>
+<p>作为一个实时事件日志监控平台，Sentry可以记录和聚合我们应用中的报错、打点等，不管是Sentry自动捕获的错误，还是我们主动上报的错误，都可以在Sentry提供的可视化平台看到，方便开发者及时发现、分析和排查应用中存在的问题。</p>
+<p>但是在使用Sentry的过程中，我们发现了一些使用起来不那么方便的地方，这个就是我们今天要一起讨论的问题——Sentry Issue的分组（Issue Grouping）。</p>
+<h2 id="二、先看看什么是Sentry-Issue"><a href="#二、先看看什么是Sentry-Issue" class="headerlink" title="二、先看看什么是Sentry Issue"></a>二、先看看什么是Sentry Issue</h2><p>在Sentry中，每一条日志上报都是一个事件（Event）,在Sentry的Discover面板中，我们可以看到所有上报的Event，比如我这个项目：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/discover.png" alt="Discover面板"></p>
+<p>Event分为两种类型，Transaction和Error。</p>
+<p>Transaction事件主要用于性能监控。它记录了一个请求或任务从开始到结束的完整生命周期，包括各种详细的性能数据，如请求的开始时间、结束时间、总耗时、各个阶段的耗时等。</p>
+<p>Error事件主要用于错误跟踪。它记录了应用运行过程中发生的错误或异常，包括错误的类型、位置、堆栈跟踪等信息。</p>
+<p>而<strong>Issue就是Error类型的Event的聚合</strong>，Sentry会把一些相似的Error进行聚合，合并成一个Issue，这样我们就可以看到某个特定Error发生的频率和趋势，而不仅仅是只能看到单个Error Event。</p>
+<p>Sentry的Issue可以在Issues面板中看到，如下图所示：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issues.png" alt="Issue面板"></p>
+<p>从这个面板可以看到某个Issue（即某个类型的Error），上报了几次，有多少用户遇到了这个Error，以及这个Error数量变化的趋势，帮助我们快速确认问题的严重程度和影响范围。</p>
+<h2 id="三、我们遇到啥问题了？"><a href="#三、我们遇到啥问题了？" class="headerlink" title="三、我们遇到啥问题了？"></a>三、我们遇到啥问题了？</h2><p>从上面的描述可以看到，Sentry把Error进行聚合，合并成一个个Issue，帮助我们查看某个类型Error的一些信息，看起来是挺好的。</p>
+<p>但是在我们的项目里，Sentry好像并不是这么做的，比如下图：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/repeat_issues.png" alt="重复的Issue"></p>
+<p>说好的自动聚合分组呢？</p>
+<p>同样的一个Error（或者是极其相似的Error）,并没有被聚合为同一个Issue，而是分到了不同的几个Issue里，并且这些Issue的名字几乎一摸一样，每个Issue还各自展示一个Event次数。</p>
+<p>而且这个问题不止出现在某一种类型的Error上，几乎所有的Error上报都或多或少地存在这种问题，导致不能很好地分析某种Error的影响或者变化趋势。</p>
+<p>而且有时候即便我们手动Ignore某个Issue，未来还是会不断地有新的这个Issue出现，或者我们像下面这样手动Merge两个Issue，也还是会源源不断地产生新的、没有被Merge进手动Merge的分组内的Issue。</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/merge_issues.png" alt="手动Merge"></p>
+<h2 id="四、研究下Sentry是怎么对Error分组的"><a href="#四、研究下Sentry是怎么对Error分组的" class="headerlink" title="四、研究下Sentry是怎么对Error分组的"></a>四、研究下Sentry是怎么对Error分组的</h2><p>在解决我们遇到的问题之前，还是要先了解下Sentry是怎么对Error进行分组的，知道原理才能着手解决。</p>
+<p>看了下官方文档<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/">Issue Grouping | Sentry Documentation</a>，这才揭开了Sentry分组的面纱。</p>
+<h3 id="1-Sentry-Issue的Fingerprint和分组"><a href="#1-Sentry-Issue的Fingerprint和分组" class="headerlink" title="1. Sentry Issue的Fingerprint和分组"></a>1. Sentry Issue的Fingerprint和分组</h3><p>在Sentry中，有一个“指纹”的概念，Fingerprint，Fingerprint是标识Event的一种方式，每个Event（包括Error和Transaction）都有一个Fingerprint。</p>
+<p>Sentry会根据某种规则，来给每一个Event生成Fingerprint，具有相同Fingerprint的Event会被Sentry分为一组，这就是Sentry分组的基本原则。</p>
+<h4 id="1-1-如何在Sentry上查看一个Event的Fingerprint呢？"><a href="#1-1-如何在Sentry上查看一个Event的Fingerprint呢？" class="headerlink" title="1.1 如何在Sentry上查看一个Event的Fingerprint呢？"></a>1.1 如何在Sentry上查看一个Event的Fingerprint呢？</h4><p>从Discover或者Issues列表中，随便点击一个进入Error详情（Transaction不行，下面会讲原因），点击查看这个Error对应原始JSON数据：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_detail_json.png" alt="查看原始JSON"></p>
+<p>在原始JSON中搜索fingerprint字段，可以看到如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;fingerprint&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;&#123;&#123; default &#125;&#125;&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个<code>&#123;&#123; default &#125;&#125;</code>，这说明使用的是Sentry默认规则生成的Fingerprint。如果是其他的规则，则会展示为其他的值。</p>
+<h4 id="1-2-Event默认的Fingerprint生成规则"><a href="#1-2-Event默认的Fingerprint生成规则" class="headerlink" title="1.2 Event默认的Fingerprint生成规则"></a>1.2 Event默认的Fingerprint生成规则</h4><p>不同类型的Event，有不同的Fingerprint生成规则：</p>
+<ul>
+<li>Error类型：Error类型会基于这个Error的调用堆栈<code>Stack Trace</code>，异常类型<code>Exception</code>，和日志消息<code>message</code>，从这三个方面来生成Fingerprint</li>
+<li>Transaction类型：通过这个类型的Spans来生成，可以查看原始JSON数据中的<code>spans</code>字段</li>
+</ul>
+<p>我们这次只讨论Error类型的Event Fingerprint生成规则。</p>
+<p>首先，Sentry每个版本生成Fingerprint的默认规则可能会有一些差异，每次Sentry默认的Fingerprint生成规则变化了之后，Sentry都会发布一个新版本，所以Fingerprint生成规则变化了之后，不会影响已有的Event。</p>
+<p>每次新建一个Project，都会自动使用目前最新版本的Fingerprint生成规则，如果想要现有的Project升级到最新的Fingerprint生成规则，需要在设置里手动修改，具体位置为：<strong>Settings &gt; Project &gt; [Your Project] &gt; Processing &gt; Issue Grouping &gt; Upgrade Grouping</strong>.如下图：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/upgrade_grouping.png" alt="升级分组"></p>
+<p>所有版本的Fingerprint生成规则都是最先考虑<code>Stack Trace</code>，然后是<code>Exception</code>, 最后是<code>message</code>。</p>
+<h5 id="a-按照Stack-Trace分组"><a href="#a-按照Stack-Trace分组" class="headerlink" title="a. 按照Stack Trace分组"></a>a. 按照Stack Trace分组</h5><p>对于一个上报的Error Event，如果他的原始数据中有调用堆栈信息，就会完全根据调用堆栈来进行分组（即不考虑其他的），主要会使用下列信息：</p>
+<ul>
+<li>模块名module</li>
+<li>文件名（去除哈希值等之后的名字）filename</li>
+<li>上下文，行号列号等信息</li>
+</ul>
+<p>这里的堆栈信息只包括和当前Project有关的堆栈，和当前项目无关的堆栈信息不会用于分组。</p>
+<p>堆栈信息可以在原始的JSON数据中的<code>exception.values</code>的<code>stacktrace</code>字段中看到，如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;exception&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;values&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;Error&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;value&quot;</span>: <span class="string">&quot;xxx err&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;stacktrace&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;frames&quot;</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">&quot;function&quot;</span>: <span class="string">&quot;xxx&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;module&quot;</span>: <span class="string">&quot;yyy&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;filename&quot;</span>: <span class="string">&quot;zzz&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;abs_path&quot;</span>: <span class="string">&quot;app:///aaa/bbb/ccc.js&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;lineno&quot;</span>: <span class="number">10</span>,</span><br><span class="line">              <span class="attr">&quot;colno&quot;</span>: <span class="number">30</span>,</span><br><span class="line">              <span class="attr">&quot;in_app&quot;</span>: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">&quot;function&quot;</span>: <span class="string">&quot;rrr&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;module&quot;</span>: <span class="string">&quot;uuu&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;filename&quot;</span>: <span class="string">&quot;bbb&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;abs_path&quot;</span>: <span class="string">&quot;app:///ddd/eee/fff.js&quot;</span>,</span><br><span class="line">              <span class="attr">&quot;lineno&quot;</span>: <span class="number">20</span>,</span><br><span class="line">              <span class="attr">&quot;colno&quot;</span>: <span class="number">57</span>,</span><br><span class="line">              <span class="attr">&quot;in_app&quot;</span>: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="comment">// ......</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>stacktrace</code>字段中有个<code>frames</code>，是一个数据，记录的是当前Error发生时的调用堆栈帧列表，数组中的每一项就是一个调用帧（frame），每一帧中都有如下信息：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;function&quot;</span>: <span class="string">&quot;xxx&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;module&quot;</span>: <span class="string">&quot;yyy&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;filename&quot;</span>: <span class="string">&quot;zzz&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;abs_path&quot;</span>: <span class="string">&quot;app:///aaa/bbb/ccc.js&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;lineno&quot;</span>: <span class="number">10</span>,</span><br><span class="line">  <span class="attr">&quot;colno&quot;</span>: <span class="number">30</span>,</span><br><span class="line">  <span class="attr">&quot;in_app&quot;</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而Sentry就是根据这些调用栈的帧列表，来生成Fingerprint。即相同调用堆栈的错误，被认为是同一种类Error，会被归为同一组。</p>
+<p>用这个方法来分组，一般来说效果都挺不错，但是如果出现下面这些情况，就会导致这个分组方法或者说分组规则，效果不那么好：</p>
+<ol>
+<li><p>代码经过混淆或者压缩（比如TS/JS代码经过Babel编译）<br>由于混淆或者压缩之后，代码的变量名、函数名、代码结构等都会发生变化，即便对于同一个Error，不同版本的代码（比如两个release版本之间，或者两次不同的构建之间）的调用堆栈信息也会发生变化，导致Sentry认为这些是不同的Error，从而没有进行聚合分组。<br>如果代码有混淆或者压缩，就需要上传Source Maps到Sentry，让Sentry通过原始的堆栈信息生成Fingerprint，来避免分组混乱。</p>
+</li>
+<li><p>代码通过装饰器等引入了新的堆栈层级，也会导致调用堆栈发生变化。比如</p>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> decoratorFn = <span class="function">(<span class="params">target, keyName, descriptor</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> originFn = descriptor.value;</span><br><span class="line">  descriptor.value = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;Before function execution&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> ret = originFn.apply(<span class="built_in">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;After function execution&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">return</span> descriptor;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  @decoratorFn</span><br><span class="line">  <span class="function"><span class="title">handleClick</span>(<span class="params">e</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;Inside function&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这个例子中，<code>myFunction</code>被<code>decoratorFn</code>装饰。当调用<code>myFunction</code>时，实际上是在调用<code>decoratorFn</code>返回的函数。因此，如果在这个过程中发生错误并生成堆栈信息，堆栈信息中将会包含<code>decoratorFn</code>返回的函数的调用，这就是通过引入新的堆栈层级来修改堆栈信息。</p>
+<p>可以通过自定义的<code>beforeSend</code>来自定义删除或者修改这些堆栈信息（下面会讲到）。</p>
+<h5 id="b-按照Exception分组"><a href="#b-按照Exception分组" class="headerlink" title="b.按照Exception分组"></a>b.按照Exception分组</h5><p>如果上报的Error Event的数据中没有堆栈调用信息，但是有完整的<code>Exception</code>信息（这里的完整指的是<code>Exception</code>的type和value同时存在），就会按照<code>Exception</code>的type和value进行分组，但是这种分组可靠性比较低，因为错误的信息可能会改变。</p>
+<p>这里的<code>Exception</code>指的就是各种Error，JS里的<code>Exception</code>就是各种类型的<code>Error</code>，比如<code>ReferenceError</code>、<code>TypeError</code>、<code>RangeError</code>、<code>SyntaxError</code>等。</p>
+<ul>
+<li><code>Exception</code>的type就是Error的name，如果有自定义的name就是自定义的name，比如<code>DownloadFileError</code>，没有自定义的话默认就是各个类型名</li>
+<li>Exception的value指的就是err.message</li>
+</ul>
+<p>比如访问一个未定义的变量，JS会抛出一个<code>ReferenceError</code>，type就是“ReferenceError”，value可能是“x is not defined”。</p>
+<p>如果是下面的自定义name的Error：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> err = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;This is a mock err msg&#x27;</span>);</span><br><span class="line">err.name = <span class="string">&#x27;MyMockError&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>那么这个Error的type就是“MyMockError”，value就是“This is a mock err msg”。</p>
+<p>这里的type和value也可以直接在Sentry上任意一个Error原始的JSON数据中看到，JSON中的<code>metadata</code>字段，记录了这个Error的type和value：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;metadata&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;display_title_with_tree_label&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">&quot;filename&quot;</span>: <span class="string">&quot;app:///aaa/bbb/ccc.js&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;function&quot;</span>: <span class="string">&quot;xxx&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;title&quot;</span>: <span class="string">&quot;MyMockError: This is a mock err msg&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;MyMockError&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;value&quot;</span>: <span class="string">&quot;This is a mock err msg&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><em><strong>问：</strong></em><br>什么情况下会出现存在Exception但是不包含堆栈信息？</p>
+<p><em><strong>ChatGPT:</strong></em><br>在大多数情况下，当JavaScript抛出一个异常时，这个异常都会包含一个堆栈跟踪。堆栈跟踪记录了错误发生时的函数调用序列，这对于理解和调试错误是非常有用的。<br>然而，在某些情况下，异常可能不包含堆栈跟踪。例如：</p>
+<ol>
+<li><p>如果你手动创建并抛出一个错误，但没有提供堆栈跟踪，那么这个错误就不会有堆栈跟踪。例如，throw new Error()会创建一个包含堆栈跟踪的错误，但throw { message: ‘error’ }则不会。</p>
+</li>
+<li><p>在某些JavaScript环境中，例如某些旧版本的浏览器或某些JavaScript引擎，可能不支持堆栈跟踪，或者支持的方式与标准不同。</p>
+</li>
+<li><p>如果错误发生在异步代码中，并且这个错误没有被正确地捕获和处理，那么可能只有错误信息，没有堆栈跟踪。</p>
+</li>
+<li><p>如果你的代码中有捕获错误并处理的逻辑，可能会修改或移除堆栈跟踪。</p>
+</li>
+</ol>
+</blockquote>
+<h5 id="c-兜底的分组"><a href="#c-兜底的分组" class="headerlink" title="c. 兜底的分组"></a>c. 兜底的分组</h5><p>如果上面两种情况都没办法对Event进行分组，那么就会使用兜底的分组，即直接使用上报的时候收到的Event消息来分组。</p>
+<h4 id="1-3-分析一下"><a href="#1-3-分析一下" class="headerlink" title="1.3 分析一下"></a>1.3 分析一下</h4><p>到这里我们可以先分析一下，为什么我们的项目会出现上面说的问题了。</p>
+<p>首先，我们的项目没有修改过任何和Event Fingerprint有关的设置，使用的是默认分组规则，即使用调用堆栈<code>Stack Trace</code>，异常类型<code>Exception</code>，和日志消息<code>message</code>来进行分组。而绝大部分都是使用调用堆栈进行分组。</p>
+<p>我们的JS项目由于某种原因，在编译后没有把Source Maps上传到Sentry，导致代码的变量名、函数名、代码结构等在不同版本或者不同的构建记录后，都会发生变化，所以即便某个Issue被Ignore或者被手动Merge，到下一个版本，由于同一个Error的调用栈变化了，生成了完全不同的Fingerprint，导致没有被分为一组。</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/mixed_call_stack.png" alt="混淆压缩后的代码的调用栈"></p>
+<blockquote>
+<p><strong>💡注意：</strong><br>代码混淆之后并不是会让Sentry没办法对Error生成Fingerprint以及分组，即使代码被混淆和压缩，只要所有用户都使用的是同一份混淆和压缩后的代码，那么同一个地方的Error应该会生成相同的堆栈跟踪，Sentry应该能够正确地将这些错误分到同一组。</p>
+<p>真正的问题在于多个版本或者多个构建之间，每次压缩混淆后的代码都不一样，从而导致不同版本直接Error分组混乱。</p>
+</blockquote>
+<p>看来使用默认的Fingerprint生成规则不行了，至少在我们项目上传Source Maps之前不行。需要看下怎么自定义分组。</p>
+<h4 id="1-4-自定义分组"><a href="#1-4-自定义分组" class="headerlink" title="1.4 自定义分组"></a>1.4 自定义分组</h4><p>首先，只有Error类型的Event支持自定义分组，Transaction类型的暂时无法自定义。这也是为什么上面说Transaction类型的Event，无法在原始JSON数据中看到fingerprint字段的原因，因为Transaction Event无法自定义，所以也就不会展示在JSON数据里。</p>
+<p>对于Error类型的Event，从简单到复杂有以下4种方式来自定义分组：</p>
+<ol>
+<li><p>在Sentry Admin对应的项目Issues列表中，手动Merge<br>手动合并（你认为是）相同的Issues，最简单，不需要修改任何设置和配置项。</p>
+</li>
+<li><p>在Sentry Admin对应的项目设置中，设置自定义的Fingerprint Rules<br>设置Fingerprint Rules，只影响新上报的的Event，不影响已经上报的Event。</p>
+</li>
+<li><p>在Sentry Admin对应的项目设置中，设置自定义的Stack Trace Rules<br>设置Stack Trace Rules，只影响新上报的的Event，不影响已经上报的Event。</p>
+</li>
+<li><p>在使用Sentry SDK的本地项目里，使用SDK Fingerprinting<br>在本地项目中，使用SDK上报之前，设置Event的Fingerprint。</p>
+</li>
+</ol>
+<p>下面我们一个个来看。</p>
+<h3 id="2-手动合并Issue"><a href="#2-手动合并Issue" class="headerlink" title="2. 手动合并Issue"></a>2. 手动合并Issue</h3><p>在Sentry项目的Issues列表中，手动选择2或者更多个Issue，然后点击Merge，即可合并为一个分组。</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/merge_issues.png" alt="手动Merge"></p>
+<p>需要注意的是，Sentry并不会根据我们如何手动Merge，来改变或者推断出任何新的分组规则，新产生的Issue还是会按照之前的规则来分组，然后根据放到我们手动Merge的Issue集合中。</p>
+<p>这也解释了为什么我们项目中，每次手动Merge之后，还是会产生新的没有被进入Merge后的分组，因为“Sentry并不会根据我们如何手动Merge，来改变或者推断出任何新的分组规则”。</p>
+<h3 id="3-Stack-Trace-Rules"><a href="#3-Stack-Trace-Rules" class="headerlink" title="3. Stack Trace Rules"></a>3. Stack Trace Rules</h3><p>虽然按照Sentry官网的文档的说法，Stack Trace Rules要比Fingerprint Rules复杂一些，我们还是先来讲下Stack Trace Rules。</p>
+<p>在比较旧的Sentry版本中，Stack Trace Rules也叫作Grouping Enhancements或者Custom Grouping Enhancements。</p>
+<p>具体设置位置为：<strong>Settings &gt; Project &gt; [Your Project] &gt; Processing &gt; Issue Grouping &gt; Stack Trace Rules</strong>。</p>
+<p>或者旧版本中为：<strong>Settings &gt; Project &gt; [Your Project] &gt; General Settings &gt; Custom Grouping Enhancements</strong>。</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/stack_trace_rules.png" alt="Stack Trace Rules"></p>
+<p>修改Stack Trace Rules会影响<strong>输入到Stack Trace分组算法中的数据</strong>。我们可以通过规则来改变哪些stack trace frames被视为”in-app”，这会影响Sentry如何将Issue分组。例如，我们可以将某些通常被视为”not in-app”的frames标记为”in-app”，这样它们就会被包含在分组算法中。</p>
+<p>在自定义的Stack Trace Rules中，每一行都是一条规则。每条规则有匹配项（matcher）、表达式（expression），以及跟在后面的操作（action）组成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">matcher-name:expression other-matcher:expression ... action1 action2 ...</span><br></pre></td></tr></table></figure>
+
+<p>一条规则里可以有多个匹配表达式，后面也可以有多个action。这些action会在前面所有匹配表达式匹配的时候执行。</p>
+<p>所有的规则会从上到下，对调用堆栈信息里的所有帧（Frames）执行。</p>
+<p>如果要表达否定，那么就在matcher前加上一个感叹号<code>!</code>，某一行以<code>#</code>开头则表达这一行是注释。</p>
+<p>下面是一些例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># mark all functions in the std namespace to be outside the app</span><br><span class="line">family:native stack.function:std::*       -app</span><br><span class="line"></span><br><span class="line"># mark all code in node modules not to be in app</span><br><span class="line">stack.abs_path:**/node_modules/**         -app</span><br><span class="line"></span><br><span class="line"># remove all generated javascript code from all grouping</span><br><span class="line">stack.abs_path:**/generated/**.js         -group</span><br></pre></td></tr></table></figure>
+
+<p>由于Stack Trace Rules不是我们这次讨论的重点，这里就不太说太多了，更多详细的关于Matchers和Actions的信息，详见官方文档：<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/stack-trace-rules/#matchers">Matchers</a>，<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/stack-trace-rules/#actions">Actions</a>。</p>
+<h3 id="4-Fingerprint-Rules"><a href="#4-Fingerprint-Rules" class="headerlink" title="4. Fingerprint Rules"></a>4. Fingerprint Rules</h3><p>在比较旧的Sentry版本中，也叫作Server Side Fingerprinting（叫这个名字是为了和SDK Fingerprinting对应）。</p>
+<p>具体设置位置为：<strong>Settings &gt; Project &gt; [Your Project] &gt; Processing &gt; Issue Grouping &gt; Fingerprint Rules</strong>。</p>
+<p>或者旧版本中为：<strong>Settings &gt; Project &gt; [Your Project] &gt; General Settings &gt; Server Side Fingerprinting</strong>。</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/fingerprint_rules.png" alt="Fingerprint Rules"></p>
+<p>Fingerprint Rules的配置方式和Stack Trace Rules类似，只有语法上不同。但是和Stack Trace Rules不同的是，Fingerprint Rules允许我们直接指定一个Issue的Fingerprint，它会完全覆盖默认的分组规则。</p>
+<p>可以理解为，<strong>Stack Trace Rules更关注如何改变分组算法的输入数据</strong>（比如翻转一些标志位，或者对调用栈做一些裁剪），而<strong>Fingerprint Rules则直接指定了分组的结果</strong>。</p>
+<p>首先，Fingerprint Rules同样是每一行是一条规则。每一条规则的Matcher和Stack Trace Rules的语法规则也是一样的，并且都可以设置<code>!</code>来表示取反，以及设置<code>#</code>来注释。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># You can use comments to explain the rules.  Rules themselves follow the</span><br><span class="line"># following syntax:</span><br><span class="line">matcher:expression -&gt; list of values</span><br><span class="line"># The list of values can be hardcoded or substituted values.</span><br></pre></td></tr></table></figure>
+
+<p>Fingerprint Rules也是把一个Event从上到下进行匹配，每条规则都是对调用堆栈信息里的所有帧（Frames）执行，并且会把匹配到的第一条规则作为Event的Fingerprint。</p>
+<p>不同的是，Stack Trace Rules的Matcher右侧是对Stack Trace Frames数据进行的一些操作，Fingerprint Rules的Matcher右侧直接就是需要指定的Fingerprint的值，可以是一些写死的<strong>常量</strong>，也可以是一些<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/fingerprint-rules/#variables">内置的变量（Variables）</a>。</p>
+<p>下面的例子就是把Error类型的Event根据type和value进行分组：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 把 DatabaseUnavailable 和 ConnectionError 这两种类型的 Error，都标记为 system-down</span><br><span class="line">error.type:DatabaseUnavailable -&gt; system-down</span><br><span class="line">error.type:ConnectionError -&gt; system-down</span><br><span class="line"></span><br><span class="line"># 把 Error message 中，包含“connection error: ”的，都标记为 connection-error，同时把当时 Error 的 transaction 字段也拼接到 Fingerprint 中</span><br><span class="line">error.value:&quot;connection error: *&quot; -&gt; connection-error, &#123;&#123; transaction &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-1-Matchers"><a href="#4-1-Matchers" class="headerlink" title="4.1 Matchers"></a>4.1 Matchers</h4><p>对于Matchers，Sentry允许使用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Glob_(programming)">glob patterns</a>语法。Sentry包含了以下的这些Matcher：</p>
+<ul>
+<li>error.type<br>匹配Error的type（name），对应的是JSON中的<code>metadata.type</code>，大小写敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">error.type:ZeroDivisionError -&gt; zero-division</span><br><span class="line">error.type:ConnectionError -&gt; connection-error</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>error.value<br>匹配Error的value（message），对应的是JSON中的<code>metadata.value</code>，允许使用通配符，大小写不敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">error.value:&quot;connection error (code: *)&quot; -&gt; connection-error</span><br><span class="line">error.value:&quot;could not connect (*)&quot; -&gt; connection-error</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>message<br>匹配日志消息，对应的是JSON中的<code>message</code>字段，允许使用通配符，大小写不敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">message:&quot;system encountered a fatal problem: *&quot; -&gt; fatal-log</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>logger<br>匹配当前的logger的名称，对应的是JSON中的<code>logger</code>字段，允许使用通配符，大小写敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger:&quot;com.myapp.mypackage.*&quot; -&gt; mypackage-logger</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>level<br>匹配当前Event的日志级别，对应的是JSON中的<code>level</code>字段，允许使用通配符，大小写不敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger:&quot;com.myapp.FooLogger&quot; level:&quot;error&quot; -&gt; mylogger-error</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>tags.tag_name<br>匹配某个tag，某个标签名，允许使用通配符。<br>这里的tag_name，对应的是JSON中的<code>tags</code>字段中，每一项的名字。tags是一个数字，代表多个标签，每一项是一个标签，每个标签也是一个数字，数组有两个元素，第一个元素是标签名，即tag_name，第二个是标签值。例如下面这样：</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;  </span><br><span class="line">  <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;device&quot;</span>,</span><br><span class="line">      <span class="string">&quot;iPhone10,2&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;device.family&quot;</span>,</span><br><span class="line">      <span class="string">&quot;iOS&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;os&quot;</span>,</span><br><span class="line">      <span class="string">&quot;iOS 16.1.2&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;os.name&quot;</span>,</span><br><span class="line">      <span class="string">&quot;iOS&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;environment&quot;</span>,</span><br><span class="line">      <span class="string">&quot;dev&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;release&quot;</span>,</span><br><span class="line">      <span class="string">&quot;dev-v3.24&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;dist&quot;</span>,</span><br><span class="line">      <span class="string">&quot;3.24.1023&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tags.release:&quot;dev-v3.x&quot; -&gt; dev-v3-error</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>stack.abs_path<br>匹配调用栈帧的绝对路径，对应的是每一帧中的<code>abs_path</code>字段，允许使用通配符，且大小写不敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack.abs_path:&quot;**/my-utils/*.js&quot; -&gt; my-utils, &#123;&#123; error.type &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>stack.module<br>匹配调用栈帧的模块名，对应的是每一帧中的<code>module</code>字段，允许使用通配符，大小写敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack.module:&quot;*/my-utils/*&quot; -&gt; my-utils, &#123;&#123; error.type &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>stack.function<br>匹配调用栈帧的方法名，对应的是每一帧中的<code>function</code>字段，大小写敏感：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack.function:&quot;my_assertion_failed&quot; -&gt; my-assertion-failed</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>stack.package<br>匹配当前帧所在的<code>package</code>，允许使用通配符：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stack.package:&quot;**/libcurl.dylib&quot; -&gt; libcurl</span><br><span class="line">stack.package:&quot;**/libcurl.so&quot; -&gt; libcurl</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>family<br>通常用来缩小匹配范围，且通常和其他Matcher一起使用，目前包含以下值：<ul>
+<li>javascript，任何来自于JavaScript的Event</li>
+<li>native，任何来自于Native的Event</li>
+<li>other，其他任何Event</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">family:native !stack.module:&quot;myproject::*&quot; -&gt; not-from-my-project</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>app<br>匹配当前帧是否是在app内，通常和其他Matcher一起使用，包含yes和no两个值，对应的是每一帧中的in_app字段：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app:yes stack.function:&quot;assert&quot; -&gt; assert</span><br></pre></td></tr></table></figure>
+
+<p>更多关于Matchers的信息，详见<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/fingerprint-rules/#matchers">Matchers</a>。</p>
+<h4 id="4-2-Variables"><a href="#4-2-Variables" class="headerlink" title="4.2 Variables"></a>4.2 Variables</h4><p>在一条Fingerprint Rule的右侧，就是Variables，这里其实不只可以是变量，也可以是一些写死的常量。</p>
+<p>对于变量来说，它们和Matchers的名字一样，并且会自动把变量对应的原始的值填入，用于生成Fingerprint。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack.function:&quot;evaluate_script&quot; -&gt; script-evaluation, &#123;&#123; error.type &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这条规则会匹配调用栈中方法名为<code>evaluate_script</code>的Error，并且会把常量<code>script-evaluation</code>和当前Error的type（name）作为一部分，一起生成Fingerprint。</p>
+<p>例如，<code>[&quot;script-evaluation&quot;, &quot;ReferenceError&quot;]</code></p>
+<p>或者，<code>[&quot;script-evaluation&quot;, &quot;TypeError&quot;]</code></p>
+<p>其他的变量和Matchers的名字一样，都是使用<code>&#123;&#123; &#125;&#125;</code>包裹起来的，详见<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/fingerprint-rules/#variables">Variables</a>。</p>
+<h4 id="4-3-自定义标题"><a href="#4-3-自定义标题" class="headerlink" title="4.3 自定义标题"></a>4.3 自定义标题</h4><p>在设置Fingerprint Rules时，我们往往是想要按照自己的规则对Event进行分组，但是Event通常都是使用type和value来作为标题展示在Sentry中的，如果只改了Fingerprint Rules，那么原始的Event标题可能不那么友好，或者具有一定的误导性。</p>
+<p>这个时候，我们可以在添加Fingerprint Rules的时候，额外添加title字段，即可设置这个分组的标题。比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger:my.package.* level:error -&gt; error-logger, &#123;&#123; logger &#125;&#125; title=&quot;Error from Logger &#123;&#123; logger &#125;&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>自定义标题前：</strong></p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_before_rename.png" alt="自定义标题前"></p>
+<p><strong>自定义标题后：</strong></p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_after_rename.png" alt="自定义标题后"></p>
+<p>在设置了自定义标题后，就可以在Error的原始JSON数据中看到title发生了变化：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/title_changed_in_json.png" alt="自定义标题后的JSON"></p>
+<blockquote>
+<p><strong>🔔 注意：</strong></p>
+<p>只有比较新的版本（比如Sentry 23.x）才支持设置自定义的title在旧版本的Sentry中（比如Sentry 20.x），上面的写法会让Sentry把后面的<code>title=&quot;Error from Logger &#123;&#123; logger &#125;&#125;&quot;</code>认为是Fingerprint的一部分。</p>
+<p>具体是哪个版本开始支持的我没在网上查到，如果你私有部署的Sentry版本发现不支持，可以尝试升级一下版本。</p>
+</blockquote>
+<h4 id="4-4-怎么确定有没有匹配上自定义的Fingerprint-Rules"><a href="#4-4-怎么确定有没有匹配上自定义的Fingerprint-Rules" class="headerlink" title="4.4 怎么确定有没有匹配上自定义的Fingerprint Rules?"></a>4.4 怎么确定有没有匹配上自定义的Fingerprint Rules?</h4><p>在添加了自定义的Fingerprint Rules之后，我们如何确定某个Event有没有命中呢？</p>
+<p>其实我们直接查看对于的JSON数据即可，如果匹配上的话，会看到下图这样：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/finger_print_in_json.png" alt="匹配上的JSON"></p>
+<p>我们可以在_fingerprint_info中看到当前Event的各种信息</p>
+<ul>
+<li><code>client_fingerprint</code>，对应的是这个Event的SDK Fingerprint（下面会讲到，当前Event没有设置SDK Fingerprint，所以为default）</li>
+<li><code>matched_rule</code>，对应的是Fingerprint Rules，比如这里显示当前Event命中的Matchers是哪个，以及当前Matchers设置的Fingerprint，还有我们自定义的title</li>
+</ul>
+<p>同时下面的<code>fingerprint</code>字段，也展示了当前Event最终的Fingerprint。</p>
+<p>如果是旧版Sentry的话，这里就没有<code>_fingerprint_info</code>这个字段了，同时会把我们设置的title认为是Fingerprint的一部分，会是下面这样：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/old_version_custom_title_in_json.png" alt="旧版Sentry的JSON"></p>
+<h3 id="5-SDK-Fingerprint"><a href="#5-SDK-Fingerprint" class="headerlink" title="5. SDK Fingerprint"></a>5. SDK Fingerprint</h3><p>如果上面说的Fingerprint Rules，不能满足我们的需要，那么我们可以使用SDK Fingerprint来更灵活地生成Fingerprint。</p>
+<blockquote>
+<p>从上面的Fingerprint Rules文档可以看到，Fingerprint Rules只有少部分Matchers支持设置通配符，所以可能没那么灵活。</p>
+</blockquote>
+<p>如果从上面的官方文档<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/">Issue Grouping | Sentry Documentation</a>中看，会发现文档里没有单独SDK Fingerprint的文档。</p>
+<p>这是因为SDK Fingerprint是针对不同的Sentry SDK的，不同的项目会使用不同的Sentry SDK。每个SDK中设置Fingerprint的方式都不一样，甚至可能部分SDK不支持设置Fingerprint。所以要针对不同的平台，查看各自平台的SDK文档，这里以JavaScript Sentry SDK为例<a target="_blank" rel="noopener" href="https://docs.sentry.io/platforms/javascript/usage/sdk-fingerprinting/">SDK Fingerprinting for Browser JavaScript</a>。</p>
+<p><em>更多平台请看这里：<a target="_blank" rel="noopener" href="https://docs.sentry.io/platforms/">Platforms</a></em></p>
+<p>官网文档提供了比较友好的三个例子：</p>
+<h4 id="5-1-基础示例"><a href="#5-1-基础示例" class="headerlink" title="5.1 基础示例"></a>5.1 基础示例</h4><p>单独处理某个上报Event的Fingerprint</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeRequest</span>(<span class="params">method, path, options</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> fetch(method, path, options).catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    Sentry.withScope(<span class="function"><span class="keyword">function</span>(<span class="params">scope</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// group errors together based on their request and response</span></span><br><span class="line">      scope.setFingerprint([method, path, <span class="built_in">String</span>(err.statusCode)]);</span><br><span class="line">      Sentry.captureException(err);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以使用变量替换，把一些Fingerprint Rules支持的变量填入，作为我们设置的Fingerprint的一部分，比如<code>&#123;&#123; default &#125;&#125;</code>，<code>&#123;&#123; stack.abs_path &#125;&#125;</code>，<code>&#123;&#123; error.type &#125;&#125;</code>等，详见上面提到的Fingerprint Rules变量。</p>
+<h4 id="5-2-更细粒度地控制分组"><a href="#5-2-更细粒度地控制分组" class="headerlink" title="5.2 更细粒度地控制分组"></a>5.2 更细粒度地控制分组</h4><p>在原有的Fingerprint后拼接上自定义的一些字段，可以达到比默认的规则更细粒度的控制。</p>
+<p>比如下面例子，进一步拆分Sentry创建的默认分组（由<code>&#123;&#123; default &#125;&#125;</code>表示），同时考虑错误对象的一些属性：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyRPCError</span> <span class="keyword">extends</span> <span class="title">Error</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">message, functionName, errorCode</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">super</span>(message);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The name of the RPC function that was called (e.g. &quot;getAllBlogArticles&quot;)</span></span><br><span class="line">    <span class="built_in">this</span>.functionName = functionName;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// For example a HTTP status code returned by the server.</span></span><br><span class="line">    <span class="built_in">this</span>.errorCode = errorCode;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Sentry.init(&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">beforeSend</span>: <span class="function"><span class="keyword">function</span> (<span class="params">event, hint</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> exception = hint.originalException;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (exception <span class="keyword">instanceof</span> MyRPCError) &#123;</span><br><span class="line">      event.fingerprint = [</span><br><span class="line">        <span class="string">&quot;&#123;&#123; default &#125;&#125;&quot;</span>,</span><br><span class="line">        <span class="built_in">String</span>(exception.functionName),</span><br><span class="line">        <span class="built_in">String</span>(exception.errorCode),</span><br><span class="line">      ];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> event;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-3-完全重写Fingerprint"><a href="#5-3-完全重写Fingerprint" class="headerlink" title="5.3 完全重写Fingerprint"></a>5.3 完全重写Fingerprint</h4><p>还可以直接整个重写Fingerprint</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DatabaseConnectionError</span> <span class="keyword">extends</span> <span class="title">Error</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">Sentry.init(&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">beforeSend</span>: <span class="function"><span class="keyword">function</span> (<span class="params">event, hint</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> exception = hint.originalException;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (exception <span class="keyword">instanceof</span> DatabaseConnectionError) &#123;</span><br><span class="line">      event.fingerprint = [<span class="string">&quot;database-connection-error&quot;</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> event;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-和Fingerprint-Rules怎么划分职责？"><a href="#5-4-和Fingerprint-Rules怎么划分职责？" class="headerlink" title="5.4 和Fingerprint Rules怎么划分职责？"></a>5.4 和Fingerprint Rules怎么划分职责？</h4><p>Fingerprint Rules和SDK Fingerprint都可以实现相同的功能，那么我们在设置自定义Fingerprint的时候，要怎么取舍，或者说什么时候用Fingerprint Rules，什么时候用SDK Fingerprint？</p>
+<p><strong>Fingerprint Rules：</strong></p>
+<ul>
+<li>优势：<ul>
+<li>可以随时修改规则，不需要进行代码的变更</li>
+<li>可以同时在线上所有版本生效</li>
+</ul>
+</li>
+<li>劣势：<ul>
+<li>没有SDK Fingerprint灵活，有些处理不了，比如error.type不支持通配符匹配</li>
+</ul>
+</li>
+</ul>
+<p><strong>SDK Fingerprint：</strong></p>
+<ul>
+<li>优势：<ul>
+<li>灵活，可以用JS很方便地处理或者自定义Fingerprint</li>
+</ul>
+</li>
+<li>劣势：<ul>
+<li>需要修改代码</li>
+<li>分组规则和代码版本耦合，如果应用需要用户手动升级的话，那么旧版本应用内的Sentry上报没办法处理</li>
+</ul>
+</li>
+</ul>
+<p>从上面的优劣对比来看，可以看到<strong>Fingerprint Rules和SDK Fingerprint是优劣互补的，一方的优势恰好是另一方的劣势</strong>。</p>
+<p>对比下来，我们在项目中使用的时候，建议<strong>如果可以使用Fingerprint Rules实现的，都用Fingerprint Rules，只有在Fingerprint Rules无法满足的情况下，再用考虑使用SDK Fingerprint</strong>。</p>
+<h3 id="6-Filter"><a href="#6-Filter" class="headerlink" title="6. Filter"></a>6. Filter</h3><p>上面说了这么多关于Issue分组的，那么对于一些我完全不想要的上报，有没有办法完全不分组，直接过滤掉呢？</p>
+<p>也是有的，可以在Sentry平台上，直接设置一些Filter过滤器来过滤，而不需要我们手动在使用SDK的地方修改。</p>
+<p>具体设置位置为：<strong>Settings &gt; Project &gt; [Your Project] &gt; Processing &gt; Inbound Filters</strong>。</p>
+<p>过滤器分为内置的一些过滤器，和自定义的过滤器。</p>
+<h4 id="6-1-内置过滤器"><a href="#6-1-内置过滤器" class="headerlink" title="6.1 内置过滤器"></a>6.1 内置过滤器</h4><p>Sentry平台内置了一些可以直接启用的过滤器，这些过滤器包括：</p>
+<ul>
+<li>浏览器拓展插件的error</li>
+<li>来自于localhost的event</li>
+<li>已知的旧版浏览器错误，比如IE的</li>
+<li>已知的网络爬虫错误</li>
+<li>React hydrate的报错（和React服务端渲染有关的错误）</li>
+<li>……</li>
+</ul>
+<p>这些过滤器可能和不同版本的Sentry有关，比较旧的版本中，可能会缺少一些过滤器。</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/built_in_filters.png" alt="内置过滤器"></p>
+<h4 id="6-2-自定义过滤器"><a href="#6-2-自定义过滤器" class="headerlink" title="6.2 自定义过滤器"></a>6.2 自定义过滤器</h4><p>可以创建自定义过滤器，目前支持以下三种，以下三种在匹配时，都是大小写不敏感的。</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/custom_filters.png" alt="自定义过滤器"></p>
+<h5 id="a-特定IP地址"><a href="#a-特定IP地址" class="headerlink" title="a. 特定IP地址"></a>a. 特定IP地址</h5><p>可以设置IP地址，过滤特定IP的错误上报，比如<code>127.0.0.1</code>。</p>
+<h5 id="b-特定发布版本"><a href="#b-特定发布版本" class="headerlink" title="b. 特定发布版本"></a>b. 特定发布版本</h5><ul>
+<li>发布版本，指的是在Sentry.init的时候，传入的release字段。</li>
+<li>可以使用通配符，比如production-v3.24.*</li>
+<li>如果某个Event不包含release字段，那么这个Event不会被过滤</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Sentry.init(&#123;</span><br><span class="line">  <span class="attr">dsn</span>: <span class="string">&#x27;xxx&#x27;</span>,</span><br><span class="line">  <span class="attr">release</span>: <span class="string">`<span class="subst">$&#123;env&#125;</span>-<span class="subst">$&#123;version&#125;</span>`</span>,</span><br><span class="line">  ...</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>如果不确定自己项目上报后最终的<code>release</code>字段是什么，可以直接查看任意一个Error Event的原始JSON数据中的<code>release</code>字段（前提是init时传入了这个字段或者Event数据中有这个字段）</p>
+<h5 id="c-Error-Message"><a href="#c-Error-Message" class="headerlink" title="c. Error Message"></a>c. Error Message</h5><ul>
+<li>可以设置多个匹配项，每行一个。只要任意一个匹配项匹配成功，那么就会过滤这一条上报</li>
+<li>对于Error类型的Event，会根据设置的匹配项，对格式为<code>&#123;exception.type&#125;: &#123;exception.value&#125;</code>的整个错误描述进行匹配。<br>但是不建议直接匹配整个描述，比如把冒号也加在里面，一般都是通过通配符来进行匹配。比如<code>*ConnectionError*</code></li>
+<li>Transaction类型的Event，不会被过滤</li>
+</ul>
+<p>在设置完之后，可以检查下Issue的原始JSON数据，设置的过滤器会根据JSON里的<code>title</code>字段进行匹配，可以检查下是否有问题。</p>
+<p>在设置好过滤器之后，我们就可以看到有多少Event被过滤掉了：</p>
+<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/filterd_issues.png" alt="过滤掉的Event"></p>
+<h2 id="五、治理"><a href="#五、治理" class="headerlink" title="五、治理"></a>五、治理</h2><p>到这里我们已经搞明白Sentry对Issue分组的原理了，也知道了怎么自定义分组。那我们是使用Stack Trace Rules还是Fingerprint Rules来处理呢？</p>
+<p>使用Stack Trace Rules本质上还是根据调用栈来进行分组，但是这就需要我们必须上传Source Maps。</p>
+<p>在上传了Source Maps的情况下，可以通过设置调用栈Stack Trace Rules来<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/stack-trace-rules/#cut-stack-traces">裁切调用栈</a>，或者限制Sentry在生成调用栈Fingerprint的时候需要考虑的<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/stack-trace-rules/#stack-trace-frame-limits">top帧数量</a>。</p>
+<p>考虑到目前我们的项目因为某种原因，还不能上传Source Maps，同时代码每个版本变化可能会导致同样的问题的调用堆栈信息不同。基于我们的需求来看，完全自定义的Fingerprint Rules更符合我们的情况。</p>
+<p>所以我们的项目会做如下处理：</p>
+<ul>
+<li>在Sentry平台上设置Fingerprint Rules，处理绝大部分可以处理的Error</li>
+<li>少部分Fingerprint Rules无法处理的Error（比如error.type不支持通配符），通过SDK Fingerprint，在代码中Sentry.init的时候，增加<code>beforeSend</code>进行处理</li>
+<li>一些不需要关注的Error，设置Inbound Filters直接过滤</li>
+</ul>
+<h2 id="六、小结"><a href="#六、小结" class="headerlink" title="六、小结"></a>六、小结</h2><p>一番调研下来，通过Fingerprint Rules，Stack Trace Rules，SDK Fingerprint，以及Inbound Filters，我们把项目的Issue进行了自定义分组，更方便我们排查问题，分析处理。</p>
+<p>Sentry是一个简单易上手的监控平台，但是Sentry上也有许多十分复杂的配置项，这篇文章只是Sentry文档的一小部分，有哪里不正确的，还请多多指正。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/04/11/%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E7%AE%80%E5%8F%B2%EF%BC%9A%E4%BB%8E%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%B0UTF-8/" rel="prev" title="字符编码简史：从二进制到UTF-8">
+      <i class="fa fa-chevron-left"></i> 字符编码简史：从二进制到UTF-8
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/15/DockerNginx/" rel="next" title="使用 Docker 安装 Nginx">
+      使用 Docker 安装 Nginx <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%85%88%E7%9C%8B%E7%9C%8B%E4%BB%80%E4%B9%88%E6%98%AFSentry-Issue"><span class="nav-number">2.</span> <span class="nav-text">二、先看看什么是Sentry Issue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%88%91%E4%BB%AC%E9%81%87%E5%88%B0%E5%95%A5%E9%97%AE%E9%A2%98%E4%BA%86%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">三、我们遇到啥问题了？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%A0%94%E7%A9%B6%E4%B8%8BSentry%E6%98%AF%E6%80%8E%E4%B9%88%E5%AF%B9Error%E5%88%86%E7%BB%84%E7%9A%84"><span class="nav-number">4.</span> <span class="nav-text">四、研究下Sentry是怎么对Error分组的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Sentry-Issue%E7%9A%84Fingerprint%E5%92%8C%E5%88%86%E7%BB%84"><span class="nav-number">4.1.</span> <span class="nav-text">1. Sentry Issue的Fingerprint和分组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%A6%82%E4%BD%95%E5%9C%A8Sentry%E4%B8%8A%E6%9F%A5%E7%9C%8B%E4%B8%80%E4%B8%AAEvent%E7%9A%84Fingerprint%E5%91%A2%EF%BC%9F"><span class="nav-number">4.1.1.</span> <span class="nav-text">1.1 如何在Sentry上查看一个Event的Fingerprint呢？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-Event%E9%BB%98%E8%AE%A4%E7%9A%84Fingerprint%E7%94%9F%E6%88%90%E8%A7%84%E5%88%99"><span class="nav-number">4.1.2.</span> <span class="nav-text">1.2 Event默认的Fingerprint生成规则</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E6%8C%89%E7%85%A7Stack-Trace%E5%88%86%E7%BB%84"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">a. 按照Stack Trace分组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E6%8C%89%E7%85%A7Exception%E5%88%86%E7%BB%84"><span class="nav-number">4.1.2.2.</span> <span class="nav-text">b.按照Exception分组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#c-%E5%85%9C%E5%BA%95%E7%9A%84%E5%88%86%E7%BB%84"><span class="nav-number">4.1.2.3.</span> <span class="nav-text">c. 兜底的分组</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%88%86%E6%9E%90%E4%B8%80%E4%B8%8B"><span class="nav-number">4.1.3.</span> <span class="nav-text">1.3 分析一下</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%86%E7%BB%84"><span class="nav-number">4.1.4.</span> <span class="nav-text">1.4 自定义分组</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%89%8B%E5%8A%A8%E5%90%88%E5%B9%B6Issue"><span class="nav-number">4.2.</span> <span class="nav-text">2. 手动合并Issue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Stack-Trace-Rules"><span class="nav-number">4.3.</span> <span class="nav-text">3. Stack Trace Rules</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Fingerprint-Rules"><span class="nav-number">4.4.</span> <span class="nav-text">4. Fingerprint Rules</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-Matchers"><span class="nav-number">4.4.1.</span> <span class="nav-text">4.1 Matchers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-Variables"><span class="nav-number">4.4.2.</span> <span class="nav-text">4.2 Variables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E9%A2%98"><span class="nav-number">4.4.3.</span> <span class="nav-text">4.3 自定义标题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-%E6%80%8E%E4%B9%88%E7%A1%AE%E5%AE%9A%E6%9C%89%E6%B2%A1%E6%9C%89%E5%8C%B9%E9%85%8D%E4%B8%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Fingerprint-Rules"><span class="nav-number">4.4.4.</span> <span class="nav-text">4.4 怎么确定有没有匹配上自定义的Fingerprint Rules?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-SDK-Fingerprint"><span class="nav-number">4.5.</span> <span class="nav-text">5. SDK Fingerprint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E5%9F%BA%E7%A1%80%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.5.1.</span> <span class="nav-text">5.1 基础示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E6%9B%B4%E7%BB%86%E7%B2%92%E5%BA%A6%E5%9C%B0%E6%8E%A7%E5%88%B6%E5%88%86%E7%BB%84"><span class="nav-number">4.5.2.</span> <span class="nav-text">5.2 更细粒度地控制分组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E5%AE%8C%E5%85%A8%E9%87%8D%E5%86%99Fingerprint"><span class="nav-number">4.5.3.</span> <span class="nav-text">5.3 完全重写Fingerprint</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-%E5%92%8CFingerprint-Rules%E6%80%8E%E4%B9%88%E5%88%92%E5%88%86%E8%81%8C%E8%B4%A3%EF%BC%9F"><span class="nav-number">4.5.4.</span> <span class="nav-text">5.4 和Fingerprint Rules怎么划分职责？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Filter"><span class="nav-number">4.6.</span> <span class="nav-text">6. Filter</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-%E5%86%85%E7%BD%AE%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">4.6.1.</span> <span class="nav-text">6.1 内置过滤器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">4.6.2.</span> <span class="nav-text">6.2 自定义过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E7%89%B9%E5%AE%9AIP%E5%9C%B0%E5%9D%80"><span class="nav-number">4.6.2.1.</span> <span class="nav-text">a. 特定IP地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E7%89%B9%E5%AE%9A%E5%8F%91%E5%B8%83%E7%89%88%E6%9C%AC"><span class="nav-number">4.6.2.2.</span> <span class="nav-text">b. 特定发布版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#c-Error-Message"><span class="nav-number">4.6.2.3.</span> <span class="nav-text">c. Error Message</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%B2%BB%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">五、治理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">六、小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">冰河</p>
+  <div class="site-description" itemprop="description">冰河的个人网站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">冰河</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
