@@ -454,7 +454,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2023/12/11/Sentry/">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2023/12/11/Sentry%E6%B2%BB%E7%90%86%E4%B9%8BIssue%E5%88%86%E7%BB%84%EF%BC%88Issue%20Grouping%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -468,7 +468,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/12/11/Sentry/" class="post-title-link" itemprop="url">Sentry治理之Issue分组（Issue Grouping）</a>
+            <a href="/2023/12/11/Sentry%E6%B2%BB%E7%90%86%E4%B9%8BIssue%E5%88%86%E7%BB%84%EF%BC%88Issue%20Grouping%EF%BC%89/" class="post-title-link" itemprop="url">Sentry治理之Issue分组（Issue Grouping）</a>
         </h2>
 
         <div class="post-meta">
@@ -1933,6 +1933,379 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2023/03/13/%E8%81%8A%E8%81%8A%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F%EF%BC%88Dark%20Mode%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/13/%E8%81%8A%E8%81%8A%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F%EF%BC%88Dark%20Mode%EF%BC%89/" class="post-title-link" itemprop="url">聊聊深色模式（Dark Mode）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-13 10:29:00" itemprop="dateCreated datePublished" datetime="2023-03-13T10:29:00+08:00">2023-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-02 18:23:05" itemprop="dateModified" datetime="2024-01-02T18:23:05+08:00">2024-01-02</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="什么是深色模式"><a href="#什么是深色模式" class="headerlink" title="什么是深色模式"></a>什么是深色模式</h2><p>深色模式（Dark Mode），或者叫暗色模式，黑夜模式，是和日常使用的浅色（亮色）模式（Light Mode）相对应的一种UI主题。</p>
+<p>深色模式最早来源于人机交互领域的研究和实践，从2018年左右开始，Apple推出了<strong>iOS 13</strong>，其中包含了系统级别的深色模式，可以将整个系统的界面切换为暗色调。</p>
+<p>Google也在<strong>Android 10</strong>中推出了类似的深色模式功能，使深色模式得到了更广泛的应用和推广。</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/dark_mode_example.png" alt="iOS官网的深色模式示例"></p>
+<p>它不是简单的把背景变为黑色，文字变为白色，而是一整套的配色主题，这种模式相比浅色模式更加柔和，可以减少亮度对用户眼睛造成的刺激和疲劳。</p>
+<p>随着越来越多的应用开始支持深色模式，作为开发也理应多了解下深色模式。</p>
+<h2 id="首先，怎么打开深色模式"><a href="#首先，怎么打开深色模式" class="headerlink" title="首先，怎么打开深色模式"></a>首先，怎么打开深色模式</h2><p>在说怎么实现之前，先来说说我们要怎么打开深色模式，一般来说只需要在系统调节亮度的地方就可以调节深色模式，具体我们可以看各个系统的官方网站即可：<br>如何打开深色模式</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://support.apple.com/zh-cn/HT210332">在 iPhone 和 iPad 上使用深色模式 - 官方 Apple 支持 (中国)</a></li>
+<li><a target="_blank" rel="noopener" href="https://support.apple.com/zh-cn/HT208976">在 Mac 上使用深色模式 - 官方 Apple 支持 (中国)</a></li>
+<li><a target="_blank" rel="noopener" href="https://support.google.com/android/answer/9730472?hl=zh-Hans">在 Android 设备上更改为深色模式或颜色模式 - Android帮助</a></li>
+<li><a target="_blank" rel="noopener" href="https://support.microsoft.com/zh-cn/windows/%E5%9C%A8-windows-%E4%B8%AD%E6%9B%B4%E6%94%B9%E9%A2%9C%E8%89%B2-d26ef4d6-819a-581c-1581-493cfcc005fe">在 Windows 中更改颜色 - Microsoft 支持</a></li>
+</ul>
+<p>但是在开发调试调试时，不断切换深色模式可能比较麻烦，这时浏览器就提供了一种模拟系统深色模式的方法，可以让当前的Web页面临时变为深色模式，以Chrome为例：<br>浏览器模拟深色/浅色模式</p>
+<ol>
+<li>打开Chrome DevTools</li>
+<li><code>Command</code>+<code>Shift</code>+<code>P</code></li>
+<li>输入dark或者light</li>
+<li>打开深色或者浅色模式<img src="https://static.youfindme.cn/blog/dark_mode/open_dark_mode_in_devtool.png" alt="打开深色模式"><br><img src="https://static.youfindme.cn/blog/dark_mode/open_light_mode_in_devtool.png" alt="打开浅色模式"></li>
+</ol>
+<p>不过要注意的是，浏览器DevTools里开启深色模式，在关闭开发者工具后就会失效。</p>
+<h2 id="自动适配-声明页面支持深色模式"><a href="#自动适配-声明页面支持深色模式" class="headerlink" title="自动适配 - 声明页面支持深色模式"></a>自动适配 - 声明页面支持深色模式</h2><p>其实，在支持深色模式的浏览器中，有一套默认的深色模式，只需要我们在应用中声明，即可自动适配深色模式，声明有两种方式：</p>
+<h3 id="1-添加color-scheme的meta标签"><a href="#1-添加color-scheme的meta标签" class="headerlink" title="1. 添加color-scheme的meta标签"></a>1. 添加<code>color-scheme</code>的<code>meta</code>标签</h3><p>在HTML的<code>head</code>标签中增加<code>color-scheme</code>的<code>meta</code>标签，如下所示：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">	The page supports both dark and light color schemes,</span></span><br><span class="line"><span class="comment">	and the page author prefers light.</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;color-scheme&quot;</span> <span class="attr">content</span>=<span class="string">&quot;light dark&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过上述声明，告诉浏览器这个页面支持深色模式和浅色模式，并且页面更倾向于浅色模式。在声明了这个之后，当系统切换到深色模式时，浏览器将会把我们的页面自动切换到默认的深色模式配色，如下所示：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
+<h3 id="2-在CSS里添加color-scheme属性"><a href="#2-在CSS里添加color-scheme属性" class="headerlink" title="2. 在CSS里添加color-scheme属性"></a>2. 在CSS里添加<code>color-scheme</code>属性</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  The page supports both dark and light color schemes,</span></span><br><span class="line"><span class="comment">  and the page author prefers light.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="selector-pseudo">:root</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>-scheme: light dark;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面在<code>:root</code>元素上添加<code>color-scheme</code>属性，值为<code>light dark</code>，可以实现和<code>meta</code>标签一样的效果，同时这个属性不只可用于<code>:root</code>级别，也可用于单个元素级别，比<code>meta</code>标签更灵活。</p>
+<p>但是提供<code>color-scheme</code>CSS属性需要首先下载CSS（如果通过<code>&lt;link rel=&quot;stylesheet&quot;&gt;</code>引用）并进行解析，使用<code>meta</code>可以更快地使用所需配色方案呈现页面背景。两者各有优劣吧。</p>
+<h2 id="自定义适配"><a href="#自定义适配" class="headerlink" title="自定义适配"></a>自定义适配</h2><h3 id="1-自动适配的问题"><a href="#1-自动适配的问题" class="headerlink" title="1. 自动适配的问题"></a>1. 自动适配的问题</h3><p>在上面说了我们可以通过一些标签或者CSS属性声明，来自动适配深色模式，但是从自动适配的结果来看，适配的并不理想：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
+<ul>
+<li><p>首先是默认的黑色字体，到深色模式下变成了纯白色<code>#FFFFFF</code>，和黑色背景（虽然说不是纯黑）对比起来很扎眼，在一些设计相关的文章[<a target="_blank" rel="noopener" href="https://36kr.com/p/1724109946881">1</a>][<a target="_blank" rel="noopener" href="https://www.woshipm.com/pd/4068702.html">2</a>]里提到，深色模式下避免使用纯黑和纯白，否则更容易使人眼睛👁疲劳，同时容易在页面滚动时出现拖影：</p>
+<p>  <img src="https://static.youfindme.cn/blog/dark_mode/smearing_when_scrolling.png" alt="滚动时出现拖影，图片来源「即刻」"></p>
+</li>
+<li><p>自动适配只能适配没有指定颜色和背景色的内容，比如上面的1、2、3级文字还有背景，没有显式设置<code>color</code>和<code>background-color</code>。</p>
+<p>  对于设置了颜色和背景色（这种现象在开发中很常见吧）的内容，就无法自动适配，比如上面的7个色块的背景色，写死了颜色，但是色块上的文字没有设置颜色。最终在深色渲染下渲染出的效果就是，色块背景色没变，但是色块上的文字变成了白色，导致一些文字很难看清。</p>
+</li>
+</ul>
+<p>所以，最好还是自定义适配逻辑，除了解决上面的问题，还可以加一下其他的东西，比如加一些深浅色模式变化时的过渡动画等。</p>
+<h3 id="2-如何自定义适配"><a href="#2-如何自定义适配" class="headerlink" title="2. 如何自定义适配"></a>2. 如何自定义适配</h3><p>自定义适配有两种方式，CSS媒体查询和通过JS监听主题模式</p>
+<h4 id="1-CSS媒体查询"><a href="#1-CSS媒体查询" class="headerlink" title="1). CSS媒体查询"></a>1). CSS媒体查询</h4><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/@media/prefers-color-scheme">prefers-color-scheme - CSS：层叠样式表 | MDN</a><br>我们可以通过在CSS中设置媒体查询<code>@media (prefers-color-scheme: dark)</code>，来设置深色模式下的自定义颜色。比如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.textLevel1</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#404040</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.textLevel2</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#808080</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.textLevel3</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#bfbfbf</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@media</span> (<span class="attribute">prefers-color-scheme</span>: dark) &#123;</span><br><span class="line">  <span class="selector-class">.textLevel1</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.9</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.textLevel2</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.6</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.textLevel3</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过媒体查询设置元素在深色模式下的1、2、3级文字的颜色，在浅色模式下设置不同的颜色，在深色模式下，增加不透明度：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/left_auto_right_manul.png" alt="左边的是自动适配的浅色深色，右边是自定义适配的浅色深色"></p>
+<p>对于<code>prefers-color-scheme</code>的兼容性也不必担心，主流浏览器基本都支持了：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/prefers_color_scheme.png" alt="prefers-color-scheme"></p>
+<h4 id="2-JS监听主题颜色"><a href="#2-JS监听主题颜色" class="headerlink" title="2). JS监听主题颜色"></a>2). JS监听主题颜色</h4><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/matchMedia">Window.matchMedia() - Web API 接口参考 | MDN</a></p>
+<p>通过CSS媒体查询适配深色模式已经很方便了，完全不需要修改JS代码逻辑，那为什么还需要JS监听主题颜色呢？</p>
+<p>因为通过CSS媒体查询虽然方便，但是只能跟随系统的主题颜色变化，假设用户想要类似于下面的自定义主题颜色，不跟随系统变化，或者业务上想做一些什么高级的操作，那么CSS媒体查询就无能为力了。</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/custom_theme.gif" alt="custom_theme.gif"></p>
+<p>在JS中，可以通过<code>window.matchMedia(&#39;(prefers-color-scheme: dark)&#39;).match</code>来判断当前的颜色主题：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> darkModeMediaQuery = <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (darkModeMediaQuery.matches) &#123;</span><br><span class="line">  <span class="comment">// dark mode</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// light mode</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">darkModeMediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, <span class="function">(<span class="params">event: MediaQueryListEvent</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.matches) &#123;</span><br><span class="line">    <span class="comment">// dark mode</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// light mode</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>如果使用的是React，还可以写一个自定义hooks，来监听当前的颜色主题：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="built_in">enum</span> EColorScheme &#123;</span><br><span class="line">  LIGHT = <span class="string">&#x27;light&#x27;</span>,</span><br><span class="line">  DARK = <span class="string">&#x27;dark&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> useColorScheme = (): <span class="function"><span class="params">EColorScheme</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [scheme, setScheme] = useState(</span><br><span class="line">    darkModeMediaQuery.matches ? EColorScheme.DARK : EColorScheme.LIGHT</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> listener = <span class="function">(<span class="params">event: MediaQueryListEvent</span>) =&gt;</span> &#123;</span><br><span class="line">      setScheme(event.matches ? EColorScheme.DARK : EColorScheme.LIGHT);</span><br><span class="line">    &#125;;</span><br><span class="line">    darkModeMediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      darkModeMediaQuery.removeEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> scheme;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="一些题外话"><a href="#一些题外话" class="headerlink" title="一些题外话"></a>一些题外话</h4><p>我写完这个hooks之后，有一次偶然用Chat GPT让它写一段监听深色模式的代码，写成hooks，最后生成的代码和这个几乎一模一样，Chat GPT还是有点东西的：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> ThemeType = <span class="string">&#x27;light&#x27;</span> | <span class="string">&#x27;dark&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useTheme</span>(<span class="params"></span>): <span class="title">ThemeType</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [theme, setTheme] = useState&lt;ThemeType&gt;(</span><br><span class="line">    <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>).matches ? <span class="string">&#x27;dark&#x27;</span> : <span class="string">&#x27;light&#x27;</span></span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> mediaQuery = <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> handleChange = <span class="function">() =&gt;</span> setTheme(mediaQuery.matches ? <span class="string">&#x27;dark&#x27;</span> : <span class="string">&#x27;light&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    mediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, handleChange);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> mediaQuery.removeEventListener(<span class="string">&#x27;change&#x27;</span>, handleChange);</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> theme;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> useTheme;</span><br></pre></td></tr></table></figure>
+
+<p><code>window.matchMedia</code>的兼容性也挺好的：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/window_match_media.png" alt="window.matchMedia"></p>
+<p>通过JS监听颜色主题变化之后，那可玩性就很多了，我们可以通过下面这些方式来适配深色模式：</p>
+<ul>
+<li><p>动态添加类名覆盖样式</p>
+<p>  通过判断深色模式来添加一个深色模式的类名，覆盖浅色模式样式：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;div</span><br><span class="line">  className=&#123;classnames(</span><br><span class="line">    style.wrapper,</span><br><span class="line">    scheme === EColorScheme.DARK &amp;&amp; style.darkModeWrapper</span><br><span class="line">  )&#125;</span><br><span class="line">  &gt;</span><br><span class="line">  &#123;/* some code here */&#125;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>对于深色模式直接引用不同的CSS资源文件</p>
+</li>
+<li><p>用一些第三方的库，比如<code>postcss-darkmode</code>等</p>
+</li>
+</ul>
+<p>回到上面话题，通过JS可以监听到系统的颜色主题，那怎么实现用户主动选择颜色主题，不随系统的改变呢？其实也很简单，可以在本地store中设置一个颜色主题的值，用户设置了就优先选用store里的，没有设置就跟随系统，以上面的hooks为例：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> useColorScheme = (): <span class="function"><span class="params">EColorScheme</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 从 store 中取出用户手动设置的主题</span></span><br><span class="line">  <span class="keyword">const</span> manualScheme = useSelector(selectManualColorScheme);</span><br><span class="line">  <span class="keyword">const</span> [scheme, setScheme] = useState(</span><br><span class="line">    darkModeMediaQuery.matches ? EColorScheme.DARK : EColorScheme.LIGHT</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> listener = <span class="function">(<span class="params">event: MediaQueryListEvent</span>) =&gt;</span> &#123;</span><br><span class="line">      setScheme(event.matches ? EColorScheme.DARK : EColorScheme.LIGHT);</span><br><span class="line">    &#125;;</span><br><span class="line">    darkModeMediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      darkModeMediaQuery.removeEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 优先取用户手动设置的主题</span></span><br><span class="line">  <span class="keyword">return</span> manualScheme || scheme;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="React-Native中的适配"><a href="#React-Native中的适配" class="headerlink" title="React Native中的适配"></a>React Native中的适配</h2><p>上面说的都是在浏览器里对深色模式的适配，那在React Native里面要怎么适配深色模式呢？</p>
+<h3 id="1-大于等于0-62的版本"><a href="#1-大于等于0-62的版本" class="headerlink" title="1. 大于等于0.62的版本"></a>1. 大于等于0.62的版本</h3><p><a target="_blank" rel="noopener" href="https://reactnative.dev/docs/appearance">Appearance · React Native</a></p>
+<p>在React Native 0.62版本中，引入了<code>Appearance</code>模块，通过这个模块：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ColorSchemeName = <span class="string">&#x27;light&#x27;</span> | <span class="string">&#x27;dark&#x27;</span> | <span class="literal">null</span> | <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">namespace</span> Appearance &#123;</span><br><span class="line">  <span class="keyword">type</span> AppearancePreferences = &#123;</span><br><span class="line">    <span class="attr">colorScheme</span>: ColorSchemeName;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">type</span> AppearanceListener = <span class="function">(<span class="params">preferences: AppearancePreferences</span>) =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Note: Although color scheme is available immediately, it may change at any</span></span><br><span class="line"><span class="comment">   * time. Any rendering logic or styles that depend on this should try to call</span></span><br><span class="line"><span class="comment">   * this function on every render, rather than caching the value (for example,</span></span><br><span class="line"><span class="comment">   * using inline styles rather than setting a value in a `StyleSheet`).</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * Example: `const colorScheme = Appearance.getColorScheme();`</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">getColorScheme</span>(<span class="params"></span>): <span class="title">ColorSchemeName</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Add an event handler that is fired when appearance preferences change.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">addChangeListener</span>(<span class="params">listener: AppearanceListener</span>): <span class="title">EventSubscription</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Remove an event handler.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">removeChangeListener</span>(<span class="params">listener: AppearanceListener</span>): <span class="title">EventSubscription</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * A new useColorScheme hook is provided as the preferred way of accessing</span></span><br><span class="line"><span class="comment"> * the user&#x27;s preferred color scheme (aka Dark Mode).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">useColorScheme</span>(<span class="params"></span>): <span class="title">ColorSchemeName</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>Appearance</code>模块，可以获得当前的系统颜色主题：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> colorScheme = Appearance.getColorScheme();</span><br><span class="line"><span class="keyword">if</span> (colorScheme === <span class="string">&#x27;dark&#x27;</span>) &#123;</span><br><span class="line">  <span class="comment">// dark mode</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// light mode</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Appearance.addChangeListener(<span class="function">(<span class="params">prefer: Appearance.AppearancePreferences</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (prefer.colorScheme === <span class="string">&#x27;dark&#x27;</span>) &#123;</span><br><span class="line">    <span class="comment">// dark mode</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// light mode</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>同时也提供了一个上面我们自己实现的hooks，<code>useColorScheme</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> colorScheme = useColorScheme();</span><br></pre></td></tr></table></figure>
+
+<h4 id="一些坑"><a href="#一些坑" class="headerlink" title="一些坑"></a>一些坑</h4><ol>
+<li><p><code>Appearance</code>这个接口在Chrome调试模式下，会不生效，永远返回<code>light</code></p>
+<p> <a target="_blank" rel="noopener" href="https://github.com/facebook/react-native/issues/29144">Appearance.getColorScheme() always returns ‘light’</a></p>
+</li>
+<li><p><code>Appearance</code>想要生效，还需要Native做一些配置</p>
+<p> <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61124229/react-native-0-62-2-appearance-return-wrong-color-scheme">React Native 0.62.2 Appearance return wrong color scheme</a></p>
+<blockquote>
+<p>Also make sure you do <strong>not</strong> have UIUserInterfaceStyle set in your Info.plist. I had it set to ‘light’ so Appearance.getColorScheme() was always returning ‘light’.</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="2-小于0-62的版本"><a href="#2-小于0-62的版本" class="headerlink" title="2. 小于0.62的版本"></a>2. 小于0.62的版本</h3><p>对于0.62之前的版本，由于RN没有提供官方接口，需要通过第三方的库<code>react-native-dark-mode</code>来实现：<br><a target="_blank" rel="noopener" href="https://github.com/codemotionapps/react-native-dark-mode">GitHub - codemotionapps/react-native-dark-mode: Detect dark mode in React Native</a></p>
+<p>它的实现原理感兴趣的可以看下：</p>
+<blockquote>
+<p><strong>react-native-dark-mode 实现原理</strong>(这段实现原理其实也是问Chat GPT得到的答案😂)</p>
+<p><code>react-native-dark-mode</code>库的实现原理比较简单，它主要是利用了原生平台的接口来检测当前系统是否处于深色模式。在iOS平台上，它使用了<code>UIUserInterfaceStyle</code>接口来获取当前系统的界面风格，然后判断是否为暗黑模式。在Android平台上，它使用了<code>UiModeManager</code>接口来获取当前系统的 UI 模式，然后判断是否为夜间模式。</p>
+<p>具体来说，<code>react-native-dark-mode</code>在React Native项目中提供了一个名为<code>useDarkMode</code>的 React Hooks，用于获取当前系统是否处于深色模式。当使用这个Hooks时，它会首先检测当前平台是否支持暗黑模式，如果支持，就直接调用原生平台的接口获取当前系统的界面风格或UI模式，并将结果返回给调用方。如果不支持，就返回一个默认值（比如浅色模式）。</p>
+<p>需要注意的是，由于<code>react-native-dark-mode</code>是一个纯JS库，它无法直接调用原生平台的接口。所以它在Native端编写了一个名为<code>DarkMode</code>的模块，在JS层通过<code>NativeModules.DarkMode</code>来调用。</p>
+<ul>
+<li>在iOS上，<code>DarkMode</code>模块会通过<code>RCT_EXPORT_MODULE()</code>宏将自己暴露给RN的JS层。同时，它还会使用<code>RCT_EXPORT_METHOD()</code>宏将检测系统界面风格的方法暴露给JS层，使得在JS中可以直接调用该方法。</li>
+<li>在Android上，<code>DarkMode</code>模块同样会通过<code>@ReactModule</code>注解将自己暴露给JS层。然后，它会创建一个名为<code>DarkModeModule</code>的Java类，并在该类中实现检测系统UI模式的方法。最后，它会使用<code>@ReactMethod</code>注解将该方法暴露给JS层，使得在JS中可以直接调用该方法。</li>
+</ul>
+</blockquote>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7044043307340529694#heading-8">web深色模式适配指南 - 掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904024085364750">扫盲， H5适配暗黑主题（DarkMode）全部解法 - 掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://36kr.com/p/1724109946881">紧跟潮流学设计：深色模式设计的8个小技巧-36氪</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.woshipm.com/pd/4068702.html">即刻7.0：如何设计深色模式？（非官方） | 人人都是产品经理</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.xiaoxili.com/hi-face/docs/other/minapp-to-dark-mode.html">【草稿】深色模式在Web端的适配技巧，附带小程序侧的思考 · Hi头像</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cpming.top/p/detect-dark-mode-in-rn">在 React Native 中检测并适配暗黑模式 - 长跑茗</a></li>
+<li><a target="_blank" rel="noopener" href="https://web.dev/color-scheme/">Improved dark mode default styling with the color-scheme CSS property and …</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/facebook/react-native/issues/29144">Appearance.getColorScheme() always returns ‘light’</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61124229/react-native-0-62-2-appearance-return-wrong-color-scheme">React Native 0.62.2 Appearance return wrong color scheme</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2021/08/18/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/18/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E6%8A%80%E5%B7%A7/" class="post-title-link" itemprop="url">Jest单元测试中常用的方法和技巧</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-18 09:49:00" itemprop="dateCreated datePublished" datetime="2021-08-18T09:49:00+08:00">2021-08-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-02 17:21:31" itemprop="dateModified" datetime="2024-01-02T17:21:31+08:00">2024-01-02</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>本文首次发布于<a target="_blank" rel="noopener" href="https://juejin.cn/post/6997581158670630948">掘金</a>，转载请注明来源。</p>
+</blockquote>
+<h2 id="一、mock模块"><a href="#一、mock模块" class="headerlink" title="一、mock模块"></a>一、mock模块</h2><p>在Jest中，对模块进行mock非常简单，只需要使用<code>jest.mock</code>即可，对于模块的mock主要有两种情况：</p>
+<ol>
+<li><p>只mock模块中的非<code>default</code>导出</p>
+<p> 对于只有非<code>default</code>导出的情况（如<code>export const</code>、<code>export class</code>等），只需要使用<code>jest.mock</code>，返回一个对象即可，对象中包含有你想要mock的函数或者变量：</p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mock &#x27;moduleName&#x27; 中的 foo 函数</span></span><br><span class="line">jest.mock(<span class="string">&#x27;../moduleName&#x27;</span>, <span class="function">() =&gt;</span> (&#123;</span><br><span class="line">  <span class="attr">foo</span>: jest.fn().mockReturnValue(<span class="string">&#x27;mockValue&#x27;</span>),</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure></li>
+<li><p>mock模块中的<code>default</code>导出</p>
+<p> 对于<code>default</code>导出的mock，则不能返回一个简单的对象，而是需要在对象中包含一个<code>default</code>属性，同时添加<code>__esModule: true</code>。</p>
+<blockquote>
+<p>When using the factory parameter for an ES6 module with a default export, the __esModule: true property needs to be specified. This property is normally generated by Babel / TypeScript, but here it needs to be set manually. When importing a default export, it’s an instruction to import the property named default from the export object</p>
+</blockquote>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> moduleName, &#123; foo &#125; <span class="keyword">from</span> <span class="string">&#x27;../moduleName&#x27;</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">&#x27;../moduleName&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">__esModule</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">default</span>: jest.fn(<span class="function">() =&gt;</span> <span class="number">42</span>),</span><br><span class="line">    <span class="attr">foo</span>: jest.fn(<span class="function">() =&gt;</span> <span class="number">43</span>),</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">moduleName(); <span class="comment">// Will return 42</span></span><br><span class="line">foo(); <span class="comment">// Will return 43</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="二、mock模块部分内容"><a href="#二、mock模块部分内容" class="headerlink" title="二、mock模块部分内容"></a>二、mock模块部分内容</h2><p>如果只想mock模块中的部分内容，对于其他部分保持原样，可以使用<code>jest.requireActual</code>来引入真实的模块：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; getRandom &#125; <span class="keyword">from</span> <span class="string">&#x27;../myModule&#x27;</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">&#x27;../myModule&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// Require the original module to not be mocked...</span></span><br><span class="line">  <span class="keyword">const</span> originalModule = jest.requireActual(<span class="string">&#x27;../myModule&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">__esModule</span>: <span class="literal">true</span>, <span class="comment">// Use it when dealing with esModules</span></span><br><span class="line">    ...originalModule,</span><br><span class="line">    <span class="attr">getRandom</span>: jest.fn().mockReturnValue(<span class="number">10</span>),</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">getRandom(); <span class="comment">// Always returns 10</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、mock模块内部函数"><a href="#三、mock模块内部函数" class="headerlink" title="三、mock模块内部函数"></a>三、mock模块内部函数</h2><p>设想一种情况，有一个<code>utils.ts</code>文件，内部导出了两个函数<code>funcA</code>和<code>funcB</code>，然后在<code>funcB</code>中引用了<code>funcA</code>:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// utils.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcA = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcB = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  funcA();</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候在对<code>funcB</code>进行单元测试时，如果想要对<code>funcA</code>进行mock，会发现mock失败：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; funcA, funcB &#125; <span class="keyword">from</span> <span class="string">&#x27;../src/utils&#x27;</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">&#x27;../src/utils&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> originalModule = jest.requireActual(<span class="string">&#x27;../src/utils&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    ...originalModule,</span><br><span class="line">    <span class="attr">funcA</span>: jest.fn(),</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">describe(<span class="string">&#x27;utils.ts 单元测试&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  test(<span class="string">&#x27;测试 funcB&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    funcB();</span><br><span class="line">    expect(funcA).toBeCalled();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>运行单测会得到一个报错</p>
+<p><img src="https://static.youfindme.cn/blog/jest_techniques/get_error_for_test.png" alt="jest单测报错"></p>
+<p>很明显，我们对<code>funcA</code>的mock失败了，为什么会有这样的结果呢，因为我们从模块外部导入的<code>funcA</code>引用和模块内部直接使用的<code>funcA</code>引用并不是同一个，通过<code>jest.mock</code>修改<code>funcA</code>并不会影响内部的调用。对于这种情况，建议的解决方法有两种：</p>
+<ul>
+<li>拆分文件，将<code>funcA</code>拆分到不同的文件。这种做法可能会造成文件过多且分散的问题。</li>
+<li>将相互调用的函数，作为一个工具类的方法来实现。即将互相调用的函数，放到同一个工具类中。</li>
+</ul>
+<h2 id="四、mock类（class）构造函数中对其他成员函数的调用"><a href="#四、mock类（class）构造函数中对其他成员函数的调用" class="headerlink" title="四、mock类（class）构造函数中对其他成员函数的调用"></a>四、mock类（<code>class</code>）构造函数中对其他成员函数的调用</h2><p>当我们在mock一个<code>class</code>的方法的时候，很简单地将类对象的对应方法赋值为<code>jest.fn()</code>即可，但是对于在构造函数中调用的成员方法，却不能这样做。因为类里面的方法只能在实例化完成之后再进行mock，不能阻止<code>constructor</code>中执行原函数。</p>
+<p>这时，我们可以考虑一下，<code>class</code>的本质是什么，<code>class</code>是ES6中的语法糖，本质上还是ES5中的原型<code>prototype</code>，所以类的成员方法本质上也是挂载到类原型上的方法，所以我们只需要mock类构造函数的原型上的方法即可：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.init();</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">init</span>(<span class="params"></span>)</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.init = jest.fn();</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、mock类中的私有函数（针对TypeScript而言）"><a href="#五、mock类中的私有函数（针对TypeScript而言）" class="headerlink" title="五、mock类中的私有函数（针对TypeScript而言）"></a>五、mock类中的私有函数（针对TypeScript而言）</h2><p>对于ts中类的私有函数（<code>private</code>），无法直接获取（虽然说可以<code>ts-ignore</code>忽略ts报错，不过不建议这样做），这时只需使用同样的方法，在类的原型上直接mock即可：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="title">funcA</span>(<span class="params"></span>)</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.funcA = jest.fn();</span><br></pre></td></tr></table></figure>
+
+<h2 id="六、mock对象的只读属性（getter）"><a href="#六、mock对象的只读属性（getter）" class="headerlink" title="六、mock对象的只读属性（getter）"></a>六、mock对象的只读属性（<code>getter</code>）</h2><p>在单测中，对于可读可写属性我们可以比较方便地进行mock，直接赋值为对应的mocK值即可，如<code>Platform.OS</code>。但是对于只读属性（<code>getter</code>）的mock却不能直接这样写。通常对于只读属性（此处以<code>document.body.clientWidth</code>为例）有以下两种mock方式：</p>
+<ol>
+<li><p>通过<code>Object.defineProperty</code></p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(<span class="built_in">document</span>.body, <span class="string">&#x27;clientWidth&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">value</span>: <span class="number">10</span>,</span><br><span class="line">  <span class="attr">set</span>: jest.fn(),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>通过<code>jest.spyOn</code></p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mockClientWidth = jest.spyOn(<span class="built_in">document</span>.body, <span class="string">&#x27;clientWidth&#x27;</span>, <span class="string">&#x27;get&#x27;</span>);</span><br><span class="line">mockClientWidth.mockReturnValue(<span class="number">10</span>);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="七、使用toBeCalledWith对参数中的匿名函数进行断言"><a href="#七、使用toBeCalledWith对参数中的匿名函数进行断言" class="headerlink" title="七、使用toBeCalledWith对参数中的匿名函数进行断言"></a>七、使用<code>toBeCalledWith</code>对参数中的匿名函数进行断言</h2><p>我们需要对于某个方法测试时，有时需要断言这个方法以具体参数被调用，<code>toBeCalledWith</code>可以实现这个功能，但是设想下面一种情况</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> func = (): <span class="function"><span class="params">void</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="comment">/* condition 1 */</span>) &#123;</span><br><span class="line">    moduleA.method1(<span class="number">1</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// do something</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    moduleA.method1(<span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在某种情况下，<code>moduleA.method1</code>将会被传入参数<code>1</code>和一个匿名函数，要怎么用<code>toBeCalledWith</code>断言<code>moduleA.method1</code>被以这些参数调用了呢？因为第二个参数是一个匿名函数，外部没办法mock。这个时候，我们可以使用<code>expect.any(Function)</code>来断言：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">moduleA.method1 = jest.fn();</span><br><span class="line"><span class="comment">// 构造出 condition 1</span></span><br><span class="line">func();</span><br><span class="line">expect(moduleA.method1).toBeCalledWith(<span class="number">1</span>, expect.any(<span class="built_in">Function</span>));</span><br></pre></td></tr></table></figure>
+
+<p>因为这里其实只关心<code>moduleA.method1</code>是否被传入第二个参数且参数是否为一个函数，而不关心函数的具体内容，所以可以用<code>expect.any(Function)</code>来断言。</p>
+<h2 id="八、mock-localStorage"><a href="#八、mock-localStorage" class="headerlink" title="八、mock localStorage"></a>八、mock <code>localStorage</code></h2><p><code>localStorage</code>是浏览器环境下的一个全局变量，挂载在<code>window</code>下，在单测运行时（Node环境）是获取不到的，对于<code>localStorage</code>，我们可以实现一个简单的mock：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LocalStorageMock</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> store: Record&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">setItem</span>(<span class="params">key: <span class="built_in">string</span>, value: <span class="built_in">string</span></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.store[key] = <span class="built_in">String</span>(value);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> getItem(key: <span class="built_in">string</span>): <span class="built_in">string</span> | <span class="literal">null</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.store[key] || <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">removeItem</span>(<span class="params">key: <span class="built_in">string</span></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">delete</span> <span class="built_in">this</span>.store[key];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">clear</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.store = &#123;&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> key(index: <span class="built_in">number</span>): <span class="built_in">string</span> | <span class="literal">null</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Object</span>.keys(<span class="built_in">this</span>.store)[index] || <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">get</span> <span class="title">length</span>(): <span class="title">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Object</span>.keys(<span class="built_in">this</span>.store).length;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">global</span>.localStorage = <span class="keyword">new</span> LocalStorageMock();</span><br></pre></td></tr></table></figure>
+
+<p>建议把mock放到单独的mocks文件中，在需要测试的地方，单独引入即可：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;./__mocks__/localStorage&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="九、mock-indexedDB"><a href="#九、mock-indexedDB" class="headerlink" title="九、mock indexedDB"></a>九、mock <code>indexedDB</code></h2><p>对于indexedDB，情况和<code>localStorage</code>类似，它是浏览器环境下的一个事务型数据库系统，同样在Node环境中无法获取，但是由于indexedDB接口、类型较多，实现起来较为复杂，不建议自己实现，比较常见的做法是使用<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/fake-indexeddb">fake-indexeddb</a>这个库，这个库使用纯js在内存中实现了indexedDB的各种接口，主要用于在Node环境中对依赖indexedDB的代码进行测试。</p>
+<p>对于需要测试的文件，只需要在文件开头引入<code>fake-indexeddb/auto</code>即可：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;fake-indexeddb/auto&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果需要对所有的文件都引入<code>fake-indexeddb</code>，那么只需要在jest配置中添加如下配置：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// jest.config.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">setupFiles</span>: [<span class="string">&#x27;fake-indexeddb/auto&#x27;</span>],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>或在<code>package.json</code>中</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;jest&quot;</span>: &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="attr">&quot;setupFiles&quot;</span>: [<span class="string">&quot;fake-indexeddb/auto&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="十、测试异步函数"><a href="#十、测试异步函数" class="headerlink" title="十、测试异步函数"></a>十、测试异步函数</h2><p>在单测中，如果需要对异步函数进行测试，针对不同情况有如下操作：</p>
+<ol>
+<li><p><code>callback</code>回调函数异步</p>
+<p> 对于回调函数异步（如<code>setTimeout</code>回调），如果像同步函数一样进行测试，是没办法获取正确的断言结果的：</p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcA = (callback: <span class="function">(<span class="params">data: <span class="built_in">number</span></span>) =&gt;</span> <span class="built_in">void</span>): <span class="function"><span class="params">void</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    callback(<span class="number">1</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcA&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  funcA(<span class="function">(<span class="params">data</span>) =&gt;</span> expect(data).toEqual(<span class="number">2</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p> 像上面那样，<code>funcA</code>会在回调里传入1，单测里就算是直接断言结果为2，也是可以直接通过单测的：</p>
+<p> <img src="https://static.youfindme.cn/blog/jest_techniques/callback_async_unit_test.png" alt="callback异步单测"></p>
+<p> 这是因为jest在运行完<code>funcA</code>后就直接结束了，不会等待<code>setTimeout</code>的回调，自然也就没有执行<code>expect</code>断言。正确的做法是，传入一个<code>done</code>参数：</p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcA&#x27;</span>, <span class="function">(<span class="params">done</span>) =&gt;</span> &#123;</span><br><span class="line">  funcA(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    expect(data).toEqual(<span class="number">2</span>);</span><br><span class="line">    done();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p> 在回调执行完之后显式地告诉jest异步函数执行完毕，jest会等到执行了<code>done()</code>之后再结束，这样就能得到预期的结果了。</p>
+</li>
+<li><p><code>Promise</code>异步</p>
+<p> 除了回调函数外，另外一种很常见的异步场景就是<code>Promise</code>了，对于<code>Promise</code>异步，不用像上面那么复杂，只需要在<code>test</code>用例结束时，把<code>Promise</code>返回即可：</p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcB = (): <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt; =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt;(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      resolve(<span class="number">1</span>);</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcB&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> funcB().then(<span class="function">(<span class="params">data</span>) =&gt;</span> expect(data).toEqual(<span class="number">1</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p> 如果使用了<code>async/await</code>语法，就更简洁了，<code>Promise</code>都不需要返回，像测试同步代码一样直接书写即可：</p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcB&#x27;</span>, <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> funcB();</span><br><span class="line">  expect(data).toEqual(<span class="number">1</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p> 对于<code>Promise</code>抛出的异常，测试方法也和上面类似：</p>
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 抛出异常的方法</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcC = (): <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt; =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt;(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      reject(<span class="string">&#x27;something wrong&#x27;</span>);</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcC promise&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> funcC().catch(<span class="function">(<span class="params">error</span>) =&gt;</span> expect(error).toEqual(<span class="string">&#x27;something wrong&#x27;</span>));</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">test(<span class="string">&#x27;funcC await&#x27;</span>, <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> funcC();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    expect(error).toEqual(<span class="string">&#x27;something wrong&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="十一、不执行jest-spyOn-mock的函数"><a href="#十一、不执行jest-spyOn-mock的函数" class="headerlink" title="十一、不执行jest.spyOn mock的函数"></a>十一、不执行<code>jest.spyOn</code> mock的函数</h2><p>我们知道，<code>jest.fn</code>和<code>jest.spyOn</code>都可以用来mock一个函数，区别是<code>jest.fn</code> mock的函数不会去执行，而<code>jest.spyOn</code> mock的函数是会去正常执行的。那么有没有什么办法让<code>jest.spyOn</code> mock的函数不执行呢？其实上面已经用到了，在“mock对象的只读属性（<code>getter</code>）”中，通过<code>jest.spyOn</code> mock了一个<code>getter</code>，然后使用<code>mockReturnValue</code>来mock一个返回值，这个时候原函数就不会执行。</p>
+<p>除此之外，使用<code>mockImplementation</code>也有同样的效果：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mockFn.mockImplementation(<span class="function">() =&gt;</span> &#123;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>总结下来就是可以使用<code>mockReturnValue</code>和<code>mockImplementation</code>不执行<code>jest.spyOn</code>mock的函数。</p>
+<p>另外多说一个建议就是，能使用<code>jest.fn</code>就尽量不要用<code>jest.spyOn</code>，因为<code>jest.spyOn</code>会执行原始代码，在统计单测覆盖率时会被统计进去，导致单测覆盖率看起来很高实际上却又很多代码没有相应单测。</p>
+<h2 id="十二、使用test-each"><a href="#十二、使用test-each" class="headerlink" title="十二、使用test.each"></a>十二、使用<code>test.each</code></h2><p>有时我们会遇到这种情况，要写大量单测用例，但是每个用例结构一样或相似，只有细微不同，比如测试某个<code>format</code>函数对于不同的字符串的返回结果，或者调用一个类不同的成员方法但返回的结果类似（如都抛出错误或<code>return null</code>等），对于这些情况，有时我们可以在单测内写一个数组然后遍历执行一下，但其实jest已经提供了应对这种情况的方法，即<code>test.each</code>，举几个例子：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// each.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> checkString = (str: <span class="built_in">string</span>): <span class="function"><span class="params">boolean</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (str.length &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;mockError 1&#x27;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (str.length &gt; <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;mockError 2&#x27;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// each.test.ts</span></span><br><span class="line">describe(<span class="string">&#x27;each.ts 单元测试&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  test.each&lt;&#123; <span class="attr">param</span>: <span class="built_in">string</span>; expectRes: <span class="built_in">boolean</span> | <span class="built_in">string</span> &#125;&gt;([</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">param</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">      <span class="attr">expectRes</span>: <span class="string">&#x27;mockError 1&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">param</span>: <span class="string">&#x27;123456&#x27;</span>,</span><br><span class="line">      <span class="attr">expectRes</span>: <span class="string">&#x27;mockError 2&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">param</span>: <span class="string">&#x27;1234&#x27;</span>,</span><br><span class="line">      <span class="attr">expectRes</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  ])(<span class="string">&#x27;checkString&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; param, expectRes &#125; = data;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> result = checkString(param);</span><br><span class="line">      expect(result).toEqual(expectRes);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">      expect(error.message).toEqual(expectRes);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>又比如在某种情况下，某个对象<code>store</code>的所有方法都会抛出异常：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">test.each&lt;&#123;</span><br><span class="line">  <span class="attr">func</span>: <span class="string">&#x27;get&#x27;</span> | <span class="string">&#x27;delete&#x27;</span> | <span class="string">&#x27;add&#x27;</span> | <span class="string">&#x27;update&#x27;</span>;</span><br><span class="line">  param?: <span class="built_in">any</span>;</span><br><span class="line">&#125;&gt;([</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;get&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>] &#125;,</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;delete&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>] &#125;,</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;add&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>, <span class="string">&#x27;mockValue&#x27;</span>] &#125;,</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;update&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>, <span class="string">&#x27;mockValue&#x27;</span>] &#125;,</span><br><span class="line">])(<span class="string">&#x27;调用 store 的方法抛出异常&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> store[data.func](...data.param).catch(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    expect(err).toEqual(<span class="string">&#x27;mockError&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>除了<code>test.each</code>外，还有<code>describe.each</code>，更多具体用法可以参考<a target="_blank" rel="noopener" href="https://jestjs.io/docs/api#testeachtablename-fn-timeout">test.each</a>和<a target="_blank" rel="noopener" href="https://jestjs.io/docs/api#describeeachtablename-fn-timeout">describe.each</a></p>
+<h2 id="十三、使用-test-js、-test-ts、-test-tsx"><a href="#十三、使用-test-js、-test-ts、-test-tsx" class="headerlink" title="十三、使用.test.js、.test.ts、.test.tsx"></a>十三、使用<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code></h2><p>这点是一个建议，建议单测文件以<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>命名，如对于<code>utils.ts</code>，建议对应的单测以<code>utils.test.ts</code>命名，这样每个单测文件单单从文件名来说就具有清晰的语义，即这是一个单测文件，而不是一个具有具体功能的源码文件。</p>
+<p>同时，在搜索文件或者全局搜索字符串时，列表里的文件更清晰可见容易辨认。更进一步来说，现在很多IDE的文件图片icon插件，针对不同的文件名结尾，都有不同的渲染，更加方便辨认：<br><img src="https://static.youfindme.cn/blog/jest_techniques/search_file.png" alt="search_file"><br><img src="https://static.youfindme.cn/blog/jest_techniques/global_search.png" alt="global_search"></p>
+<h2 id="十四、配合使用Jest-Runner插件"><a href="#十四、配合使用Jest-Runner插件" class="headerlink" title="十四、配合使用Jest Runner插件"></a>十四、配合使用<code>Jest Runner</code>插件</h2><p>另外推荐一个VSCode插件，<code>Jest Runner</code>，这个插件会在<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>中，渲染几个按钮选项：</p>
+<p><img src="https://static.youfindme.cn/blog/jest_techniques/run_debug.png" alt="run_debug"></p>
+<p>点击<code>Run</code>或<code>Debug</code>，可以只运行或调试某一个<code>test</code>或者<code>describe</code>，不需要重新全局<code>npm run test</code>也不用单独<code>jest</code>执行这个文件，极大提高写单测的效率：</p>
+<p><img src="https://static.youfindme.cn/blog/jest_techniques/run_debug_result.png" alt="run_debug_result"></p>
+<p>这个插件只针对<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>这几个文件类型有效，所以这也是上面建议单测文件使用使用<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>命名的原因之一。</p>
+<p>同时，插件提供的<code>Debug</code>，也省去了繁琐的<code>launch.json</code>配置，可以方便地进行断点调试。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://youfindme.top/2021/07/07/%E5%89%8D%E7%AB%AF%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%8C%96%E9%85%8D%E7%BD%AE%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2641,173 +3014,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2021/06/27/%E5%85%B3%E4%BA%8EJavaScript%E4%B8%ADthis%E7%9A%84%E8%BD%AF%E7%BB%91%E5%AE%9A/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="冰河">
-      <meta itemprop="description" content="冰河的个人网站">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="冰河">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/27/%E5%85%B3%E4%BA%8EJavaScript%E4%B8%ADthis%E7%9A%84%E8%BD%AF%E7%BB%91%E5%AE%9A/" class="post-title-link" itemprop="url">关于JavaScript中this的软绑定</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-06-27 21:11:06" itemprop="dateCreated datePublished" datetime="2021-06-27T21:11:06+08:00">2021-06-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="首先，什么是软绑定？"><a href="#首先，什么是软绑定？" class="headerlink" title="首先，什么是软绑定？"></a>首先，什么是软绑定？</h4><p>所谓软绑定，是和硬绑定相对应的一个词，在详细解释软绑定之前，我们先来看看硬绑定。在JavaScript中，this的绑定是动态的，在函数被调用的时候绑定，它指向什么完全取决于函数在哪里调用，情况比较复杂，光是绑定规则就有默认绑定、隐式绑定、显式绑定、new绑定等，而硬绑定是显式绑定中的一种，通常情况下是通过调用函数的<code>apply()</code>、<code>call()</code>或者ES5里提供的<code>bind()</code>方法来实现硬绑定的。</p>
-<h4 id="硬绑定有什么问题，为什么需要软绑定"><a href="#硬绑定有什么问题，为什么需要软绑定" class="headerlink" title="硬绑定有什么问题，为什么需要软绑定"></a>硬绑定有什么问题，为什么需要软绑定</h4><p>上述三个方法好是好，可以按照自己的想法将函数的this强制绑定到指定的对象上（除了使用new绑定可以改变硬绑定外），但是硬绑定存在一个问题，就是会降低函数的灵活性，并且在硬绑定之后无法再使用隐式绑定或者显式绑定来修改this的指向。</p>
-<p>在这种情况下，被称为软绑定的实现就出现了，也就是说，通过软绑定，我们希望this在默认情况下不再指向全局对象（非严格模式）或<code>undefined</code>（严格模式），而是指向两者之外的一个对象（这点和硬绑定的效果相同），但是同时又保留了隐式绑定和显式绑定在之后可以修改this指向的能力。</p>
-<h4 id="软绑定的具体实现"><a href="#软绑定的具体实现" class="headerlink" title="软绑定的具体实现"></a>软绑定的具体实现</h4><p>在这里，我用的是《你不知道的JavaScript 上》中的软绑定的代码实现：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="built_in">Function</span>.prototype.softBind) &#123;</span><br><span class="line">  <span class="built_in">Function</span>.prototype.softBind = <span class="function"><span class="keyword">function</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> fn = <span class="built_in">this</span>;</span><br><span class="line">    <span class="keyword">const</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">const</span> bound = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(</span><br><span class="line">        !<span class="built_in">this</span> || <span class="built_in">this</span> === (<span class="built_in">window</span> || <span class="built_in">global</span>) ? obj : <span class="built_in">this</span>,</span><br><span class="line">        args.concat.apply(args, <span class="built_in">arguments</span>)</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">    bound.prototype = <span class="built_in">Object</span>.create(fn.prototype);</span><br><span class="line">    <span class="keyword">return</span> bound;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们先来看一下效果，之后再讨论它的实现。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;name: &#x27;</span> + <span class="built_in">this</span>.name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> obj1 = &#123; <span class="attr">name</span>: <span class="string">&#x27;obj1&#x27;</span> &#125;,</span><br><span class="line">  obj2 = &#123; <span class="attr">name</span>: <span class="string">&#x27;obj2&#x27;</span> &#125;,</span><br><span class="line">  obj3 = &#123; <span class="attr">name</span>: <span class="string">&#x27;obj3&#x27;</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fooOBJ = foo.softBind(obj1);</span><br><span class="line">fooOBJ(); <span class="comment">//&quot;name: obj1&quot; 在这里软绑定生效了，成功修改了this的指向，将this绑定到了obj1上</span></span><br><span class="line"></span><br><span class="line">obj2.foo = foo.softBind(obj1);</span><br><span class="line">obj2.foo(); <span class="comment">//&quot;name: obj2&quot; 在这里软绑定的this指向成功被隐式绑定修改了，绑定到了obj2上</span></span><br><span class="line"></span><br><span class="line">fooOBJ.call(obj3); <span class="comment">//&quot;name: obj3&quot; 在这里软绑定的this指向成功被硬绑定修改了，绑定到了obj3上</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(obj2.foo, <span class="number">1000</span>); <span class="comment">//&quot;name: obj1&quot;</span></span><br><span class="line"><span class="comment">// 回调函数相当于一个隐式的传参，如果没有软绑定的话，这里将会应用默认绑定将this绑定到全局环境上，但有软绑定，这里this还是指向obj1</span></span><br></pre></td></tr></table></figure>
-
-<p>可以看到软绑定生效了。下面我们来具体看一下<code>softBind()</code>的实现。</p>
-<p>在第一行，先通过判断，如果函数的原型上没有<code>softBind()</code>这个方法，则添加它，然后通过<code>Array.prototype.slice.call(arguments,1)</code>获取传入的外部参数，这里这样做其实为了函数柯里化，也就是说，允许在软绑定的时候，事先设置好一些参数，在调用函数的时候再传入另一些参数（关于函数柯里化大家可以去网上搜一下详细的讲解）最后返回一个<code>bound</code>函数形成一个闭包，这时候，在函数调用<code>softBind()</code>之后，得到的就是<code>bound</code>函数，例如上面的<code>var fooOBJ=foo.softBind(obj1)</code>。</p>
-<p>在<code>bound</code>函数中，首先会判断调用软绑定之后的函数（如fooOBJ）的调用位置，或者说它的this的指向，如果<code>!this</code>（this指向undefined）或者<code>this===(window||global)</code>（this指向全局对象），那么就将函数的this绑定到传入<code>softBind</code>中的参数obj上。如果此时this不指向undefind或者全局对象，那么就将this绑定到现在正在指向的函数（即隐式绑定或显式绑定）。<code>fn.apply</code>的第二个参数则是运行<code>foo</code>所需要的参数，由上面的args（外部参数）和内部的arguments（内部参数）连接成，也就是上面说的柯里化。</p>
-<p>其实在第一遍看这个函数时，也有点迷，有一些疑问，比如<code>var fn=this</code>这句，在<code>foo</code>通过<code>foo.softBind()</code>调用<code>softBind</code>的时候，fn到底指向谁呢？是指向foo还是指向softBind？我们可以写个demo测试，然后可以很清晰地看出fn指向什么：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">2</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">foo.a = <span class="number">3</span>;</span><br><span class="line"><span class="built_in">Function</span>.prototype.softBind = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> fn = <span class="built_in">this</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(fn.a);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">Function</span>.prototype.a = <span class="number">4</span>;</span><br><span class="line"><span class="built_in">Function</span>.prototype.softBind.a = <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">foo.softBind()(); <span class="comment">// 3</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.softBind()(); <span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
-
-<p>可以看出，fn（或者说this）的指向还是遵循this的绑定规则的，<code>softBind</code>函数定义在Function的原型<code>Function.prototype</code>中，但是JavaScript中函数永远不会“属于”某个对象（不像其他语言如java中类里面定义的方法那样），只是对象内部引用了这个函数，所以在通过下面两种方式调用时，fn（或者说this）分别隐式绑定到了<code>foo</code>和<code>Function.prototype</code>，所以分别输出3和4。后面的<code>fn.apply()</code>也就相当于<code>foo.apply()</code>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2021/06/27/%E8%8E%B7%E5%8F%96%E6%88%96%E6%93%8D%E4%BD%9CDOM%E5%85%83%E7%B4%A0%E7%89%B9%E6%80%A7%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="冰河">
-      <meta itemprop="description" content="冰河的个人网站">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="冰河">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/27/%E8%8E%B7%E5%8F%96%E6%88%96%E6%93%8D%E4%BD%9CDOM%E5%85%83%E7%B4%A0%E7%89%B9%E6%80%A7%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">获取或操作DOM元素特性的几种方式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-06-27 21:10:18" itemprop="dateCreated datePublished" datetime="2021-06-27T21:10:18+08:00">2021-06-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <ol>
-<li><p>通过元素的属性</p>
-<p> 可以直接通过元素属性获取或操作特性，但是只有公认的特性（非自定义的特性），例如<code>id</code>、<code>title</code>、<code>style</code>、<code>align</code>、<code>className</code>等，注意，因为在ECMAScript中，<code>class</code>是保留字（在ES6中成了关键字），所以就不能再用<code>class</code>这个属性名来表示元素的CSS类名了，只能换成<code>className</code>。</p>
-</li>
-<li><p>通过<code>getAttribute()</code>、<code>setAttribute()</code>、<code>removeAttribute()</code></p>
-<p> 也可以通过这三个DOM方法来操作DOM元素的特性，例如</p>
- <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> div = <span class="built_in">document</span>.getElementById(<span class="string">&quot;my-div&quot;</span>);</span><br><span class="line">div.getAttribute(<span class="string">&quot;id&quot;</span>);                 <span class="comment">// 获取id</span></span><br><span class="line">div.getAttribute(<span class="string">&quot;title&quot;</span>);              <span class="comment">// 获取title</span></span><br><span class="line">div.getAttribute(<span class="string">&quot;class&quot;</span>);              <span class="comment">// 获取元素的CSS类名，因为是传参数给getAttribute函数，所以可以用class</span></span><br><span class="line">div.getAttribute(<span class="string">&quot;dat-my-attribute&quot;</span>);   <span class="comment">// 获取自定义特性</span></span><br><span class="line">div.setAttribute(<span class="string">&quot;id&quot;</span>,<span class="string">&quot;anotherId&quot;</span>);     <span class="comment">// 设置id</span></span><br><span class="line">div.removeAttribute(<span class="string">&quot;title&quot;</span>);           <span class="comment">// 删除title</span></span><br></pre></td></tr></table></figure>
-
-<p> 从上面可以看出来，用这种方法，不仅可以获取到公认的特性，也可以获取自定义的特性。不过有两类特殊的特性，在通过属性获取和通过方法获取时获取到的却不一样，一类是<code>style</code>，通过属性访问获取到的是一个对象，通过<code>getAttribute</code>获取到的是CSS文本；另一类就是事件处理程序如<code>onclick</code>，通过属性获取，得到的是一个函数，而通过<code>getAttribute</code>获取得到的则是相应函数代码的字符串。</p>
-</li>
-<li><p>通过元素的<code>attributes</code>属性</p>
-<p> Element类型的DOM元素都有一个<code>attributes</code>属性，如<code>div.attributes</code>，这样获取到的是一个NamedNodeMap，是一个动态的集合，和数组类似，也有<code>length</code>属性、可以通过下标访问遍历等,通常用途就是遍历元素特性，里面存放的是多个Att节点，每个节点的<code>nodeName</code>就是特性名称，<code>nodeValue</code>就是特性的值。它有一些方法，如下：</p>
-<ul>
-<li><code>getNamedItem(name)</code>：返回<code>nodeName</code>为name的节点</li>
-<li><code>setNamedItem(node)</code>：向集合中插入一个Attr节点</li>
-<li><code>removeNamedItem(name)</code>：删除集合中<code>nodeName</code>为name的节点</li>
-<li><code>item(pos)</code>：返回位于数字pos位置的节点<br>例如要获取id，有如下代码</li>
-</ul>
- <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> div = <span class="built_in">document</span>.getElementById(<span class="string">&quot;my-div&quot;</span>);</span><br><span class="line">div.attributes.getNamedItem(<span class="string">&quot;id&quot;</span>).nodeValue;</span><br><span class="line">div.attributes[<span class="string">&quot;id&quot;</span>].nodeValue;                 <span class="comment">//后两行代码都可以获取到id，下面为简写形式</span></span><br></pre></td></tr></table></figure>
-
-<p> 从上面可以看出，这种方式最麻烦，所以平时基本不用，一般在遍历元素的特性时才会用到。<br>上面三种方式中，方式1是最常使用的，其次是2，最后才是第三种方式。</p>
-</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2877,7 +3083,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2905,7 +3111,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"youfindme.top","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="什么是深色模式深色模式（Dark Mode），或者叫暗色模式，黑夜模式，是和日常使用的浅色（亮色）模式（Light Mode）相对应的一种UI主题。 深色模式最早来源于人机交互领域的研究和实践，从2018年左右开始，Apple推出了iOS 13，其中包含了系统级别的深色模式，可以将整个系统的界面切换为暗色调。 Google也在Android 10中推出了类似的深色模式功能，使深色模式得到了更广泛的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊深色模式（Dark Mode）">
+<meta property="og:url" content="https://youfindme.top/2023/03/13/%E8%81%8A%E8%81%8A%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F%EF%BC%88Dark%20Mode%EF%BC%89/index.html">
+<meta property="og:site_name" content="冰河">
+<meta property="og:description" content="什么是深色模式深色模式（Dark Mode），或者叫暗色模式，黑夜模式，是和日常使用的浅色（亮色）模式（Light Mode）相对应的一种UI主题。 深色模式最早来源于人机交互领域的研究和实践，从2018年左右开始，Apple推出了iOS 13，其中包含了系统级别的深色模式，可以将整个系统的界面切换为暗色调。 Google也在Android 10中推出了类似的深色模式功能，使深色模式得到了更广泛的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/dark_mode_example.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/open_dark_mode_in_devtool.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/open_light_mode_in_devtool.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/smearing_when_scrolling.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/left_auto_right_manul.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/prefers_color_scheme.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/custom_theme.gif">
+<meta property="og:image" content="https://static.youfindme.cn/blog/dark_mode/window_match_media.png">
+<meta property="article:published_time" content="2023-03-13T02:29:00.000Z">
+<meta property="article:modified_time" content="2024-01-02T10:23:05.830Z">
+<meta property="article:author" content="冰河">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.youfindme.cn/blog/dark_mode/dark_mode_example.png">
+
+<link rel="canonical" href="https://youfindme.top/2023/03/13/%E8%81%8A%E8%81%8A%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F%EF%BC%88Dark%20Mode%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>聊聊深色模式（Dark Mode） | 冰河</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">冰河</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2023/03/13/%E8%81%8A%E8%81%8A%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F%EF%BC%88Dark%20Mode%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          聊聊深色模式（Dark Mode）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-13 10:29:00" itemprop="dateCreated datePublished" datetime="2023-03-13T10:29:00+08:00">2023-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-02 18:23:05" itemprop="dateModified" datetime="2024-01-02T18:23:05+08:00">2024-01-02</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="什么是深色模式"><a href="#什么是深色模式" class="headerlink" title="什么是深色模式"></a>什么是深色模式</h2><p>深色模式（Dark Mode），或者叫暗色模式，黑夜模式，是和日常使用的浅色（亮色）模式（Light Mode）相对应的一种UI主题。</p>
+<p>深色模式最早来源于人机交互领域的研究和实践，从2018年左右开始，Apple推出了<strong>iOS 13</strong>，其中包含了系统级别的深色模式，可以将整个系统的界面切换为暗色调。</p>
+<p>Google也在<strong>Android 10</strong>中推出了类似的深色模式功能，使深色模式得到了更广泛的应用和推广。</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/dark_mode_example.png" alt="iOS官网的深色模式示例"></p>
+<p>它不是简单的把背景变为黑色，文字变为白色，而是一整套的配色主题，这种模式相比浅色模式更加柔和，可以减少亮度对用户眼睛造成的刺激和疲劳。</p>
+<p>随着越来越多的应用开始支持深色模式，作为开发也理应多了解下深色模式。</p>
+<h2 id="首先，怎么打开深色模式"><a href="#首先，怎么打开深色模式" class="headerlink" title="首先，怎么打开深色模式"></a>首先，怎么打开深色模式</h2><p>在说怎么实现之前，先来说说我们要怎么打开深色模式，一般来说只需要在系统调节亮度的地方就可以调节深色模式，具体我们可以看各个系统的官方网站即可：<br>如何打开深色模式</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://support.apple.com/zh-cn/HT210332">在 iPhone 和 iPad 上使用深色模式 - 官方 Apple 支持 (中国)</a></li>
+<li><a target="_blank" rel="noopener" href="https://support.apple.com/zh-cn/HT208976">在 Mac 上使用深色模式 - 官方 Apple 支持 (中国)</a></li>
+<li><a target="_blank" rel="noopener" href="https://support.google.com/android/answer/9730472?hl=zh-Hans">在 Android 设备上更改为深色模式或颜色模式 - Android帮助</a></li>
+<li><a target="_blank" rel="noopener" href="https://support.microsoft.com/zh-cn/windows/%E5%9C%A8-windows-%E4%B8%AD%E6%9B%B4%E6%94%B9%E9%A2%9C%E8%89%B2-d26ef4d6-819a-581c-1581-493cfcc005fe">在 Windows 中更改颜色 - Microsoft 支持</a></li>
+</ul>
+<p>但是在开发调试调试时，不断切换深色模式可能比较麻烦，这时浏览器就提供了一种模拟系统深色模式的方法，可以让当前的Web页面临时变为深色模式，以Chrome为例：<br>浏览器模拟深色/浅色模式</p>
+<ol>
+<li>打开Chrome DevTools</li>
+<li><code>Command</code>+<code>Shift</code>+<code>P</code></li>
+<li>输入dark或者light</li>
+<li>打开深色或者浅色模式<img src="https://static.youfindme.cn/blog/dark_mode/open_dark_mode_in_devtool.png" alt="打开深色模式"><br><img src="https://static.youfindme.cn/blog/dark_mode/open_light_mode_in_devtool.png" alt="打开浅色模式"></li>
+</ol>
+<p>不过要注意的是，浏览器DevTools里开启深色模式，在关闭开发者工具后就会失效。</p>
+<h2 id="自动适配-声明页面支持深色模式"><a href="#自动适配-声明页面支持深色模式" class="headerlink" title="自动适配 - 声明页面支持深色模式"></a>自动适配 - 声明页面支持深色模式</h2><p>其实，在支持深色模式的浏览器中，有一套默认的深色模式，只需要我们在应用中声明，即可自动适配深色模式，声明有两种方式：</p>
+<h3 id="1-添加color-scheme的meta标签"><a href="#1-添加color-scheme的meta标签" class="headerlink" title="1. 添加color-scheme的meta标签"></a>1. 添加<code>color-scheme</code>的<code>meta</code>标签</h3><p>在HTML的<code>head</code>标签中增加<code>color-scheme</code>的<code>meta</code>标签，如下所示：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">	The page supports both dark and light color schemes,</span></span><br><span class="line"><span class="comment">	and the page author prefers light.</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;color-scheme&quot;</span> <span class="attr">content</span>=<span class="string">&quot;light dark&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过上述声明，告诉浏览器这个页面支持深色模式和浅色模式，并且页面更倾向于浅色模式。在声明了这个之后，当系统切换到深色模式时，浏览器将会把我们的页面自动切换到默认的深色模式配色，如下所示：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
+<h3 id="2-在CSS里添加color-scheme属性"><a href="#2-在CSS里添加color-scheme属性" class="headerlink" title="2. 在CSS里添加color-scheme属性"></a>2. 在CSS里添加<code>color-scheme</code>属性</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  The page supports both dark and light color schemes,</span></span><br><span class="line"><span class="comment">  and the page author prefers light.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="selector-pseudo">:root</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>-scheme: light dark;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面在<code>:root</code>元素上添加<code>color-scheme</code>属性，值为<code>light dark</code>，可以实现和<code>meta</code>标签一样的效果，同时这个属性不只可用于<code>:root</code>级别，也可用于单个元素级别，比<code>meta</code>标签更灵活。</p>
+<p>但是提供<code>color-scheme</code>CSS属性需要首先下载CSS（如果通过<code>&lt;link rel=&quot;stylesheet&quot;&gt;</code>引用）并进行解析，使用<code>meta</code>可以更快地使用所需配色方案呈现页面背景。两者各有优劣吧。</p>
+<h2 id="自定义适配"><a href="#自定义适配" class="headerlink" title="自定义适配"></a>自定义适配</h2><h3 id="1-自动适配的问题"><a href="#1-自动适配的问题" class="headerlink" title="1. 自动适配的问题"></a>1. 自动适配的问题</h3><p>在上面说了我们可以通过一些标签或者CSS属性声明，来自动适配深色模式，但是从自动适配的结果来看，适配的并不理想：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
+<ul>
+<li><p>首先是默认的黑色字体，到深色模式下变成了纯白色<code>#FFFFFF</code>，和黑色背景（虽然说不是纯黑）对比起来很扎眼，在一些设计相关的文章[<a target="_blank" rel="noopener" href="https://36kr.com/p/1724109946881">1</a>][<a target="_blank" rel="noopener" href="https://www.woshipm.com/pd/4068702.html">2</a>]里提到，深色模式下避免使用纯黑和纯白，否则更容易使人眼睛👁疲劳，同时容易在页面滚动时出现拖影：</p>
+<p>  <img src="https://static.youfindme.cn/blog/dark_mode/smearing_when_scrolling.png" alt="滚动时出现拖影，图片来源「即刻」"></p>
+</li>
+<li><p>自动适配只能适配没有指定颜色和背景色的内容，比如上面的1、2、3级文字还有背景，没有显式设置<code>color</code>和<code>background-color</code>。</p>
+<p>  对于设置了颜色和背景色（这种现象在开发中很常见吧）的内容，就无法自动适配，比如上面的7个色块的背景色，写死了颜色，但是色块上的文字没有设置颜色。最终在深色渲染下渲染出的效果就是，色块背景色没变，但是色块上的文字变成了白色，导致一些文字很难看清。</p>
+</li>
+</ul>
+<p>所以，最好还是自定义适配逻辑，除了解决上面的问题，还可以加一下其他的东西，比如加一些深浅色模式变化时的过渡动画等。</p>
+<h3 id="2-如何自定义适配"><a href="#2-如何自定义适配" class="headerlink" title="2. 如何自定义适配"></a>2. 如何自定义适配</h3><p>自定义适配有两种方式，CSS媒体查询和通过JS监听主题模式</p>
+<h4 id="1-CSS媒体查询"><a href="#1-CSS媒体查询" class="headerlink" title="1). CSS媒体查询"></a>1). CSS媒体查询</h4><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/@media/prefers-color-scheme">prefers-color-scheme - CSS：层叠样式表 | MDN</a><br>我们可以通过在CSS中设置媒体查询<code>@media (prefers-color-scheme: dark)</code>，来设置深色模式下的自定义颜色。比如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.textLevel1</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#404040</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.textLevel2</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#808080</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.textLevel3</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#bfbfbf</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@media</span> (<span class="attribute">prefers-color-scheme</span>: dark) &#123;</span><br><span class="line">  <span class="selector-class">.textLevel1</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.9</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.textLevel2</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.6</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.textLevel3</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过媒体查询设置元素在深色模式下的1、2、3级文字的颜色，在浅色模式下设置不同的颜色，在深色模式下，增加不透明度：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/left_auto_right_manul.png" alt="左边的是自动适配的浅色深色，右边是自定义适配的浅色深色"></p>
+<p>对于<code>prefers-color-scheme</code>的兼容性也不必担心，主流浏览器基本都支持了：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/prefers_color_scheme.png" alt="prefers-color-scheme"></p>
+<h4 id="2-JS监听主题颜色"><a href="#2-JS监听主题颜色" class="headerlink" title="2). JS监听主题颜色"></a>2). JS监听主题颜色</h4><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/matchMedia">Window.matchMedia() - Web API 接口参考 | MDN</a></p>
+<p>通过CSS媒体查询适配深色模式已经很方便了，完全不需要修改JS代码逻辑，那为什么还需要JS监听主题颜色呢？</p>
+<p>因为通过CSS媒体查询虽然方便，但是只能跟随系统的主题颜色变化，假设用户想要类似于下面的自定义主题颜色，不跟随系统变化，或者业务上想做一些什么高级的操作，那么CSS媒体查询就无能为力了。</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/custom_theme.gif" alt="custom_theme.gif"></p>
+<p>在JS中，可以通过<code>window.matchMedia(&#39;(prefers-color-scheme: dark)&#39;).match</code>来判断当前的颜色主题：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> darkModeMediaQuery = <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (darkModeMediaQuery.matches) &#123;</span><br><span class="line">  <span class="comment">// dark mode</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// light mode</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">darkModeMediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, <span class="function">(<span class="params">event: MediaQueryListEvent</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.matches) &#123;</span><br><span class="line">    <span class="comment">// dark mode</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// light mode</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>如果使用的是React，还可以写一个自定义hooks，来监听当前的颜色主题：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="built_in">enum</span> EColorScheme &#123;</span><br><span class="line">  LIGHT = <span class="string">&#x27;light&#x27;</span>,</span><br><span class="line">  DARK = <span class="string">&#x27;dark&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> useColorScheme = (): <span class="function"><span class="params">EColorScheme</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [scheme, setScheme] = useState(</span><br><span class="line">    darkModeMediaQuery.matches ? EColorScheme.DARK : EColorScheme.LIGHT</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> listener = <span class="function">(<span class="params">event: MediaQueryListEvent</span>) =&gt;</span> &#123;</span><br><span class="line">      setScheme(event.matches ? EColorScheme.DARK : EColorScheme.LIGHT);</span><br><span class="line">    &#125;;</span><br><span class="line">    darkModeMediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      darkModeMediaQuery.removeEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> scheme;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="一些题外话"><a href="#一些题外话" class="headerlink" title="一些题外话"></a>一些题外话</h4><p>我写完这个hooks之后，有一次偶然用Chat GPT让它写一段监听深色模式的代码，写成hooks，最后生成的代码和这个几乎一模一样，Chat GPT还是有点东西的：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> ThemeType = <span class="string">&#x27;light&#x27;</span> | <span class="string">&#x27;dark&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useTheme</span>(<span class="params"></span>): <span class="title">ThemeType</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [theme, setTheme] = useState&lt;ThemeType&gt;(</span><br><span class="line">    <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>).matches ? <span class="string">&#x27;dark&#x27;</span> : <span class="string">&#x27;light&#x27;</span></span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> mediaQuery = <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> handleChange = <span class="function">() =&gt;</span> setTheme(mediaQuery.matches ? <span class="string">&#x27;dark&#x27;</span> : <span class="string">&#x27;light&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    mediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, handleChange);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> mediaQuery.removeEventListener(<span class="string">&#x27;change&#x27;</span>, handleChange);</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> theme;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> useTheme;</span><br></pre></td></tr></table></figure>
+
+<p><code>window.matchMedia</code>的兼容性也挺好的：</p>
+<p><img src="https://static.youfindme.cn/blog/dark_mode/window_match_media.png" alt="window.matchMedia"></p>
+<p>通过JS监听颜色主题变化之后，那可玩性就很多了，我们可以通过下面这些方式来适配深色模式：</p>
+<ul>
+<li><p>动态添加类名覆盖样式</p>
+<p>  通过判断深色模式来添加一个深色模式的类名，覆盖浅色模式样式：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;div</span><br><span class="line">  className=&#123;classnames(</span><br><span class="line">    style.wrapper,</span><br><span class="line">    scheme === EColorScheme.DARK &amp;&amp; style.darkModeWrapper</span><br><span class="line">  )&#125;</span><br><span class="line">  &gt;</span><br><span class="line">  &#123;/* some code here */&#125;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>对于深色模式直接引用不同的CSS资源文件</p>
+</li>
+<li><p>用一些第三方的库，比如<code>postcss-darkmode</code>等</p>
+</li>
+</ul>
+<p>回到上面话题，通过JS可以监听到系统的颜色主题，那怎么实现用户主动选择颜色主题，不随系统的改变呢？其实也很简单，可以在本地store中设置一个颜色主题的值，用户设置了就优先选用store里的，没有设置就跟随系统，以上面的hooks为例：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> useColorScheme = (): <span class="function"><span class="params">EColorScheme</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 从 store 中取出用户手动设置的主题</span></span><br><span class="line">  <span class="keyword">const</span> manualScheme = useSelector(selectManualColorScheme);</span><br><span class="line">  <span class="keyword">const</span> [scheme, setScheme] = useState(</span><br><span class="line">    darkModeMediaQuery.matches ? EColorScheme.DARK : EColorScheme.LIGHT</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> listener = <span class="function">(<span class="params">event: MediaQueryListEvent</span>) =&gt;</span> &#123;</span><br><span class="line">      setScheme(event.matches ? EColorScheme.DARK : EColorScheme.LIGHT);</span><br><span class="line">    &#125;;</span><br><span class="line">    darkModeMediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      darkModeMediaQuery.removeEventListener(<span class="string">&#x27;change&#x27;</span>, listener);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 优先取用户手动设置的主题</span></span><br><span class="line">  <span class="keyword">return</span> manualScheme || scheme;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="React-Native中的适配"><a href="#React-Native中的适配" class="headerlink" title="React Native中的适配"></a>React Native中的适配</h2><p>上面说的都是在浏览器里对深色模式的适配，那在React Native里面要怎么适配深色模式呢？</p>
+<h3 id="1-大于等于0-62的版本"><a href="#1-大于等于0-62的版本" class="headerlink" title="1. 大于等于0.62的版本"></a>1. 大于等于0.62的版本</h3><p><a target="_blank" rel="noopener" href="https://reactnative.dev/docs/appearance">Appearance · React Native</a></p>
+<p>在React Native 0.62版本中，引入了<code>Appearance</code>模块，通过这个模块：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ColorSchemeName = <span class="string">&#x27;light&#x27;</span> | <span class="string">&#x27;dark&#x27;</span> | <span class="literal">null</span> | <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">namespace</span> Appearance &#123;</span><br><span class="line">  <span class="keyword">type</span> AppearancePreferences = &#123;</span><br><span class="line">    <span class="attr">colorScheme</span>: ColorSchemeName;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">type</span> AppearanceListener = <span class="function">(<span class="params">preferences: AppearancePreferences</span>) =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Note: Although color scheme is available immediately, it may change at any</span></span><br><span class="line"><span class="comment">   * time. Any rendering logic or styles that depend on this should try to call</span></span><br><span class="line"><span class="comment">   * this function on every render, rather than caching the value (for example,</span></span><br><span class="line"><span class="comment">   * using inline styles rather than setting a value in a `StyleSheet`).</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * Example: `const colorScheme = Appearance.getColorScheme();`</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">getColorScheme</span>(<span class="params"></span>): <span class="title">ColorSchemeName</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Add an event handler that is fired when appearance preferences change.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">addChangeListener</span>(<span class="params">listener: AppearanceListener</span>): <span class="title">EventSubscription</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Remove an event handler.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">removeChangeListener</span>(<span class="params">listener: AppearanceListener</span>): <span class="title">EventSubscription</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * A new useColorScheme hook is provided as the preferred way of accessing</span></span><br><span class="line"><span class="comment"> * the user&#x27;s preferred color scheme (aka Dark Mode).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">useColorScheme</span>(<span class="params"></span>): <span class="title">ColorSchemeName</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>Appearance</code>模块，可以获得当前的系统颜色主题：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> colorScheme = Appearance.getColorScheme();</span><br><span class="line"><span class="keyword">if</span> (colorScheme === <span class="string">&#x27;dark&#x27;</span>) &#123;</span><br><span class="line">  <span class="comment">// dark mode</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// light mode</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Appearance.addChangeListener(<span class="function">(<span class="params">prefer: Appearance.AppearancePreferences</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (prefer.colorScheme === <span class="string">&#x27;dark&#x27;</span>) &#123;</span><br><span class="line">    <span class="comment">// dark mode</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// light mode</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>同时也提供了一个上面我们自己实现的hooks，<code>useColorScheme</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> colorScheme = useColorScheme();</span><br></pre></td></tr></table></figure>
+
+<h4 id="一些坑"><a href="#一些坑" class="headerlink" title="一些坑"></a>一些坑</h4><ol>
+<li><p><code>Appearance</code>这个接口在Chrome调试模式下，会不生效，永远返回<code>light</code></p>
+<p> <a target="_blank" rel="noopener" href="https://github.com/facebook/react-native/issues/29144">Appearance.getColorScheme() always returns ‘light’</a></p>
+</li>
+<li><p><code>Appearance</code>想要生效，还需要Native做一些配置</p>
+<p> <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61124229/react-native-0-62-2-appearance-return-wrong-color-scheme">React Native 0.62.2 Appearance return wrong color scheme</a></p>
+<blockquote>
+<p>Also make sure you do <strong>not</strong> have UIUserInterfaceStyle set in your Info.plist. I had it set to ‘light’ so Appearance.getColorScheme() was always returning ‘light’.</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="2-小于0-62的版本"><a href="#2-小于0-62的版本" class="headerlink" title="2. 小于0.62的版本"></a>2. 小于0.62的版本</h3><p>对于0.62之前的版本，由于RN没有提供官方接口，需要通过第三方的库<code>react-native-dark-mode</code>来实现：<br><a target="_blank" rel="noopener" href="https://github.com/codemotionapps/react-native-dark-mode">GitHub - codemotionapps/react-native-dark-mode: Detect dark mode in React Native</a></p>
+<p>它的实现原理感兴趣的可以看下：</p>
+<blockquote>
+<p><strong>react-native-dark-mode 实现原理</strong>(这段实现原理其实也是问Chat GPT得到的答案😂)</p>
+<p><code>react-native-dark-mode</code>库的实现原理比较简单，它主要是利用了原生平台的接口来检测当前系统是否处于深色模式。在iOS平台上，它使用了<code>UIUserInterfaceStyle</code>接口来获取当前系统的界面风格，然后判断是否为暗黑模式。在Android平台上，它使用了<code>UiModeManager</code>接口来获取当前系统的 UI 模式，然后判断是否为夜间模式。</p>
+<p>具体来说，<code>react-native-dark-mode</code>在React Native项目中提供了一个名为<code>useDarkMode</code>的 React Hooks，用于获取当前系统是否处于深色模式。当使用这个Hooks时，它会首先检测当前平台是否支持暗黑模式，如果支持，就直接调用原生平台的接口获取当前系统的界面风格或UI模式，并将结果返回给调用方。如果不支持，就返回一个默认值（比如浅色模式）。</p>
+<p>需要注意的是，由于<code>react-native-dark-mode</code>是一个纯JS库，它无法直接调用原生平台的接口。所以它在Native端编写了一个名为<code>DarkMode</code>的模块，在JS层通过<code>NativeModules.DarkMode</code>来调用。</p>
+<ul>
+<li>在iOS上，<code>DarkMode</code>模块会通过<code>RCT_EXPORT_MODULE()</code>宏将自己暴露给RN的JS层。同时，它还会使用<code>RCT_EXPORT_METHOD()</code>宏将检测系统界面风格的方法暴露给JS层，使得在JS中可以直接调用该方法。</li>
+<li>在Android上，<code>DarkMode</code>模块同样会通过<code>@ReactModule</code>注解将自己暴露给JS层。然后，它会创建一个名为<code>DarkModeModule</code>的Java类，并在该类中实现检测系统UI模式的方法。最后，它会使用<code>@ReactMethod</code>注解将该方法暴露给JS层，使得在JS中可以直接调用该方法。</li>
+</ul>
+</blockquote>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7044043307340529694#heading-8">web深色模式适配指南 - 掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904024085364750">扫盲， H5适配暗黑主题（DarkMode）全部解法 - 掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://36kr.com/p/1724109946881">紧跟潮流学设计：深色模式设计的8个小技巧-36氪</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.woshipm.com/pd/4068702.html">即刻7.0：如何设计深色模式？（非官方） | 人人都是产品经理</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.xiaoxili.com/hi-face/docs/other/minapp-to-dark-mode.html">【草稿】深色模式在Web端的适配技巧，附带小程序侧的思考 · Hi头像</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cpming.top/p/detect-dark-mode-in-rn">在 React Native 中检测并适配暗黑模式 - 长跑茗</a></li>
+<li><a target="_blank" rel="noopener" href="https://web.dev/color-scheme/">Improved dark mode default styling with the color-scheme CSS property and …</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/facebook/react-native/issues/29144">Appearance.getColorScheme() always returns ‘light’</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61124229/react-native-0-62-2-appearance-return-wrong-color-scheme">React Native 0.62.2 Appearance return wrong color scheme</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/18/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E6%8A%80%E5%B7%A7/" rel="prev" title="Jest单元测试中常用的方法和技巧">
+      <i class="fa fa-chevron-left"></i> Jest单元测试中常用的方法和技巧
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/04/11/%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E7%AE%80%E5%8F%B2%EF%BC%9A%E4%BB%8E%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%B0UTF-8/" rel="next" title="字符编码简史：从二进制到UTF-8">
+      字符编码简史：从二进制到UTF-8 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">什么是深色模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A6%96%E5%85%88%EF%BC%8C%E6%80%8E%E4%B9%88%E6%89%93%E5%BC%80%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">首先，怎么打开深色模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E9%80%82%E9%85%8D-%E5%A3%B0%E6%98%8E%E9%A1%B5%E9%9D%A2%E6%94%AF%E6%8C%81%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">自动适配 - 声明页面支持深色模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B7%BB%E5%8A%A0color-scheme%E7%9A%84meta%E6%A0%87%E7%AD%BE"><span class="nav-number">3.1.</span> <span class="nav-text">1. 添加color-scheme的meta标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9C%A8CSS%E9%87%8C%E6%B7%BB%E5%8A%A0color-scheme%E5%B1%9E%E6%80%A7"><span class="nav-number">3.2.</span> <span class="nav-text">2. 在CSS里添加color-scheme属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%82%E9%85%8D"><span class="nav-number">4.</span> <span class="nav-text">自定义适配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%87%AA%E5%8A%A8%E9%80%82%E9%85%8D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.1.</span> <span class="nav-text">1. 自动适配的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%82%E9%85%8D"><span class="nav-number">4.2.</span> <span class="nav-text">2. 如何自定义适配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-CSS%E5%AA%92%E4%BD%93%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.2.1.</span> <span class="nav-text">1). CSS媒体查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-JS%E7%9B%91%E5%90%AC%E4%B8%BB%E9%A2%98%E9%A2%9C%E8%89%B2"><span class="nav-number">4.2.2.</span> <span class="nav-text">2). JS监听主题颜色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="nav-number">4.2.3.</span> <span class="nav-text">一些题外话</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native%E4%B8%AD%E7%9A%84%E9%80%82%E9%85%8D"><span class="nav-number">5.</span> <span class="nav-text">React Native中的适配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8E0-62%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-number">5.1.</span> <span class="nav-text">1. 大于等于0.62的版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%9D%91"><span class="nav-number">5.1.1.</span> <span class="nav-text">一些坑</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B0%8F%E4%BA%8E0-62%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-number">5.2.</span> <span class="nav-text">2. 小于0.62的版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">冰河</p>
+  <div class="site-description" itemprop="description">冰河的个人网站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">冰河</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
