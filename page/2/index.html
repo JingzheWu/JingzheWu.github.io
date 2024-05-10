@@ -115,7 +115,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -133,6 +133,145 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2021/06/27/%E8%B0%88%E8%B0%88DNS%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 冰河">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/06/27/%E8%B0%88%E8%B0%88DNS%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">谈谈DNS协议</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-27 21:11:53" itemprop="dateCreated datePublished" datetime="2021-06-27T21:11:53+08:00">2021-06-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>DNS协议</strong>也可以称为DNS服务，全称是<strong>Domain Name System</strong>，即<strong>域名系统</strong>，和HTTP协议一样，也是一个位于<strong>应用层</strong>的协议（服务），它是基于运输层的UDP协议的，关于网络协议的分层介绍，见<a href="">这里</a>（还没有写好，先放这里一个空链接）。<br>从DNS的名字我们就可以知道，它提供域名映射到IP地址的服务，那么在我们详细说DNS协议之前，先来大致讲讲互联网的<strong>域名结构</strong>。</p>
+<h4 id="1-域名结构"><a href="#1-域名结构" class="headerlink" title="1. 域名结构"></a>1. 域名结构</h4><p>我们都知道，在互联网中，每一台计算机想要访问互联网，都需要一个IP地址来进行网络通信，可以是形如<code>192.168.1.1</code>这样的点分十进制的IPv4地址，也可以是形如<code>[0:0:0:0:0:0:0:1]</code>这样方括号包围的十六进制的IPv6地址，但是这些地址不便于记忆，所以就产生了域名这种方便人们记住的东西（当然你要是记忆力好能记住IP地址，在浏览器地址栏输入URL的时候，也可以直接用IP地址替换掉域名，效果是一样的）。</p>
+<p>域名也可以叫做主机名。这里我们先给出一个域名，例如<code>www.abc.com</code>，以这个域名为例，来看一下域名的结构。</p>
+<p>域名采用层次化的结构，其中<code>com</code>是顶级域名，<code>abc</code>是二级域名，<code>www</code>是三级域名，从语法上来说，每个域名都是几个不同层级的名字用<code>.</code>连接起来的组合，<strong>域名不区分大小写字母</strong>，所以<code>www.ABC.com</code>和<code>www.abc.com</code>是一样的，按照规定来说，域名有长度限制，这里就不再细讲。</p>
+<p>上面提到，<code>com</code>是一个顶级域名（TLD，Top Level Domain），除了<code>com</code>之外，顶级域名还有好多，一般来说可以分为：</p>
+<ul>
+<li><p>国家顶级域名</p>
+<p>  如<code>cn</code>表示中国，<code>us</code>表示美国，<code>uk</code>表示英国，当然还有一些特殊地区也有所谓的国家顶级域名，比如<code>hk</code>表示香港</p>
+</li>
+<li><p>通用顶级域名</p>
+<p>  如<code>com</code>表示公司企业，<code>net</code>表示网络服务机构，<code>org</code>表示非营利组织，<code>edu</code>表示美国教育机构（中国的教育机构一般来说是<code>xxx.edu.cn</code>），<code>gov</code>表示美国政府部门（中国的政府部门一般来说是<code>xxx.gov.cn</code>）等。</p>
+</li>
+<li><p>基础结构域名</p>
+<p>  不常见，不做叙述。</p>
+</li>
+</ul>
+<p>所以说，在中国，企业的域名一般可以是<code>xxx.com</code>、<code>xxx.com.cn</code>、<code>xxx.cn</code>。</p>
+<p>下面这个域名树，清晰地展示了互联网的域名空间：</p>
+<p><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/DNS-protocol/domain-name-tree.png" alt="互联网的域名结构"></p>
+<p>在图中，<code>edu.cn</code>下面，划分除了很多三级域名，如<code>tsinghua</code>、<code>pku</code>等，一旦某个单位有了一个域名，它就可以自己决定是否要进一步划分下属的子域，域名树的树叶节点就是单台计算机的名字，不能再继续划分了，例如<code>mail</code>和<code>www</code>这两台计算机的完整域名分别为<code>mail.tsinghua.edu.cn</code>和<code>www.tsinghua.edu.cn</code>（这里起什么名字都可以，一般来说，人们愿意把用作邮件服务器的计算机叫做mail，把用作网站的服务器叫做www）。</p>
+<p>到这里，我们已经知道了为什么要有域名以及域名的结构，域名就是为了便于人们记忆而产生的，但是域名是方便人们记忆了，计算机反而不好处理了，它更善于处理IP地址这种东西，所以这里就用到了我们要讲的DNS协议，用来把域名映射到IP地址，在了解DNS解析域名的过程之前，我们还需要了解一下域名服务器这种东西（怎么这么多东西，写个博客好麻烦啊23333）。</p>
+<h4 id="2-域名服务器（DNS服务器）"><a href="#2-域名服务器（DNS服务器）" class="headerlink" title="2. 域名服务器（DNS服务器）"></a>2. 域名服务器（DNS服务器）</h4><p>上面说到了域名体系的树状结构，为了实现域名系统，我们首先想到的就是在域名树的每个节点都设置一台对应的服务器，这样就可以了，但是这样做的后果就是导致域名服务器太多，域名系统的运行效率太低，所以，通常是将好多个节点划分为一个区，用分区的方式来实现域名系统，如下图：</p>
+<p><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/DNS-protocol/DNS-partition.png" alt="DNS分区"></p>
+<p>其中，(a)是abc这个公司只设置了一个分区的样子，(b)是abc公司设置了两个分区的样子，这两个区分别为<code>abc.com</code>和<code>y.abc.com</code>，这两个区对应了两个<strong>权限域名服务器</strong>（后面还会提到）。下图可以看出域名服务器的层次结构：</p>
+<p><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/DNS-protocol/hierarchy-of-domain-name-servers.png" alt="域名服务器的层次结构"></p>
+<p>由上图可以看出，根据域名服务器起的作用，可以把域名服务器分为四种不同的类型：</p>
+<ul>
+<li><p>根域名服务器</p>
+<p>  根域名服务器对应的是域名树中的根节点，是最高层次的域名服务器，但是并不是只有一台，而是有好多台，总共有13个不同IP地址的根域名服务器，用a到m来表示，如<code>a.rootservers.net</code>，每个IP地址对应一套装置，一套装置在世界不同地点安装了服务器，总之，数量很多，当访问根域名服务器时，往往就是由路由器找到最近的根域名服务器访问。</p>
+<p>  一般来说，每台根域名服务器都知道所有的顶级域名服务器的域名以及IP地址，但往往也只知道这些，所以访问根域名服务器一般只能得到顶级域名服务器的IP地址，而不能直接知晓你要找的具体服务器的IP。一般来讲，如果要通过互联网解析域名，本地域名服务器首先访问的就是根域名服务器，下面还会讲到。</p>
+</li>
+<li><p>顶级域名服务器</p>
+<p>  顶级域名服务器负责管理在顶级域名下的所有二级域名，例如<code>cn</code>是顶级域名服务器，管理<code>edu</code>、<code>gov</code>等二级域名，当接收到查询请求时，要么给出最终结果（即具体IP地址），要么给出下一步应该访问的权限域名服务器的IP地址。</p>
+</li>
+<li><p>权限域名服务器</p>
+<p>  权限域名服务器上面已经提到过一次了，就是每个域名分区对应一个服务器就叫做权限域名服务器。当接收到DNS查询请求时，如果可以给出具体的IP地址就给出（例如前面的<code>abc.com</code>可以给出<code>v.x.abc.com</code>的IP地址，所以直接返回），如果不可以，就把下一步要访问的权限域名服务器的IP地址返回（如<code>abc.com</code>不能给出<code>t.y.abc.com</code>的IP，就会把<code>y.abc.com</code>这个权限域名服务器的IP地址返回）。</p>
+</li>
+<li><p>本地域名服务器</p>
+<p>  可能有人已经发现了，上面的图中并没有本地域名服务器这一层级结构，这是因为本地域名服务器（有时候也叫作首选域名服务器或者默认域名服务器）不属于域名树的层次结构，但是相当重要。当一台计算机要进行DNS查询的时候，就会将查询的请求发给本地域名服务器。</p>
+<p>  一般来说，一个互联网服务提供商（ISP）或者是一个大学（甚至是一个系）都有一个本地域名服务器，也就是说，当你再学校内使用校园网时，你的本地域名服务器并不是指你自己的电脑，因为你的系或者你的学校，都共用一个本地域名服务器。</p>
+</li>
+</ul>
+<h4 id="3-域名解析过程"><a href="#3-域名解析过程" class="headerlink" title="3. 域名解析过程"></a>3. 域名解析过程</h4><p>在了解了上面的域名结构以及域名服务器之后，我们来看一下域名的解析过程，总的来讲，主机向本地域名服务器的域名查询一般采用递归查询，而本地域名服务器向根域名服务器的查询一般采用迭代查询。</p>
+<p>概念其实很简单，递归查询就是如果主机向本地域名服务器查询IP，本地域名服务器不知道IP地址，这是本地域名服务器就代替主机称为DNS客户，向根域名服务器进行下一步查询。</p>
+<p>而迭代查询就是，在本地域名服务器向根域名服务器查询时，根域名服务器要么给出最终的IP地址，要么给出下一步本地域名服务器要访问的顶级域名服务器的IP地址，之后本地域名服务器再去访问相应的顶级域名服务器（而不是让根域名服务器代替本地域名服务器去进行下一步查询）。</p>
+<p>简单来说，递归查询返回具体IP地址或者报错没找到，迭代查询返回具体IP地址或者返回下一步的IP地址。如下图：</p>
+<p><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/DNS-protocol/domain-name-iterative-query.jpg" alt="域名迭代查询"></p>
+<p>当然，我们也可以指定查询方式让查询过程全程使用递归查询，如下图：</p>
+<p><img src="https://my-cos-1254464911.cos.ap-guangzhou.myqcloud.com/DNS-protocol/domain-name-recursive-query.jpg" alt="域名递归查询"></p>
+<p>下面以一个例子说说明在无缓存的情况下（下面会谈到缓存），通过DNS来查询域名的步骤，假设域名为<code>m.xyz.com</code>的主机想要查询<code>y.abc.com</code>这个域名对应的IP地址，那么他就会按照域名查询方式1（上图）中的方式进行查询：</p>
+<ol>
+<li>主机<code>m.xyz.com</code>先向本地域名服务器<code>dns.xyz.com</code>进行递归查询。</li>
+<li>本地域名服务器无法给出IP地址，所以本地域名服务器向（离自己最近的）根域名服务器查询，这是的查询已经变为了迭代查询。</li>
+<li>根域名服务器根据本地域名服务器发送的报文，知道了下一步应该查询的是哪个顶级域名服务器，这时根域名服务器告诉本地域名服务器，下一步应该查询的顶级域名服务器<code>dns.com</code>的IP地址。</li>
+<li>本地域名服务器向顶级域名服务器<code>dns.com</code>发送请求查询。</li>
+<li>顶级域名服务器<code>dns.com</code>告诉本地域名服务器，下一步应该查询的权限域名服务器<code>dns.abc.com</code>的IP地址。</li>
+<li>本地域名服务器向权限域名服务器<code>dns.abc.com</code>发送请求查询。</li>
+<li>权限域名服务器<code>dns.abc.com</code>告诉本地域名服务器想要查询的域名<code>y.abc.com</code>的IP地址。</li>
+<li>本地域名服务器在拿到IP地址后，将IP地址返回给主机<code>m.xyz.com</code>。<br>这就是域名查询的具体过程，因为DNS协议的基于UDP协议，所以上述8个步骤中，总共使用了8个UDP报文。</li>
+</ol>
+<p>上面提到，这是在没有缓存的情况下的DNS查询，实际上，为了提高查询的效率以及降低根域名服务器的负荷，一般来说域名服务器中都有高速缓存，用来记录最近查询过的域名的缓存，如果在查询域名时，有想要的域名到IP的映射缓存，并且缓存没有过期，那么就直接将缓存中域名映射的IP地址返回，省去了接下来的查询。</p>
+<p>只有在没有缓存或者缓存过期了才会进行下一步的查询。实际上，不知域名服务器有缓存，每台计算机甚至浏览器都会对域名到IP的映射进行缓存，这样一来大大加快的DNS的查询速度。</p>
+<p>上面这些就是DNS协议的大概了，如果觉得有哪里写的不对的，还请多多指教。</p>
+<p>参考书籍：《计算机网络》谢希仁</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
