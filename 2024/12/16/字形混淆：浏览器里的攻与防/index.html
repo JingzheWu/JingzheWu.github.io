@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"youfindme.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="免责声明：本文以及文中涉及的代码仅用于个人学习交流，禁止转载。同时请勿将本文介绍的相关技术用于非法用途，对于非法用途或者滥用相关技术而产生的风险和相关的法律后果，与本文作者无关。请在阅读本文内容时，确保仅用于个人学习交流，并遵守当地法律法规。  故事的开始不知道大家有没有用过一些剪藏助手的浏览器插件，就可以把在网页上看到内容，通过插件将内容收藏起来。我自己平时就会把这些自己觉得有收藏价值的内容，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字形混淆：浏览器里的攻与防">
+<meta property="og:url" content="https://youfindme.top/2024/12/16/%E5%AD%97%E5%BD%A2%E6%B7%B7%E6%B7%86%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E7%9A%84%E6%94%BB%E4%B8%8E%E9%98%B2/index.html">
+<meta property="og:site_name" content="冰河">
+<meta property="og:description" content="免责声明：本文以及文中涉及的代码仅用于个人学习交流，禁止转载。同时请勿将本文介绍的相关技术用于非法用途，对于非法用途或者滥用相关技术而产生的风险和相关的法律后果，与本文作者无关。请在阅读本文内容时，确保仅用于个人学习交流，并遵守当地法律法规。  故事的开始不知道大家有没有用过一些剪藏助手的浏览器插件，就可以把在网页上看到内容，通过插件将内容收藏起来。我自己平时就会把这些自己觉得有收藏价值的内容，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/1_article_example.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/2_article_obtained.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/3_diff_in_dom.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/4_spetical_font.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/5_change_font.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/6_change_font.gif">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/7_custom_font.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/8_font_file.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/9_glyphs_in_font.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/10_various_a.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/11_random_word.jpeg">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/12_corresponding_glyphs.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/13_guan_in_font.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/14_guan_in_unicode.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/15_shape_of_zhe.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/16_path_of_zhe.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/17_changed_path_of_zhe.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/18_my_custom_a.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/19_custom_a_render.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/20_expected_handle_flow.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/21_final_res.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/22_final_font.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/23_final_res_full_obfuscate.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/24_icon_font_demo.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/25_private_area_1.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/26_private_area_2.webp">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/27_private_area_3.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/28_size_of_font_and_svg.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/font_obfuscate/29_control_icon_font.png">
+<meta property="article:published_time" content="2024-12-16T10:38:21.000Z">
+<meta property="article:modified_time" content="2024-12-17T03:21:50.652Z">
+<meta property="article:author" content="冰河">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.youfindme.cn/blog/font_obfuscate/1_article_example.webp">
+
+
+<link rel="canonical" href="https://youfindme.top/2024/12/16/%E5%AD%97%E5%BD%A2%E6%B7%B7%E6%B7%86%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E7%9A%84%E6%94%BB%E4%B8%8E%E9%98%B2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://youfindme.top/2024/12/16/%E5%AD%97%E5%BD%A2%E6%B7%B7%E6%B7%86%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E7%9A%84%E6%94%BB%E4%B8%8E%E9%98%B2/","path":"2024/12/16/字形混淆：浏览器里的攻与防/","title":"字形混淆：浏览器里的攻与防"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>字形混淆：浏览器里的攻与防 | 冰河</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">冰河</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%85%E4%BA%8B%E7%9A%84%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">故事的开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E7%8E%B0%E7%AB%AF%E5%80%AA"><span class="nav-number">2.</span> <span class="nav-text">初现端倪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%AD%E5%BC%80%E9%9D%A2%E7%BA%B1"><span class="nav-number">3.</span> <span class="nav-text">揭开面纱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E5%92%8C%E5%AD%97%E5%BD%A2"><span class="nav-number">4.</span> <span class="nav-text">字符和字形</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%9C%E5%BA%95"><span class="nav-number">5.</span> <span class="nav-text">谜底</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E4%B8%8E%E9%98%B2"><span class="nav-number">6.</span> <span class="nav-text">攻与防</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E5%B0%9D%E8%AF%95%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%8B"><span class="nav-number">7.</span> <span class="nav-text">自己尝试实现一下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">一些其他的用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">9.</span> <span class="nav-text">结语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%86%85%E5%AE%B9%E4%BF%9D%E6%8A%A4"><span class="nav-number">9.1.</span> <span class="nav-text">1. 内容保护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%81%B6%E6%84%8F%E6%94%BB%E5%87%BB"><span class="nav-number">9.2.</span> <span class="nav-text">2. 恶意攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-icon%E5%9B%BE%E6%A0%87"><span class="nav-number">9.3.</span> <span class="nav-text">3. icon图标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">冰河</p>
+  <div class="site-description" itemprop="description">冰河的个人网站</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2024/12/16/%E5%AD%97%E5%BD%A2%E6%B7%B7%E6%B7%86%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E7%9A%84%E6%94%BB%E4%B8%8E%E9%98%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="字形混淆：浏览器里的攻与防 | 冰河">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          字形混淆：浏览器里的攻与防
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-12-16 18:38:21" itemprop="dateCreated datePublished" datetime="2024-12-16T18:38:21+08:00">2024-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-12-17 11:21:50" itemprop="dateModified" datetime="2024-12-17T11:21:50+08:00">2024-12-17</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>免责声明：本文以及文中涉及的代码仅用于个人学习交流，禁止转载。同时请勿将本文介绍的相关技术用于非法用途，对于非法用途或者滥用相关技术而产生的风险和相关的法律后果，与本文作者无关。请在阅读本文内容时，确保仅用于个人学习交流，并遵守当地法律法规。</p>
+</blockquote>
+<h2 id="故事的开始"><a href="#故事的开始" class="headerlink" title="故事的开始"></a>故事的开始</h2><p>不知道大家有没有用过一些剪藏助手的浏览器插件，就可以把在网页上看到内容，通过插件将内容收藏起来。我自己平时就会把这些自己觉得有收藏价值的内容，通过印象笔记、金山文档等剪藏助手收藏起来，供以后翻看。</p>
+<p>但是前段时间，在剪藏一篇文章时，发现了一个奇怪的事情。我打开了一个网站，这个网站是讲历史的，在拿出我的剪藏助手想要收藏时，遇到了下面的问题。这里我随便找一篇这个网站的文章作为例子截图演示一下：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/1_article_example.webp" alt="以这篇文章为例演示一下"></p>
+<p>但是剪藏完之后一看，发现不对的地方了，怎么句子都读不通顺？难道剪藏助手出bug了？</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/2_article_obtained.webp" alt="语句都读不通顺的内容"></p>
+<p>要知道，所谓的剪藏助手，它的原理就是读取网页的HTML，把里面的文字和样式获取到然后塞到自己新创建的文档里，正常来讲不应该有问题的。打开这个网站浏览器开发者工具看一下：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/3_diff_in_dom.webp" alt="DOM结构中的内容，和最终渲染的内容不一样"></p>
+<p>可以看到DOM中的内容，和最终展示的内容确实不一样，而剪藏助手截取的内容，也确实是DOM中的内容无疑，并不是剪藏助手的bug。</p>
+<p>这就奇怪了，为啥内容会不一样呢？明明就是很简单的纯文字渲染，也没有什么魔法在里面。<br>这个时候我注意到右下角有一个CSS属性：<code>font-family</code>，它的值是很奇怪的一个内容：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/4_spetical_font.webp" alt="一串好像是编码后的字符串"></p>
+<h2 id="初现端倪"><a href="#初现端倪" class="headerlink" title="初现端倪"></a>初现端倪</h2><p>这个<code>font-family</code>看起来有点奇怪，我们来尝试改一下看看。</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/5_change_font.webp" alt="修改font-family为其他字体"></p>
+<p>可以看到，在改了字体之后，渲染出来的内容，和DOM里的文字就对得上了，同样的读不通顺的句子。并且在来回切换字体的时候，页面渲染出来的内容也随着字体变化而变化：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/6_change_font.gif" alt="渲染的UI随着font-family变化"></p>
+<p>看来这个<code>font-family</code>就是问题所在。</p>
+<h2 id="揭开面纱"><a href="#揭开面纱" class="headerlink" title="揭开面纱"></a>揭开面纱</h2><p>既然找到了问题所在，那么我们来看下这个有点特别的<code>font-family</code>是什么，既然不是一个标准字体，那就应该是用户自定义的字体了，自定义在DOM中全局搜一下这个字体:</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/7_custom_font.webp" alt="自定义字体"></p>
+<p>可以看到这个字体是通过base64的方式引入的，并且内容也恰好是<code>data:font/ttf</code>这样一个字体格式。</p>
+<blockquote>
+<p>TTF（TrueType Font），一种二进制格式的文件。TTF 文件包含字体的矢量信息、度量信息和其他相关数据，用于在计算机上显示和打印文本。</p>
+</blockquote>
+<p>我们知道，base64是可以解码的，那我们把这段base64复制下来，还原为二进制ttf文件，可以参考下面的脚本：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">base64ToArrayBuffer</span>(<span class="params">base64</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> binaryString = atob(base64.split(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">const</span> len = binaryString.length;</span><br><span class="line">  <span class="keyword">const</span> bytes = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(len);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">    bytes[i] = binaryString.charCodeAt(i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> bytes.buffer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">saveArrayBufferToFile</span>(<span class="params">buffer, filename</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([buffer], &#123; <span class="attr">type</span>: <span class="string">&#x27;font/ttf&#x27;</span> &#125;);</span><br><span class="line">  <span class="keyword">const</span> link = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>);</span><br><span class="line">  link.href = URL.createObjectURL(blob);</span><br><span class="line">  link.download = filename;</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(link);</span><br><span class="line">  link.click();</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(link);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 示例用法</span></span><br><span class="line"><span class="keyword">const</span> base64Data = <span class="string">&#x27;data:font/ttf;base64,AAEAAAALAIAAAwAwT1MvMg8S...&#x27;</span>; <span class="comment">// 你的 base64 编码数据</span></span><br><span class="line"><span class="keyword">const</span> arrayBuffer = base64ToArrayBuffer(base64Data);</span><br><span class="line">saveArrayBufferToFile(arrayBuffer, <span class="string">&#x27;font.ttf&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>或者通过网上的一下小工具来实现这一步：<a target="_blank" rel="noopener" href="https://blog.csdn.net/u014291497/article/details/54915879">将base64格式的字体信息解码成可用的字体文件</a></p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/8_font_file.png" alt="ttf字体文件"></p>
+<p>用一些字体编辑器打开这个字体文件发现，这个字体文件里有一些自定义的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Glyph">字形（Glyphs）</a>。</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/9_glyphs_in_font.webp" alt="字体文件包含自定义字形"></p>
+<p>而如果我们去了解一下<a target="_blank" rel="noopener" href="https://help.fontlab.com/fontlab/7/manual/About-Glyphs/">字体相关的知识</a>的话，就会知道：</p>
+<p><strong>字符</strong>是Unicode码位标识的逻辑单元，而<strong>字形</strong>则是字体的图形单元。</p>
+<p><strong>Characters</strong> are logical text units identified by Unicode code points, whereas <strong>glyphs</strong> are graphical font units.</p>
+<h2 id="字符和字形"><a href="#字符和字形" class="headerlink" title="字符和字形"></a>字符和字形</h2><p>我们都知道，Unicode又叫万国码，是Unicode联盟整理和编码的字符集，可以用来展示世界上大部分的文字系统。</p>
+<p>Unicode编码从0开始，为每一个字符分配一个唯一的编号，这个编号就叫做码位（code point，也叫码点），以“计算机”的“机”字举例，“机”的码位为<code>26426</code>（十进制），即Unicode字符集中第26426个字符，就是“机”。</p>
+<p>但是在表示一个Unicode的字符时，通常会用<code>U+</code>然后紧接着一组十六进制的数字来表示这一个字符。也就是说，“机”在Unicode中的表示方式是<code>U+673A</code>，码位是<code>673A</code>。</p>
+<blockquote>
+<p>更多关于字符编码的知识可以看这篇文章：<br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7301908233320874025">字符编码简史：从二进制到UTF-8</a></p>
+</blockquote>
+<p>但是这个Unicode编码只是一个逻辑单元，在逻辑上给每个字符分配了一个编号。真正要展示的时候，还是需要给每个编号对应的字符，一个真正的图形，去展示去渲染，这个图形就是所谓的字形。</p>
+<p>而在字体文件中，比如ttf，字形通常可以用SVG来标识，或者是使用一种叫做 “字形描述语言”（Glyph Description Language）的语言来描述。这种语言可以像SVG一样描述复杂的字形，包括直线、曲线和其他形状。</p>
+<p>在字体文件中，每个字形都有一个唯一的标识符，这个标识符通常就是这个字符的Unicode码位。字形和Unicode码位之间的映射关系是在字体文件中定义的。</p>
+<p>当浏览器读取到一个字体文件时，往往会进行以下步骤来渲染对应的字体：</p>
+<ol>
+<li>解码字体数据：浏览器会通过CSS的<code>font-face</code>拿到字体文件或者字体的base64编码字符串，解析得到字体文件的原始数据</li>
+<li>加载字体：浏览器将解码后的字体数据加载到内存中，然后解析字体文件，读取其中的字形和对应的Unicode码位</li>
+<li>渲染字体：当需要渲染一个字符时，浏览器会使用这个字符的Unicode码位，去字体文件中找到对应的字形，然后使用对应的字形来渲染这个字符</li>
+</ol>
+<h2 id="谜底"><a href="#谜底" class="headerlink" title="谜底"></a>谜底</h2><p>到这里，谜底差不多就已经揭晓了。</p>
+<p>既然每个字符在渲染的时候，都有一个字形去控制渲染的形状，那么同一个字符可以根据不同的风格以不同的方式渲染或绘制，比如字母A，在不同的字体下可能有不同的形状：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/10_various_a.png" alt="不同字体下的“A”"></p>
+<p>同时从另一个角度看，有时字形可能看起来相同，但代表不同的字符。例如，拉丁字母A、西里尔字母А 和希腊大写字母Alpha Α看起来都一样，但代表不同文字的不同字符。</p>
+<p>那更进一步呢？我们是不是在一个字体里，可以把字符“A”的字形，映射到字形“B”，把字符“B”的字形，映射到字形“C”？这样的话一段字符串“AB”，最终浏览器渲染出来的，会是“BC”。</p>
+<p>答案揭晓，上面剪藏内容对不上，就是使用了这种技术，这种常被称为“<strong>字形替换</strong>”或“<strong>字形混淆</strong>”，或者换一个爬虫领域常用的名字，“<a target="_blank" rel="noopener" href="https://juejin.cn/search?query=%E5%AD%97%E4%BD%93%E5%8F%8D%E7%88%AC">字体反爬</a>”。</p>
+<p>它的原理就是使用一个特殊的字体，这个字体将每个字符映射到一个不同的字形。例如，字体可能将字符“A”映射到字形“B”，将字符“B”映射到字形“C”，等等。</p>
+<p>这样，当用户查看网页时，可以将看似乱码的内容，映射到正确的文本，用户会看到正确的文本。但是当他们尝试复制和粘贴文本时，或者说通过剪藏助手这种爬虫工具爬取页面内容时，得到的就是错误的文本。</p>
+<p>我们来简单验证一下这个结论：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/11_random_word.jpeg" alt="随便找几个字"></p>
+<p>随便找几个对不上的字看一下，用红框圈出来，去看下字体文件里这几个字的字形：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/12_corresponding_glyphs.webp" alt="字体文件里对应的字形"></p>
+<p>可以看到果然这些字都在自定义字形里，每个字的左下角是字符，中间是字形，这些字形恰好对应上了上面浏览器里的渲染结果。</p>
+<p>点开一个字查看具体信息也可以看到，比如“管”这个字：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/13_guan_in_font.webp" alt="“管”这个字"></p>
+<p>码位是<code>U+7BA1</code>，去第三方网站上搜一下这个码位对应的字符也确实是“管”：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/14_guan_in_unicode.png" alt="U+7BA1"></p>
+<p>而这个字符的字形，确实是“这”的形状：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/15_shape_of_zhe.webp" alt="“管”对应“这”的形状"></p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/16_path_of_zhe.webp" alt="“这”的形状矢量图"></p>
+<p>可以看到是类似于SVG的这种矢量图，我们还可以自己随便拖拽这些点，改变字形：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/17_changed_path_of_zhe.webp" alt="被编辑的“这”的矢量图"></p>
+<p>而如果有兴趣的话，还可以自己画或者设计一款专属字体，比如我下面自己用鼠标随便画了一个形状，字母“a”的字形，有点丑：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/18_my_custom_a.webp" alt="自定义“a”"></p>
+<p>导出这个ttf文件并在CSS中引用，就可以看到我们自己的字体了：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/19_custom_a_render.webp" alt="使用自定义“a”"></p>
+<h2 id="攻与防"><a href="#攻与防" class="headerlink" title="攻与防"></a>攻与防</h2><p>到这里已经把上面遇到的“奇怪”事情搞清楚了，这个网站通过这种技术，来实现反爬虫，防止爬虫抓取内容，也可以防止剪藏助手这类工具剪藏一些内容，因为即便爬虫抓取或者剪藏了HTML里的内容，拿到的也是混淆后的错误内容，想要看到正确的内容，只能通过实时网络获取编码后的字体，来渲染为正确的内容。</p>
+<p>可以说内容的“正确”，只会体现在浏览器的渲染层面，数据层面本身就是错误的。并且，这个字形的混淆以及对应的字体，每次请求都不一样。即每次加载页面请求服务端时，服务端都会先预先对内容进行一次混淆，每次使用的混淆字形都是不同的字符和字形。</p>
+<p>通过上面这些操作，防止了第三方获取到本站的内容，本站内容只能在本站查看，提高了网站的用户留存率之类的。</p>
+<p>即便爬虫在每次抓取内容时，获取对应的字体文件，也很难解析到字符和字形的对应关系，大大提高了爬虫爬取的成本。</p>
+<p>但是上面说的这些，都是“防”，是一种防御手段，还记得标题吗，“攻与防”，“攻”体现在哪里？</p>
+<p>其实在知道了字形混淆的原理，一些钓鱼网站可以用这种方式来进行攻击，比如：</p>
+<ul>
+<li>钓鱼网站通过字形混淆来绕过一些安全检查器，检查器获取到的是无意义的乱码，但是用户看到的是可读的文字，通过这种方式来进行钓鱼攻击</li>
+<li>将恶意Linux命令伪装成安全命令（使<code>rm -rf /h*</code>看起来像<code>echo hello</code>），粗心的用户可能直接复制粘贴到终端并执行，造成严重后果</li>
+<li>通过将垃圾邮件伪装成有用邮件来绕过垃圾邮件过滤</li>
+<li>通过内嵌某种字体到pdf文档中（pdf可以内嵌字体，发给其他人查看时不需要其他人在他们电脑上安装对应字体），来绕过某些对文档、论文等内容的查重处理，比如将字形进行混淆，查重工具读到的是乱码，那么查重结果自然不会有什么问题，同时通过pdf内嵌的字体，保证了人在看文档的时候的可读性（<em>注：抄袭剽窃可耻，学术造假侵权违法，不要这样做</em>）</li>
+<li>…</li>
+</ul>
+<p>上面这些都是利用字形混淆的方式来进行攻击的场景，我们这里只是讨论和学习这种技术可能存在的攻击手段，不是教导大家去这样搞，法网恢恢疏而不漏，<strong>大家不要去做这种攻击的事情</strong>。</p>
+<p>同时这也提醒我们在复制网上一些内容时，一定要检查内容的正确性。</p>
+<h2 id="自己尝试实现一下"><a href="#自己尝试实现一下" class="headerlink" title="自己尝试实现一下"></a>自己尝试实现一下</h2><p>在知道了上面的原理后，我们自己也可以实现字形混淆，但是总不能手动编辑每个字的字形矢量图吧，而且像是上面那种每次打开都会重新对不同字符的字形进行混淆的，肯定是需要把字形混淆的操作脚本化的，那假设我们自己也有一个网站需要对内容进行保护，我们要怎么实现上面的字形混淆逻辑呢？</p>
+<p>我们的目标是：对于一段提供好的文本，针对其中部分字符或者全部字符，进行字形混淆，并生成混淆后的文本以及对应的字体文件。</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/20_expected_handle_flow.png" alt="预期处理流程"></p>
+<p>整体思路是：</p>
+<ol>
+<li><strong>准备一个基础字体文件</strong><br> 这个基础字体文件用于获取字体中字符信息和字形信息。</li>
+<li><strong>确定好原始文本中需要进行混淆的字符列表</strong><br> 比如对于原始文本“ABCD”，需要对其中的“ABC”这三个字符进行混淆。</li>
+<li><strong>确定好混淆的目标字符列表</strong><br> 比如上面“ABCD”中，对“ABC”三个字符进行混淆，分别混淆成“XYZ”。最终生成“XYZD”，但是展示出来的样子还是“ABCD”的样子。</li>
+<li><strong>从基础字体文件中，获取字形信息</strong><br> 获取原始字符（比如“A”）和混淆的字符（比如混淆成“X”）各自的字形信息</li>
+<li><strong>替换字形形状的矢量图</strong><br> 将混淆字符（“X”）的字形信息中，描述字形形状的矢量图路径，替换为原始字符（“A”）的字形信息中的描述字形形状的矢量图路径。<br> 把所有需要替换字形形状的字符（“ABC”）都替换完。</li>
+<li><strong>反向替换字形形状的矢量图</strong><br> 但是把“XYZ”的字形形状改成“ABC”之后，真的需要展示“XYZ”的形状了怎么办？这个时候就需要进行反向混淆，把“ABC”这三个字符，随机指向“XYZ”的字形的形状。<br> 比如字符“A”的字形形状改为“Y”，字符“B”的字形形状改为“Z”，字符“C”的字形形状改为“X”。操作方法同上。<br> 这里随机指向而不是直接“A”指向“X”，“B”指向“Y”，“C”指向“Z”，也是为了加大破解难度，如果字符比较多的话，比如100个字符的字形随机相互指向，那么在没有字体文件的情况破解难度会很大。</li>
+<li><strong>修改原始文本中的字符为混淆后的字符</strong><br> 把原始文本中的字符，根据上面的字形替换映射关系，改成对应的混淆字符，生成最终混淆后的文本。即，把“ABCD”编辑修改为“XYZD”，在DOM中写“XYZD”即可。</li>
+</ol>
+<p>最终效果就是，在DOM中写“XYZD”，展示出来的时候，展示为“ABCD”，如果需要展示“XYZ”本身，那么在DOM中写“CBA”。</p>
+<p>下面给出一份代码Demo，根据提供的文本，随机从中间选出一些字符作为需要进行混淆的字符。然后从100个最常用的中文字符中，随机选出相同数量的字符作为混淆的目标字符。并最终返回混淆后的文本、字体文件，以及对应的映射关系。</p>
+<p>支持指定混淆的等级，分别进行低、中、高不同程度以及全部文本字符的混淆：</p>
+<p><code>fontObfuscateRandom.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> opentype = <span class="built_in">require</span>(<span class="string">&#x27;opentype.js&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; frequentlyUsedCnChar &#125; = <span class="built_in">require</span>(<span class="string">&#x27;./const&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BASE_FONT_PATH = path.resolve(__dirname, <span class="string">&#x27;./微软雅黑.ttf&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> OUTPUT_PATH = path.resolve(__dirname, <span class="string">&#x27;../output&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Randomly pop an element from the given array, and return it. Will modify the original array.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>arr The array</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns <span class="type">&#123;*&#125;</span> </span>The popped element</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">arrRandomPop</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> index = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * arr.length);</span><br><span class="line">  <span class="keyword">return</span> arr.splice(index, <span class="number">1</span>)[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Get specified count of random characters from the given list, excluding the characters in the except list</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123; string[] &#125;</span> </span>charList The list of characters</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123; number &#125;</span> </span>count The count of characters to get</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123; string[] &#125;</span> </span>exceptList The list of characters to exclude</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns <span class="type">&#123; string &#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getRandomCharsFromList</span>(<span class="params">charList, count, exceptList = []</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> charSet = <span class="keyword">new</span> <span class="built_in">Set</span>(charList);</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">while</span> (result.length &lt; count) &#123;</span><br><span class="line">    <span class="keyword">const</span> index = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * charSet.size);</span><br><span class="line">    <span class="keyword">const</span> randomChar = <span class="built_in">Array</span>.from(charSet)[index];</span><br><span class="line">    <span class="keyword">if</span> (exceptList.includes(randomChar)) &#123;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(randomChar);</span><br><span class="line">    charSet.delete(randomChar);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@typedef <span class="type">&#123; Object &#125;</span> <span class="variable">IObfuscatePlusParams</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@property <span class="type">&#123; string &#125;</span> </span>originalText The original text that need to obfuscate</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@property <span class="type">&#123; &#x27;low&#x27; | &#x27;middle&#x27; | &#x27;high&#x27; | &#x27;all&#x27; &#125;</span> </span>obfuscateLevel The level of obfuscation</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@property <span class="type">&#123; string &#125;</span> </span>fontName The name of the font family</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@property <span class="type">&#123; string &#125;</span> </span>fontFilename The name of the output font file</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Obfuscate a font by replacing the paths of glyphs with the paths of other glyphs</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123; IObfuscatePlusParams &#125;</span> <span class="variable">params</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns <span class="type">&#123; Promise&lt;&#123; obfuscatedText: string, fontFilePath: string, obfuscatedMap: &#123; [key: string]: string &#125;</span> </span>&#125;&gt; &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">obfuscateRandom</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; originalText, obfuscateLevel, fontName, fontFilename &#125; = params;</span><br><span class="line">  <span class="keyword">const</span> allCharsSet = <span class="keyword">new</span> <span class="built_in">Set</span>(originalText);</span><br><span class="line">  <span class="keyword">const</span> levelMap = &#123; <span class="attr">low</span>: <span class="number">0.3</span>, <span class="attr">middle</span>: <span class="number">0.5</span>, <span class="attr">high</span>: <span class="number">0.7</span>, <span class="attr">all</span>: <span class="number">1</span> &#125;;</span><br><span class="line">  <span class="keyword">const</span> countOfLevel = <span class="built_in">Math</span>.round(allCharsSet.size * levelMap[obfuscateLevel]);</span><br><span class="line">  <span class="keyword">const</span> count = <span class="built_in">Math</span>.min(countOfLevel, frequentlyUsedCnChar.length);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> obfuscateMap = &#123;&#125;;</span><br><span class="line">  <span class="keyword">const</span> oppositeMap = &#123;&#125;;</span><br><span class="line">  <span class="keyword">const</span> displayChars = getRandomCharsFromList(originalText, count);</span><br><span class="line">  <span class="keyword">const</span> obfuscateChars = getRandomCharsFromList(</span><br><span class="line">    frequentlyUsedCnChar,</span><br><span class="line">    count,</span><br><span class="line">    displayChars</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> displayChar = displayChars[i];</span><br><span class="line">    <span class="keyword">const</span> obfuscateChar = obfuscateChars[i];</span><br><span class="line">    obfuscateMap[displayChar] = obfuscateChar;</span><br><span class="line">  &#125;</span><br><span class="line">  obfuscateChars.forEach(<span class="function"><span class="params">obfuscateChar</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> randomDisplayChar = arrRandomPop(displayChars);</span><br><span class="line">    oppositeMap[obfuscateChar] = randomDisplayChar;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> finalMap = &#123; ...obfuscateMap, ...oppositeMap &#125;;</span><br><span class="line">  <span class="keyword">const</span> finalObfuscateList = <span class="built_in">Object</span>.keys(finalMap).map(<span class="function"><span class="params">key</span> =&gt;</span> (&#123;</span><br><span class="line">    <span class="attr">displayChar</span>: key,</span><br><span class="line">    <span class="attr">obfuscatedChar</span>: finalMap[key],</span><br><span class="line">  &#125;));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> obfuscatedText = originalText</span><br><span class="line">    .split(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    .map(<span class="function"><span class="params">char</span> =&gt;</span> finalMap[char] || char)</span><br><span class="line">    .join(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    opentype.load(BASE_FONT_PATH, <span class="function">(<span class="params">err, font</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">&#x27;Could not load font: &#x27;</span> + err);</span><br><span class="line">        reject(err);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> obfuscatedGlyphs = finalObfuscateList.map(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> &#123; displayChar, obfuscatedChar &#125; = item;</span><br><span class="line">        <span class="comment">// Get the glyph for the display character and the obfuscated character</span></span><br><span class="line">        <span class="keyword">const</span> displayGlyph = font.charToGlyph(displayChar);</span><br><span class="line">        <span class="keyword">const</span> obfuscatedGlyph = font.charToGlyph(obfuscatedChar);</span><br><span class="line">        <span class="comment">// Clone the obfuscated glyph and replace its path with the display glyph&#x27;s path</span></span><br><span class="line">        <span class="keyword">const</span> cloneObfuscatedGlyph = <span class="built_in">Object</span>.assign(</span><br><span class="line">          <span class="built_in">Object</span>.create(<span class="built_in">Object</span>.getPrototypeOf(obfuscatedGlyph)),</span><br><span class="line">          obfuscatedGlyph</span><br><span class="line">        );</span><br><span class="line">        cloneObfuscatedGlyph.path = displayGlyph.path;</span><br><span class="line">        cloneObfuscatedGlyph.name = displayChar;</span><br><span class="line">        <span class="keyword">return</span> cloneObfuscatedGlyph;</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// This .notdef glyph is required, it&#x27;s used for characters that doesn&#x27;t have a glyph in the font</span></span><br><span class="line">      <span class="keyword">const</span> notDefGlyph = <span class="keyword">new</span> opentype.Glyph(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;.notdef&#x27;</span>,</span><br><span class="line">        <span class="attr">advanceWidth</span>: <span class="number">650</span>,</span><br><span class="line">        <span class="attr">path</span>: <span class="keyword">new</span> opentype.Path(),</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Create a new font object with the obfuscated glyphs</span></span><br><span class="line">      <span class="keyword">const</span> newFont = <span class="keyword">new</span> opentype.Font(&#123;</span><br><span class="line">        <span class="attr">familyName</span>: fontName,</span><br><span class="line">        <span class="attr">styleName</span>: <span class="string">&#x27;Regular&#x27;</span>,</span><br><span class="line">        <span class="attr">unitsPerEm</span>: font.unitsPerEm,</span><br><span class="line">        <span class="attr">ascender</span>: font.ascender,</span><br><span class="line">        <span class="attr">descender</span>: font.descender,</span><br><span class="line">        <span class="attr">glyphs</span>: [notDefGlyph, ...obfuscatedGlyphs],</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Save the new font to a file</span></span><br><span class="line">      <span class="keyword">const</span> outputFilePath = path.resolve(OUTPUT_PATH, <span class="string">`<span class="subst">$&#123;fontFilename&#125;</span>.ttf`</span>);</span><br><span class="line">      <span class="keyword">const</span> buffer = newFont.toArrayBuffer();</span><br><span class="line">      fs.writeFileSync(outputFilePath, Buffer.from(buffer));</span><br><span class="line">      resolve(&#123;</span><br><span class="line">        obfuscatedText,</span><br><span class="line">        <span class="attr">fontFilePath</span>: outputFilePath,</span><br><span class="line">        <span class="attr">obfuscatedMap</span>: finalMap,</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">start</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> result = <span class="keyword">await</span> obfuscateRandom(&#123;</span><br><span class="line">    <span class="attr">originalText</span>: <span class="string">&#x27;找到夺嫡密码的，自始至终都只有一个人而已。&#x27;</span>,</span><br><span class="line">    <span class="attr">obfuscateLevel</span>: <span class="string">&#x27;middle&#x27;</span>,</span><br><span class="line">    <span class="attr">fontName</span>: <span class="string">&#x27;MyObfuscatedFont&#x27;</span>,</span><br><span class="line">    <span class="attr">fontFilename</span>: <span class="string">&#x27;my-obfuscated-font&#x27;</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;obfuscatedText: \n&#x27;</span>, result.obfuscatedText);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;fontFilePath: \n&#x27;</span>, result.fontFilePath);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;obfuscatedMap: \n&#x27;</span>, result.obfuscatedMap);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">start();</span><br></pre></td></tr></table></figure>
+
+<p>运行之后效果为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node ./src/fontObfuscateRandom.js</span></span><br><span class="line">obfuscatedText: </span><br><span class="line"> 找到部嫡进码的说量多至终机们点一个来分是。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fontFilePath: </span><br><span class="line"> /Users/your_user_name/font-obfucate-demo/output/my-obfuscated-font.ttf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">obfuscatedMap: </span><br><span class="line"> &#123;</span><br><span class="line">  &#x27;只&#x27;: &#x27;们&#x27;,</span><br><span class="line">  &#x27;密&#x27;: &#x27;进&#x27;,</span><br><span class="line">  &#x27;而&#x27;: &#x27;分&#x27;,</span><br><span class="line">  &#x27;已&#x27;: &#x27;是&#x27;,</span><br><span class="line">  &#x27;夺&#x27;: &#x27;部&#x27;,</span><br><span class="line">  &#x27;始&#x27;: &#x27;多&#x27;,</span><br><span class="line">  &#x27;都&#x27;: &#x27;机&#x27;,</span><br><span class="line">  &#x27;，&#x27;: &#x27;说&#x27;,</span><br><span class="line">  &#x27;有&#x27;: &#x27;点&#x27;,</span><br><span class="line">  &#x27;人&#x27;: &#x27;来&#x27;,</span><br><span class="line">  &#x27;自&#x27;: &#x27;量&#x27;,</span><br><span class="line">  &#x27;们&#x27;: &#x27;已&#x27;,</span><br><span class="line">  &#x27;进&#x27;: &#x27;只&#x27;,</span><br><span class="line">  &#x27;分&#x27;: &#x27;自&#x27;,</span><br><span class="line">  &#x27;是&#x27;: &#x27;都&#x27;,</span><br><span class="line">  &#x27;部&#x27;: &#x27;而&#x27;,</span><br><span class="line">  &#x27;多&#x27;: &#x27;，&#x27;,</span><br><span class="line">  &#x27;机&#x27;: &#x27;有&#x27;,</span><br><span class="line">  &#x27;说&#x27;: &#x27;夺&#x27;,</span><br><span class="line">  &#x27;点&#x27;: &#x27;密&#x27;,</span><br><span class="line">  &#x27;来&#x27;: &#x27;人&#x27;,</span><br><span class="line">  &#x27;量&#x27;: &#x27;始&#x27;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在使用的时候如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="css"></span></span><br><span class="line"><span class="css">      <span class="keyword">@font-face</span> &#123;</span></span><br><span class="line"><span class="css">        <span class="attribute">font-family</span>: MyObfuscatedFont;</span></span><br><span class="line"><span class="css">        <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">&#x27;my-obfuscated-font.ttf&#x27;</span>) <span class="built_in">format</span>(<span class="string">&#x27;truetype&#x27;</span>);</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css">      <span class="selector-class">.myFont</span> &#123;</span></span><br><span class="line"><span class="css">        <span class="attribute">font-family</span>: <span class="string">&#x27;MyObfuscatedFont&#x27;</span>;</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;myFont&quot;</span>&gt;</span>找到部嫡进码的说量多至终机们点一个来分是。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>最终效果：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/21_final_res.png" alt="最终效果"></p>
+<p>选中这段文字进行复制，复制到剪贴板的内容也是DOM中的“<em>找到部嫡进码的说量多至终机们点一个来分是。</em>”。</p>
+<p>如果打开生成的字体文件看一下的话，会发现和上面讨论的那个网站的字体文件中的效果也是类似的：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/22_final_font.webp" alt="最终字体文件"></p>
+<p>有我们生成的自定义的字形，并且和上面DOM和渲染中的结果也是一一对应的。</p>
+<p>而如果进行了最大程度的混淆，即对原始文本中所有字符混淆，最终混淆的内容将完全不可读：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/23_final_res_full_obfuscate.png" alt="完全混淆"></p>
+<p>而且由于是随机选择文本和目标字符进行混淆的，每次执行混淆脚本，都会生成完全不同的字体和混淆文本，这个也和上面内容里提到的效果对得上。</p>
+<p>到此为止，我们也算是揭开了字形混淆的“神秘面纱”，也基本上通过代码实现了类似的效果，还可以进一步做的事情就是把字体文件进行base64编码并通过base64字符串来在CSS里引用了。</p>
+<p>那除了上面的这些场景，字形混淆还有哪些用法呢？</p>
+<h2 id="一些其他的用法"><a href="#一些其他的用法" class="headerlink" title="一些其他的用法"></a>一些其他的用法</h2><p>字形混淆除了用在上面的场景外，还有一种无关反爬虫或者恶意攻击的用法，那就是字体图标，比如比较出名的<a target="_blank" rel="noopener" href="https://www.iconfont.cn/">iconfont</a>，大家可能还用过。</p>
+<p>这是阿里提供的一个矢量图标库，可以下载各种矢量图，同时也支持通过字体的方式来渲染图标。原理就是上面提到的，把一些字符的字形，改为一些icon图标的形状，在用这个图标的地方就可以通过下面这种方式来使用：</p>
+<ol>
+<li>声明字体</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@font-face</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&#x27;iconfont&#x27;</span>;</span><br><span class="line">    <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">&#x27;iconfont.tff&#x27;</span>) <span class="built_in">format</span>(<span class="string">&#x27;tff&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>引用字体</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.iconfont</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;iconfont&quot;</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">16px</span>;</span><br><span class="line">    <span class="attribute">font-style</span>: normal;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>将字符渲染成icon</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;iconfont&quot;</span>&gt;</span><span class="symbol">&amp;#xe650;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样就可以渲染出这个字符对应的图标，比如我这里：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/24_icon_font_demo.png" alt="iconfont demo"></p>
+<p>这里有一个点要说一下，因为是使用了替换某些字符的字形来实现的icon，为了不影响这些字符的正常展示，肯定是不能把常用中文或者英文等字符的字形来进行替换的，所以目前我看到的是他们使用了<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E5%9F%BA%E6%9C%AC%E5%A4%9A%E6%96%87%E7%A7%8D%E5%B9%B3%E9%9D%A2">Unicode第一平面</a>内的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%A7%81%E4%BA%BA%E4%BD%BF%E7%94%A8%E5%8C%BA">私人使用区</a>的一些字符：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/25_private_area_1.png" alt="私人使用区"></p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/26_private_area_2.webp" alt="私人使用区"></p>
+<p>可以看到上面<code>span</code>里的字符<code>&amp;#xe650;</code>是用的Unicode的HTML实体字符的形式来写的，码位是<code>e650</code>，可以看到<code>e650</code>正好是落在了第一平面内的私人使用区范围内：</p>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/27_private_area_3.png" alt="私人使用区"></p>
+<p>而顾名思义，私人使用区就是没有公共定义的Unicode区域，这些区域没有在Unicode标准中指定对应的具体字符是哪个，可以由个人或组织根据需要自行使用。把这些私人使用区的字符的字形，在字体文件中指定为需要使用到的icon，就可以做到不影响常用字符的渲染和展示了。</p>
+<p>而且私人使用区内的字符，因为没有真正的字符来对应，在自定义字体文件没有加载好的时候，也不用担心会使用默认字体渲染出其他字符，而是会展示出一个框<code>口</code>，就像上面DOM结构里看到的那样。</p>
+<p>那这种字体图标的好处在哪里呢？为什么不直接使用图片？其实目前看下来有以下几个优势：</p>
+<ol>
+<li>相比于图片，字体是矢量的，可以随意缩放而不影响图片的清晰度，在不同分辨率的屏幕上表现都很好</li>
+<li>即使是图片中的矢量图SVG，体积大小也比字体文件中专门优化过的、效率更高的字形描述语言描述的字形，体积要更大，做了一个对比，同样是25个上面的那种图标，字体文件要比SVG的体积小上很多</li>
+</ol>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/28_size_of_font_and_svg.png" alt="字体文件和SVG体积对比"></p>
+<ol start="3">
+<li>减少网络请求次数，如果每个SVG单独下载，那么会发起多个网络请求，但是如何合并到一个字体文件里，只需要一次网络请求即可</li>
+<li>图标作为字体来渲染，可以像操作字体一样来操作图标，比如设置颜色、字重、斜体、字号等，常规图片展示则没办法通过这些来控制</li>
+</ol>
+<p><img src="https://static.youfindme.cn/blog/font_obfuscate/29_control_icon_font.png" alt="使用字体属性控制icon"></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>到这里这篇文章就差不多结束了，简单总结一下字形混淆在各个场景的应用：</p>
+<h3 id="1-内容保护"><a href="#1-内容保护" class="headerlink" title="1. 内容保护"></a>1. 内容保护</h3><p>可以用在内容保护上，防止爬虫爬取或者文档剪藏工具剪藏，保护网站内容，不过从其他角度多想一下，感觉这种技术也不是没有缺点，比如下面的：</p>
+<ul>
+<li>可访问性：这种技术可能会影响到屏幕阅读器等辅助技术的使用，因为这些工具通常会读取DOM中原始的字符，而不是渲染后的字形</li>
+<li>搜索引擎优化（SEO）：搜索引擎通常会索引网页的原始文本，而不是渲染后的文本。使用字形替换技术可能会影响到网站在搜索结果中的排名</li>
+<li>用户体验：如果用户需要引用网站的内容，这种技术就可能会带来不好的用户体验。而且从防爬防复制角度来说，虽然这种技术可以防止用户直接复制文本，但是它不能防止用户通过其他方式获取文本，例如通过截图和OCR技术，甚至是物理拍照的方式，只能在某种程度上保护网站内容。</li>
+</ul>
+<p>另外除了字形混淆外，还有其他方式来保护内容，比如用canvas来渲染所有的文本内容，canvas元素本身只是一个绘图区域，里面的内容是通过JS绘制的，绘制的文本实际上是作为图像的一部分存在的，不会直接出现在HTML文档中。但是这种方案仍然存在上面的几个潜在问题。</p>
+<p>综合来讲还是要根据自己的业务场景来区分是否要混淆，如果需要提高用户留存率，甚至是保护一些付费内容的话，还是很有字形混淆的必要性的。</p>
+<h3 id="2-恶意攻击"><a href="#2-恶意攻击" class="headerlink" title="2. 恶意攻击"></a>2. 恶意攻击</h3><p>一些钓鱼网站或者垃圾邮件，可能通过这种技术来绕过检测和拦截进行攻击。同时我们要注意不受信的网站上复制的内容要注意也是不可信的，可能复制到非预期的危险内容，需要注意鉴别。</p>
+<h3 id="3-icon图标"><a href="#3-icon图标" class="headerlink" title="3. icon图标"></a>3. icon图标</h3><p>通过对一些字符进行字形替换，可以用字体的方式来控制和渲染icon图标，做到比直接使用图片更好的展示效果和更低的开发成本。</p>
+<p>这篇文章算是上一篇文章《<a target="_blank" rel="noopener" href="https://juejin.cn/post/7301908233320874025">字符编码简史：从二进制到UTF-8</a>》的一个延伸，分别从字符和字形的角度，探寻日常编程中那些不易察觉的微妙场景，感觉还是很有趣的。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://help.fontlab.com/fontlab/7/manual/About-Glyphs/">About Glyphs: Character vs. Glyph</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@doctoreww/day-3-next-level-font-obfuscation-7a6cd978c7a5">Next Level Font Obfuscation</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@doctoreww/beating-plagiarism-checkers-for-science-step-by-step-1e477795e261">Beating Plagiarism Checkers for Science</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/27381252">字号与行高</a></li>
+<li><a target="_blank" rel="noopener" href="https://purplebamboo.github.io/2014/01/09/iconfont/">iconfont 记录</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/purplebamboo/blog/issues/18">iconfont字体生成原理及使用技巧 · Issue #18 · purplebamboo/blog</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.iconfont.cn/help/detail?spm=a313x.help_index.i3.28.79c43a81ttcV0a&helptype=code">iconfont-阿里巴巴矢量图标库-使用帮助</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7301908233320874025">字符编码简史：从二进制到UTF-8</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014291497/article/details/54915879">https://blog.csdn.net/u014291497/article/details/54915879</a></li>
+</ul>
+<p><em>免责声明：本文以及文中涉及的代码仅用于个人学习交流，禁止转载。同时请勿将本文介绍的相关技术用于非法用途，对于非法用途或者滥用相关技术而产生的风险和相关的法律后果，与本文作者无关。请在阅读本文内容时，确保仅用于个人学习交流，并遵守当地法律法规。</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/08/%E5%89%8D%E7%AB%AF%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E9%B8%BF%E8%92%99%E5%BC%80%E5%8F%91/" rel="prev" title="前端视角下的鸿蒙开发">
+                  <i class="fa fa-angle-left"></i> 前端视角下的鸿蒙开发
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">冰河</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -26,40 +26,40 @@
 <meta property="og:site_name" content="冰河">
 <meta property="og:description" content="前言 鸿蒙系统，一个从诞生就一直处于舆论风口浪尖上的系统，从最开始的“套壳”安卓的说法，到去年的不再兼容安卓的NEXT版本的技术预览版发布，对于鸿蒙到底是什么，以及鸿蒙的应用开发的讨论从来没停止过。 这次我们就从一个前端开发的角度来了解一下鸿蒙，学习一下鸿蒙应用的开发。  一、 什么是鸿蒙在开始之前，先问大家一个问题，大家听说过几种鸿蒙？ 其实到目前为止，我们经常听到的鸿蒙系统，总共有三种，分别是">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/open_harmony.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/harmony_os.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/harmony_os_next.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/can_not_access_next_doc.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/relationship.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/development_kit.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/arkts_arkui.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/arkcompiler.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/runtime.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/dev_framework.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/v8_work_flow.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/type_change_in_js.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/type_info_discarded.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/optimize_in_hermes.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/blog_desc_of_arkcompiler.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/optimize_in_arkcompiler.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/lite_actor.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/blog_desc_of_lite_actor.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/source_code_security.gif">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/threading_model.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/discuss_of_arkui.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/basic_grammar.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/state_and_ui.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/overview_of_state.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/architecture_of_app.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/architecture_of_build.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/architecture_of_dev_build.png">
-<meta property="og:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/dev-debug-release-deploy.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/open_harmony.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/harmony_os.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/harmony_os_next.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/can_not_access_next_doc.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/relationship.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/development_kit.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/arkts_arkui.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/arkcompiler.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/runtime.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/dev_framework.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/v8_work_flow.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/type_change_in_js.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/type_info_discarded.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/optimize_in_hermes.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/blog_desc_of_arkcompiler.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/optimize_in_arkcompiler.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/lite_actor.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/blog_desc_of_lite_actor.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/source_code_security.gif">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/threading_model.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/discuss_of_arkui.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/basic_grammar.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/state_and_ui.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/overview_of_state.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_app.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_build.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_dev_build.png">
+<meta property="og:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/dev-debug-release-deploy.png">
 <meta property="article:published_time" content="2024-05-08T02:23:01.000Z">
-<meta property="article:modified_time" content="2024-05-10T10:04:09.936Z">
+<meta property="article:modified_time" content="2024-12-17T02:10:19.863Z">
 <meta property="article:author" content="冰河">
 <meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://static.youfindme.cn/blog//harmony_os_getting_started/open_harmony.png">
+<meta name="twitter:image" content="https://static.youfindme.cn/blog/harmony_os_getting_started/open_harmony.png">
 
 
 <link rel="canonical" href="https://youfindme.top/2024/05/08/%E5%89%8D%E7%AB%AF%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E9%B8%BF%E8%92%99%E5%BC%80%E5%8F%91/">
@@ -147,7 +147,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -211,7 +211,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-05-10 18:04:09" itemprop="dateModified" datetime="2024-05-10T18:04:09+08:00">2024-05-10</time>
+      <time title="修改时间：2024-12-17 10:10:19" itemprop="dateModified" datetime="2024-12-17T10:10:19+08:00">2024-12-17</time>
     </span>
 
   
@@ -230,35 +230,35 @@
 <h2 id="一、-什么是鸿蒙"><a href="#一、-什么是鸿蒙" class="headerlink" title="一、 什么是鸿蒙"></a>一、 什么是鸿蒙</h2><p>在开始之前，先问大家一个问题，大家听说过几种鸿蒙？</p>
 <p>其实到目前为止，我们经常听到的鸿蒙系统，总共有三种，分别是：</p>
 <p>OpenHarmony，HarmonyOS，以及HarmonyOS NEXT。</p>
-<h3 id="1-OpenHarmony"><a href="#1-OpenHarmony" class="headerlink" title="1. OpenHarmony"></a>1. OpenHarmony</h3><p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/open_harmony.png" alt="OpenHarmony"></p>
+<h3 id="1-OpenHarmony"><a href="#1-OpenHarmony" class="headerlink" title="1. OpenHarmony"></a>1. OpenHarmony</h3><p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/open_harmony.png" alt="OpenHarmony"></p>
 <p><a target="_blank" rel="noopener" href="https://www.openharmony.cn/">OpenHarmony（开源鸿蒙系统）</a>，由开放原子开源基金会进行管理。开放原子开源基金会由华为、阿里、腾讯、百度、浪潮、招商银行、360等十家互联网企业共同发起组建。包含了“鸿蒙操作系统”的基础能力，是“纯血”鸿蒙的底座。</p>
 <p>这个版本的鸿蒙是开源的，代码仓库的地址在这里：<a target="_blank" rel="noopener" href="https://gitee.com/openharmony">https://gitee.com/openharmony</a>。</p>
 <p>从我个人的一些粗浅理解来看，OpenHarmony类似于Android里的AOSP，可以装到各种设备上，比如手表、电视甚至是一些嵌入式设备上，详见可见官网的一些<a target="_blank" rel="noopener" href="https://www.openharmony.cn/armList/?id=6">例子</a>。</p>
-<h3 id="2-HarmonyOS"><a href="#2-HarmonyOS" class="headerlink" title="2. HarmonyOS"></a>2. HarmonyOS</h3><p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/harmony_os.png" alt="HarmonyOS"></p>
+<h3 id="2-HarmonyOS"><a href="#2-HarmonyOS" class="headerlink" title="2. HarmonyOS"></a>2. HarmonyOS</h3><p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/harmony_os.png" alt="HarmonyOS"></p>
 <p>基于 OpenHarmony、AOSP等开源项目，同时加入了自己的HMS（因为被美国限制后无法使用GMS）的商用版本，可以兼容安卓，也可以运行部分OpenHarmony开发的鸿蒙原生应用。</p>
 <p>这个也是目前经常被吐槽是“套壳”安卓的系统，截止到目前（2024.04）已经更新到了HarmonyOS 4.2。</p>
-<h3 id="3-HarmonyOS-NEXT"><a href="#3-HarmonyOS-NEXT" class="headerlink" title="3. HarmonyOS NEXT"></a>3. HarmonyOS NEXT</h3><p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/harmony_os_next.png" alt="HarmonyOS NEXT"></p>
+<h3 id="3-HarmonyOS-NEXT"><a href="#3-HarmonyOS-NEXT" class="headerlink" title="3. HarmonyOS NEXT"></a>3. HarmonyOS NEXT</h3><p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/harmony_os_next.png" alt="HarmonyOS NEXT"></p>
 <p>2023年秋季发布的技术预览版，在当前HarmonyOS的基础上去除了AOSP甚至是JVM，不再兼容安卓，只能运行鸿蒙原生应用，同时对OpenHarmony的能里进行了大量的更新，增加和修改了很多API。</p>
 <p>这个也就是所谓的“纯血”鸿蒙系统，可惜的是这个目前我们用不到，需要以公司名义找华为合作开权限，或者个人开发者使用一台Mate60 Pro做专门的开发机。并且目前由于有保密协议，网上也没有太多关于最新API的消息。</p>
 <blockquote>
 <p>NEXT版本文档：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/releasenotes-overview-0000001602419138">https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/releasenotes-overview-0000001602419138</a></p>
 </blockquote>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/can_not_access_next_doc.png" alt="无法直接访问的NEXT版本的开发文档"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/can_not_access_next_doc.png" alt="无法直接访问的NEXT版本的开发文档"></p>
 <p>据说目前HarmonyOS NEXT使用的API版本已经到了API12，目前官网可以访问的最新文档还是API9，所以接下来的内容也都是基于API9的版本来的。</p>
 <h3 id="4-小结"><a href="#4-小结" class="headerlink" title="4. 小结"></a>4. 小结</h3><p>所以一个粗略的视角来看，OpenHarmony、HarmonyOS以及HarmonyOS NEXT这三者之间的关系是这样的：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/relationship.png" alt="三者之间的关系"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/relationship.png" alt="三者之间的关系"></p>
 <h2 id="二、-初识鸿蒙开发"><a href="#二、-初识鸿蒙开发" class="headerlink" title="二、 初识鸿蒙开发"></a>二、 初识鸿蒙开发</h2><p>在大概知道了什么是鸿蒙之后，我们先来简单看一下鸿蒙开发的套件。下图是<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/">官网</a>所描述的一些开发套件，包括了设计、开发、测试、上架所涉及到的技术和产品。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/development_kit.png" alt="鸿蒙开发套件"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/development_kit.png" alt="鸿蒙开发套件"></p>
 <p>我们这篇文章里主要讨论右下角的三个：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkts/">ArkTS</a>、<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkui/">ArkUI</a>、<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkcompiler/">ArkCompiler</a>。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/arkts_arkui.png" alt="ArkTS&amp;ArkUI"></p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/arkcompiler.png" alt="ArkCompiler"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/arkts_arkui.png" alt="ArkTS&amp;ArkUI"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/arkcompiler.png" alt="ArkCompiler"></p>
 <h2 id="三、-关于ArkTS的一些疑惑"><a href="#三、-关于ArkTS的一些疑惑" class="headerlink" title="三、 关于ArkTS的一些疑惑"></a>三、 关于ArkTS的一些疑惑</h2><p>作为一个前端开发，最常用的编程语言就是JavaScript或者TypeScript，那么在看到鸿蒙应用开发用到的编程语言是ArkTS之后，我脑子里最先蹦出来的就是下面这几个问题：</p>
 <p><strong>1. ArkTS语言的运行时是啥？</strong><br>   既然编程语言是TS（TS的拓展，ArkTS），那么它的运行时是什么呢？是V8？JSC？Hermes？还是其他什么呢？<br><strong>2. ArkTS还是单线程语言吗？</strong><br>   ArkTS还是和JS一样，是单线程语言吗？<br><strong>3. 基于TS拓展了什么？</strong><br>   TS是JS的超集，对JS进行了拓展，增加了开发时的类型支持。而ArkTS对对TS又进行了拓展，是TS的超集，那它基于TS拓展了什么内容呢？</p>
 <p>下面我们一个一个来看。</p>
 <h3 id="1-Question1-ArkTS语言的运行时"><a href="#1-Question1-ArkTS语言的运行时" class="headerlink" title="1. Question1 - ArkTS语言的运行时"></a>1. Question1 - ArkTS语言的运行时</h3><p>先说结论，ArkTS的运行时不是V8，不是JSC、Hermes，不是目前任何一种JS引擎。ArkTS的运行时是一个自研的运行时，叫做方舟语言运行时（简称方舟运行时）。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/runtime.png" alt="方舟运行时"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/runtime.png" alt="方舟运行时"></p>
 <p>而这个运行时，执行的也不是JS/TS/ArkTS代码，而是执行的<strong>字节码和机器码</strong>。<br>这是因为方舟运行时是<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkcompiler/">ArkCompiler（方舟编译器）</a>的一部分，对于JS/TS/ArkTS的编译在运行前就进行了（和Hermes有点像，下面会讲到）。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/dev_framework.png" alt="方舟开发框架示意图"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/dev_framework.png" alt="方舟开发框架示意图"></p>
 <p>我们来简单了解一下ArkCompiler，从官网的描述可以看到，ArkCompiler关注的重点主要有三个方面：</p>
 <ul>
 <li>AOT 编译模式</li>
@@ -283,48 +283,48 @@
 </ul>
 <p>我们一个一个来说。</p>
 <h5 id="a-JS变量类型在运行时可能改变"><a href="#a-JS变量类型在运行时可能改变" class="headerlink" title="a. JS变量类型在运行时可能改变"></a>a. JS变量类型在运行时可能改变</h5><p>首先我们来看一张图，这张图描述了现在V8引擎的工作流程，目前Chrome和Node里的JS引擎都是这个：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/v8_work_flow.png" alt="V8现有工作流程"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/v8_work_flow.png" alt="V8现有工作流程"></p>
 <p>从上面可以看到，V8在拿到JS源码后，会先解析成AST，之后经过Ignition解释器把语法树编译成字节码，然后再解释字节码执行。</p>
 <p>于此同时还会收集热点代码，比如代码一共运行了多少次、如何运行的等信息，也就是上面的Feedback的流程。</p>
 <p>如果发现一段代码会被重复执行，则监视器会将此段代码标记为热点代码，交给V8的Turbofan编译器对这段字节码进行编译，编译为对应平台（Intel、ARM、MIPS等）的二进制机器码，并执行机器码，也就是图里的Optimize流程。</p>
 <p>等后面V8再次执行这段代码，则会跳过解释器，直接运行优化后的机器码，从而提升这段代码的运行效率。</p>
 <p>但是我们发现，图里面除了Optimize外，还有一个Deoptimize，<strong>反优化</strong>，也就是说被优化成机器码的代码逻辑，可能还会被反优化回字节码，这是为什么呢？</p>
 <p>其实原因就是上面提到的“JS变量类型在运行时可能改变”，我们来看一个例子：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/type_change_in_js.png" alt="JS变量类型在运行时可能改变"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/type_change_in_js.png" alt="JS变量类型在运行时可能改变"></p>
 <p>比如一个<code>add</code>函数，因为JS没有类型信息，底层编译成字节码后伪代码逻辑大概如这张图所示。会判断<code>x</code>和<code>y</code>的各种类型，逻辑比较复杂。</p>
 <p>在Ignition解释器执行<code>add(1, 2)</code>时，已经知道<code>add</code>函数的两个参数都是整数，那么TurboFan在进一步编译字节码时，就可以假定<code>add</code>函数的参数是整数，这样可以极大地简化生成的汇编代码，不再判断各种类型，伪代码如第三张图里所示。</p>
 <p>接下来的<code>add(3, 4)</code>与<code>add(5, 6)</code>由于入参也是整数，可以直接执行之前编译的机器码，但是<code>add(&quot;7&quot;, &quot;8&quot;)</code>时，发现并不是整数，这时候就只能将这段逻辑Deoptimize为字节码，然后解释执行字节码。</p>
 <p>这就是所谓的Deoptimize，<strong>反优化</strong>。可以看出，如果我们的JS代码中变量的类型变来变去，是会给V8引擎增加不少麻烦，为了提高性能，我们可以尽量不要去改变变量的类型。</p>
 <p>虽然说使用TS可以部分缓解这个问题，但是TS只能约束<strong>开发时</strong>的类型，运行的时候TS的类型信息是会被丢弃的，也无法约束，V8还是要做上面的一些假定类型的优化，无法一开始就编译为机器码。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/type_info_discarded.png" alt="TS类型信息运行时被丢弃"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/type_info_discarded.png" alt="TS类型信息运行时被丢弃"></p>
 <p>可以说TS的类型信息被浪费了，没有给运行时代码特别大的好处。</p>
 <h5 id="b-JS编译为字节码将导致体积增大"><a href="#b-JS编译为字节码将导致体积增大" class="headerlink" title="b. JS编译为字节码将导致体积增大"></a>b. JS编译为字节码将导致体积增大</h5><p>上面说到JS主要用于Web应用，Web应用如果提前编译为字节码将导致体积增大很多，对网络资源的消耗会更大。那么对于非Web应用，其实是可以做到提前编译为字节码的，比如Hermes引擎。</p>
 <p>Hermes作为React Native的运行时，是作为App预装到用户的设备上，除了热更新这种场景外，绝大部分情况下是不需要打开App时动态下载代码资源的，所以体积增大的问题影响不是很大，但是预编译带来的运行时效率提升的好处却比较明显。</p>
 <p>所以相对于V8，Hermes<a target="_blank" rel="noopener" href="https://supercodepower.com/mobile-javascript-engines#3hermes">去掉了JIT，支持了生成字节码</a>，在构建App的时候，就把JS代码进行了预编译，预编译为了Hermes运行时可以直接处理的字节码，省去了在运行阶段解析AST语法树、编译为字节码的工作。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/optimize_in_hermes.png" alt="Hermes对JS编译和执行流程的改进"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/optimize_in_hermes.png" alt="Hermes对JS编译和执行流程的改进"></p>
 <blockquote>
 <p>一句题外话，Hermes去除了对JIT的支持，除了因为JIT会导致JS引擎启动时间变长、内存占用增大外，还有一部分可能的原因是，在iOS上，苹果为了<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21320960/answer/18628710">安全考虑</a>，不允许除了Safari和WebView（只有WKWebView支持JIT，UIWebView不支持）之外的第三方应用里直接使用JSC的JIT能力，也不允许第三方JS运行时支持JIT（<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/429797868">相关问题</a>）。</p>
 <p>甚至V8专门出了一个去掉JIT的<a target="_blank" rel="noopener" href="https://supercodepower.com/mobile-javascript-engines#2v8">JIT-less V8</a>版本来在iOS上集成，Hermes似乎也不太可能完全没考虑到这一点。</p>
 </blockquote>
 <h5 id="c-取长补短"><a href="#c-取长补短" class="headerlink" title="c. 取长补短"></a>c. 取长补短</h5><p>在讨论了V8的JIT和Hermes的预编译之后，我们再来看看ArkCompiler，截取一段<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/8UHznZenc7A_UICta2bETg">官方博客里的描述</a>：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/blog_desc_of_arkcompiler.png" alt="博客描述"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/blog_desc_of_arkcompiler.png" alt="博客描述"></p>
 <p>还记得上面说的“TS的类型信息被浪费了”吗？TS的类型信息只在开发时有用，在编译阶段就被丢弃了，而ArkCompiler就是利用了这一点，直接在App构建阶段，利用TS的类型信息直接预编译为字节码以及优化机器码。</p>
 <p>即在ArkCompiler中，不存在TS-&gt;JS的这一步转译，而是直接从TS编译为了字节码和优化机器码（这里存疑，官网文档没有找到很明确的说法，不是特别确定是否有TS-&gt;JS的转译）。</p>
 <p>同时由于鸿蒙应用也是一个App而不是Web应用，所以ArkCompiler和Hermes一样，也是在构建App时就进行了预编译，而不是在运行阶段做这个事情。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/optimize_in_arkcompiler.png" alt="ArkCompiler对JS/TS编译和执行流程的改进"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/optimize_in_arkcompiler.png" alt="ArkCompiler对JS/TS编译和执行流程的改进"></p>
 <p>简单总结下来，ArkCompiler像Hermes一样支持生成字节码，同时又将V8引擎JIT生成机器码的工作也提前在预编译阶段做了。是比Hermes只生成字节码的AOT更进一步的AOT（同时生成字节码和部分优化后的机器码）。</p>
 <h4 id="LiteActor轻量化并发"><a href="#LiteActor轻量化并发" class="headerlink" title="LiteActor轻量化并发"></a>LiteActor轻量化并发</h4><p>到这里其实已经可以回答上面讲到的第二个问题了，ArkTS还是单线程语言吗？</p>
 <p>答案是：是的，还是单线程语言。但是ArkTS里通过<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/taskpool-vs-worker-0000001632849934-V2">Worker和TaskTool</a>这两种方式支持并发。</p>
 <p>同时ArkCompiler对现有的Worker进行了一些优化，直接看<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/8UHznZenc7A_UICta2bETg">官网博客</a>：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/lite_actor.png" alt="LiteActor轻量化并发"></p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/blog_desc_of_lite_actor.png" alt="LiteActor轻量化并发博客描述"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/lite_actor.png" alt="LiteActor轻量化并发"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/blog_desc_of_lite_actor.png" alt="LiteActor轻量化并发博客描述"></p>
 <p>这里的Actor是什么呢？Actor是一种并发编程里的线程模型。</p>
 <p>线程模型比较常见的就是共享内存模型，多个线程之间共享内存，比如Java里多个线程共享内存数据，需要通过<code>synchronized</code>同步锁之类的来防止数据一致性的问题。</p>
 <p>Actor模型是另一种线程模型，“Actor”是处理并发计算的基本单位，每个Actor都有自己的状态，并且可以接收和发送消息。当一个Actor接收到消息时，它可以改变自己的状态，发送消息给其他Actor，或者创建新的Actor。</p>
 <p>这种模型可以帮助开发者更好地管理复杂的状态和并发问题，因为每个Actor都是独立的，它们之间不会共享状态，这可以避免很多并发问题。同时，Actor模型也使得代码更易于理解和维护，因为每个Actor都是独立的，它们的行为可以被清晰地定义和隔离。</p>
 <p>到这里大家应该已经比较明白了，前端里的Web Worker就是这种线程模型的一种体现，通过Worker来开启不同的线程。</p>
 <h4 id="源码安全"><a href="#源码安全" class="headerlink" title="源码安全"></a>源码安全</h4><p>按照<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkcompiler/">官网</a>的说法，ArkCompiler会把ArkTS编译为字节码，并且ArkCompiler使用多种混淆技术提供更高强度的混淆与保护，使得HarmonyOS应用包中装载的是多重混淆后的字节码，有效提高了应用代码安全的强度。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/source_code_security.gif" alt="源码安全"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/source_code_security.gif" alt="源码安全"></p>
 <h3 id="2-Question2-ArkTS还是单线程语言吗"><a href="#2-Question2-ArkTS还是单线程语言吗" class="headerlink" title="2. Question2 - ArkTS还是单线程语言吗"></a>2. Question2 - ArkTS还是单线程语言吗</h3><p>这个刚刚已经回答了，还是单线程语言，借用官网的描述：</p>
 <blockquote>
 <p>HarmonyOS应用中每个进程都会有一个主线程，主线程有如下职责：</p>
@@ -338,7 +338,7 @@
 </ol>
 <p>除主线程外，还有一类与主线程并行的独立线程Worker，主要用于执行耗时操作，但不可以直接操作UI。Worker线程在主线程中创建，与主线程相互独立。最多可以创建8个Worker。</p>
 </blockquote>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/threading_model.png" alt="ArkTS线程模型"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/threading_model.png" alt="ArkTS线程模型"></p>
 <h3 id="3-Question3-基于TS拓展了什么"><a href="#3-Question3-基于TS拓展了什么" class="headerlink" title="3. Question3 - 基于TS拓展了什么"></a>3. Question3 - 基于TS拓展了什么</h3><p>当前，ArkTS在TS的基础上主要扩展了如下能力：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-basic-syntax-overview-0000001531611153-V2">基本语法</a>：ArkTS定义了声明式UI描述、自定义组件和动态扩展UI元素的能力，再配合ArkUI开发框架中的系统组件及其相关的事件方法、属性方法等共同构成了UI开发的主体。</li>
@@ -349,9 +349,9 @@
 <h2 id="四、-ArkTS-amp-ArkUI"><a href="#四、-ArkTS-amp-ArkUI" class="headerlink" title="四、 ArkTS &amp; ArkUI"></a>四、 ArkTS &amp; ArkUI</h2><p>首先，在聊ArkUI之前，还有一个问题大家可能比较感兴趣：ArkUI是怎么渲染我们写的UI呢？</p>
 <p>答案是<strong>自绘</strong>，类似于Flutter，使用自己的渲染引擎（应该是发展于Skia），而不是像RN那样将UI转为不同平台上的底层UI。</p>
 <p>不管是从官网的描述[<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkui/">1</a>]、[<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-ui-development-overview-0000001438467628-V2">2</a>]来看，还是社区里的<a target="_blank" rel="noopener" href="https://juejin.cn/post/7280006531922673719#heading-0">讨论</a>来看，ArkUI的渲染无疑是自绘制的，并且ArkUI和Flutter之间的联系很密切：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/discuss_of_arkui.png" alt="社区里的一些讨论"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/discuss_of_arkui.png" alt="社区里的一些讨论"></p>
 <h3 id="1-基本语法"><a href="#1-基本语法" class="headerlink" title="1. 基本语法"></a>1. 基本语法</h3><p>从前端的角度来看，ArkTS和ArkUI的定位其实就是类似于前端中TS+React+配套状态管理工具（如Redux），可以用TS写声明式UI（有点像写jsx），下面是基本语法：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/basic_grammar.png" alt="基本语法"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/basic_grammar.png" alt="基本语法"></p>
 <ul>
 <li>装饰器<br>用于装饰类、结构、方法以及变量，并赋予其特殊的含义。如上述示例中@Entry、@Component和@State都是装饰器，<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-create-custom-components-0000001473537046-V2#section1430055924816">@Component</a>表示自定义组件，<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-create-custom-components-0000001473537046-V2#section1430055924816">@Entry</a>表示该自定义组件为入口组件，<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-state-0000001474017162-V2">@State</a>表示组件中的状态变量，状态变量变化会触发UI刷新</li>
 <li>自定义组件<br>可复用的UI单元，可组合其他组件，如上述被@Component装饰的<code>struct Hello</code></li>
@@ -365,12 +365,12 @@
 <p>在声明式UI编程框架中，UI是程序状态的运行结果，用户构建了一个UI模型，其中应用的运行时的状态是参数。当参数改变时，UI作为返回结果，也将进行对应的改变。这些运行时的状态变化所带来的UI的重新渲染，在ArkUI中统称为状态管理机制。</p>
 <p>自定义组件拥有变量，变量必须被装饰器装饰才可以成为状态变量，状态变量的改变会引起UI的渲染刷新。如果不使用状态变量，UI只能在初始化时渲染，后续将不会再刷新。 下图展示了State和View（UI）之间的关系。</p>
 </blockquote>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/state_and_ui.png" alt="State和UI"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/state_and_ui.png" alt="State和UI"></p>
 <blockquote>
 <p>View(UI)：UI渲染，指将build方法内的UI描述和@Builder装饰的方法内的UI描述映射到界面。<br>State：状态，指驱动UI更新的数据。用户通过触发组件的事件方法，改变状态数据。状态数据的改变，引起UI的重新渲染。</p>
 </blockquote>
 <p>在ArkUI中，提供了大量的状态管理相关的装饰器，比如<code>@State</code>、<code>@Prop</code>、<code>@Link</code>等。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/overview_of_state.png" alt="ArkTS &amp; ArkUI的状态管理总览"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/overview_of_state.png" alt="ArkTS &amp; ArkUI的状态管理总览"></p>
 <p>更多细节详见<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-state-management-0000001524177629-V2">状态管理</a>。</p>
 <h3 id="3-渲染控制"><a href="#3-渲染控制" class="headerlink" title="3. 渲染控制"></a>3. 渲染控制</h3><p>在ArkUI中，可以像React那样，通过<code>if else</code>，<code>for each</code>等进行跳转渲染、列表渲染等，更多细节详见<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-rendering-control-0000001504769325-V2">渲染控制</a>。</p>
 <blockquote>
@@ -393,14 +393,14 @@
 <h2 id="五、-其他"><a href="#五、-其他" class="headerlink" title="五、 其他"></a>五、 其他</h2><h3 id="1-包管理工具"><a href="#1-包管理工具" class="headerlink" title="1. 包管理工具"></a>1. 包管理工具</h3><p>HarmonyOS开发中，使用的包管理工具是<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/ide-command-line-ohpm-0000001490235312-V2">ohpm</a>，目前看来像是一个借鉴<a target="_blank" rel="noopener" href="https://pnpm.io/">pnpm</a>的三方包管理工具，详见<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/ide-command-line-ohpm-0000001490235312-V2">官方文档</a>。</p>
 <p>另外，鸿蒙也提供了第三方包发布的仓库：<a target="_blank" rel="noopener" href="https://ohpm.openharmony.cn/">https://ohpm.openharmony.cn</a>。</p>
 <h3 id="2-应用程序结构"><a href="#2-应用程序结构" class="headerlink" title="2. 应用程序结构"></a>2. 应用程序结构</h3><p>在鸿蒙系统中，一个应用包含一个或者多个Module，每一个Module都可以独立进行编译和运行。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/architecture_of_app.png" alt="应用程序结构"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_app.png" alt="应用程序结构"></p>
 <p>发布时，每个Module编译为一个<code>.hap</code>后缀的文件，即HAP。每个HarmonyOS应用可以包含多个<code>.hap</code>文件。</p>
 <p>在应用上架到应用市场时，需要把应用包含的所有<code>.hap</code>文件打包为一个<code>.app</code>后缀的文件用于上架。</p>
 <p>但是<code>.app</code>包不能直接安装到设备上，只是上架应用市场的单元，安装到设备上的是<code>.hap</code>。</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/architecture_of_build.png" alt="打包结构"></p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/architecture_of_dev_build.png" alt="开发态和打包后视图"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_build.png" alt="打包结构"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_dev_build.png" alt="开发态和打包后视图"></p>
 <p>鸿蒙应用的整体开发调试与发布部署流程大概是这样的：</p>
-<p><img src="https://static.youfindme.cn/blog//harmony_os_getting_started/dev-debug-release-deploy.png" alt="开发-调试-发布-部署"></p>
+<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/dev-debug-release-deploy.png" alt="开发-调试-发布-部署"></p>
 <p>HAP可分为Entry和Feature两种类型：</p>
 <ul>
 <li><strong>Entry类型的HAP</strong>：是应用的主模块<br>在同一个应用中，同一设备类型只支持一个Entry类型的HAP，通常用于实现应用的入口界面、入口图标、主特性功能等。</li>
@@ -472,6 +472,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2024/12/16/%E5%AD%97%E5%BD%A2%E6%B7%B7%E6%B7%86%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E7%9A%84%E6%94%BB%E4%B8%8E%E9%98%B2/" rel="next" title="字形混淆：浏览器里的攻与防">
+                  字形混淆：浏览器里的攻与防 <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>
