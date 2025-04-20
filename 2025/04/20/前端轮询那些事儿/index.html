@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"youfindme.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="当AI开始“说人话”——从大模型流式回答说起深夜，你盯着屏幕上ChatGPT的回答逐字跳出，仿佛有个隐形的打字员在网络另一端敲击键盘，站在用户的角度，这种“流式回答”的魔法，好像让冰冷的技术有了一丝温度。那么站在开发者的视角，这种流式输出（即数据实时更新）的背后，是用的什么来实现的呢？ 这就是我们今天要讨论的内容，前端轮询的那些事儿——如何优雅实现实时数据更新。 一、 页面刷新：原始人的刀耕火种在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端轮询那些事儿">
+<meta property="og:url" content="https://youfindme.top/2025/04/20/%E5%89%8D%E7%AB%AF%E8%BD%AE%E8%AF%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/index.html">
+<meta property="og:site_name" content="冰河">
+<meta property="og:description" content="当AI开始“说人话”——从大模型流式回答说起深夜，你盯着屏幕上ChatGPT的回答逐字跳出，仿佛有个隐形的打字员在网络另一端敲击键盘，站在用户的角度，这种“流式回答”的魔法，好像让冰冷的技术有了一丝温度。那么站在开发者的视角，这种流式输出（即数据实时更新）的背后，是用的什么来实现的呢？ 这就是我们今天要讨论的内容，前端轮询的那些事儿——如何优雅实现实时数据更新。 一、 页面刷新：原始人的刀耕火种在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/press_f5.jpeg">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/short_polling.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/long_polling.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/sse.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/sse_get.gif">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/sse_post.gif">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/chat_gpt.gif">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_chat_room.gif">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_upgrade.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_data_frame.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_server_log.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/http2_header.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/check_http_version.png">
+<meta property="article:published_time" content="2025-04-20T13:15:12.000Z">
+<meta property="article:modified_time" content="2025-04-20T13:59:12.062Z">
+<meta property="article:author" content="冰河">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/press_f5.jpeg">
+
+
+<link rel="canonical" href="https://youfindme.top/2025/04/20/%E5%89%8D%E7%AB%AF%E8%BD%AE%E8%AF%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://youfindme.top/2025/04/20/%E5%89%8D%E7%AB%AF%E8%BD%AE%E8%AF%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/","path":"2025/04/20/前端轮询那些事儿/","title":"前端轮询那些事儿"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>前端轮询那些事儿 | 冰河</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">冰河</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93AI%E5%BC%80%E5%A7%8B%E2%80%9C%E8%AF%B4%E4%BA%BA%E8%AF%9D%E2%80%9D%E2%80%94%E2%80%94%E4%BB%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%B5%81%E5%BC%8F%E5%9B%9E%E7%AD%94%E8%AF%B4%E8%B5%B7"><span class="nav-number">1.</span> <span class="nav-text">当AI开始“说人话”——从大模型流式回答说起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E9%A1%B5%E9%9D%A2%E5%88%B7%E6%96%B0%EF%BC%9A%E5%8E%9F%E5%A7%8B%E4%BA%BA%E7%9A%84%E5%88%80%E8%80%95%E7%81%AB%E7%A7%8D"><span class="nav-number">2.</span> <span class="nav-text">一、 页面刷新：原始人的刀耕火种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E7%9F%AD%E8%BD%AE%E8%AF%A2%EF%BC%9A%E6%9C%80%E7%9B%B4%E7%99%BD%E7%9A%84%E8%AF%B7%E6%B1%82"><span class="nav-number">3.</span> <span class="nav-text">二、 短轮询：最直白的请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">技术原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E8%A7%86%E8%A7%92"><span class="nav-number">3.2.</span> <span class="nav-text">协议视角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E5%92%8C%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.3.</span> <span class="nav-text">优缺点和应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E9%95%BF%E8%BD%AE%E8%AF%A2%EF%BC%9A%E7%AD%89%E5%BE%85%E7%9A%84%E8%89%BA%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">三、 长轮询：等待的艺术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86-1"><span class="nav-number">4.1.</span> <span class="nav-text">技术原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E8%A7%86%E8%A7%92-1"><span class="nav-number">4.2.</span> <span class="nav-text">协议视角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E5%92%8C%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">4.3.</span> <span class="nav-text">优缺点和应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81-SSE%EF%BC%9A%E6%9D%A5%E8%87%AA%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E6%8E%A8%E9%80%81"><span class="nav-number">5.</span> <span class="nav-text">四、 SSE：来自服务端的推送</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86-2"><span class="nav-number">5.1.</span> <span class="nav-text">技术原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E8%A7%86%E8%A7%92-2"><span class="nav-number">5.2.</span> <span class="nav-text">协议视角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9FEventSource%E7%9A%84%E4%B8%8D%E8%B6%B3"><span class="nav-number">5.3.</span> <span class="nav-text">原生EventSource的不足</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0AI%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9B%9E%E7%AD%94"><span class="nav-number">5.4.</span> <span class="nav-text">模拟实现AI大模型回答</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E5%92%8C%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">5.5.</span> <span class="nav-text">优缺点和应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81-WebSocket%EF%BC%9A%E5%8F%8C%E5%90%91%E9%80%9A%E4%BF%A1%E7%9A%84%E4%BB%BB%E6%84%8F%E9%97%A8"><span class="nav-number">6.</span> <span class="nav-text">五、 WebSocket：双向通信的任意门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86-3"><span class="nav-number">6.1.</span> <span class="nav-text">技术原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E8%A7%86%E8%A7%92-3"><span class="nav-number">6.2.</span> <span class="nav-text">协议视角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%B0%83%E7%94%A8"><span class="nav-number">6.3.</span> <span class="nav-text">代码调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-2%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">6.4.</span> <span class="nav-text">HTTP&#x2F;2中的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E5%92%8C%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-3"><span class="nav-number">6.5.</span> <span class="nav-text">优缺点和应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81-%E6%8F%92%E4%B8%80%E5%98%B4%E5%85%B3%E4%BA%8EHTTP%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-number">7.</span> <span class="nav-text">六、 插一嘴关于HTTP的版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E7%89%88%E6%9C%AC"><span class="nav-number">7.1.</span> <span class="nav-text">1. 查看版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%94%AF%E6%8C%81%E5%A4%9A%E7%89%88%E6%9C%AC"><span class="nav-number">7.2.</span> <span class="nav-text">2. 支持多版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%A1%AE%E5%AE%9A%E7%89%88%E6%9C%AC"><span class="nav-number">7.3.</span> <span class="nav-text">3. 确定版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81-%E7%BB%93%E8%AF%AD"><span class="nav-number">8.</span> <span class="nav-text">七、 结语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">9.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">冰河</p>
+  <div class="site-description" itemprop="description">冰河的个人网站</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2025/04/20/%E5%89%8D%E7%AB%AF%E8%BD%AE%E8%AF%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="前端轮询那些事儿 | 冰河">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端轮询那些事儿
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-20 21:15:12 / 修改时间：21:59:12" itemprop="dateCreated datePublished" datetime="2025-04-20T21:15:12+08:00">2025-04-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="当AI开始“说人话”——从大模型流式回答说起"><a href="#当AI开始“说人话”——从大模型流式回答说起" class="headerlink" title="当AI开始“说人话”——从大模型流式回答说起"></a>当AI开始“说人话”——从大模型流式回答说起</h2><p>深夜，你盯着屏幕上ChatGPT的回答逐字跳出，仿佛有个隐形的打字员在网络另一端敲击键盘，站在用户的角度，这种“流式回答”的魔法，好像让冰冷的技术有了一丝温度。那么站在开发者的视角，这种流式输出（即数据实时更新）的背后，是用的什么来实现的呢？</p>
+<p>这就是我们今天要讨论的内容，前端轮询的那些事儿——如何优雅实现实时数据更新。</p>
+<h2 id="一、-页面刷新：原始人的刀耕火种"><a href="#一、-页面刷新：原始人的刀耕火种" class="headerlink" title="一、 页面刷新：原始人的刀耕火种"></a>一、 页面刷新：原始人的刀耕火种</h2><p>在前端最原始的时代，网页的内容还是极其简单的门户网站、博客等，这个时候甚至Ajax技术都还没诞生，浏览器用户为了获取最新的网站内容，往往都是通过最原始的方式——刷新页面。通过浏览器刷新页面，重新加载整个页面内容，包括HTML/JS/CSS在内的所有资源都会被重新加载。</p>
+<p>典型的例子包括新闻网站的最新内容更新以及博客留言板上的评论更新。在这种情况下，数据更新与“实时”的概念毫无关联，完全依赖于用户刷新页面时按F5键的速度。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/press_f5.jpeg" alt="按F5刷新"></p>
+<p>虽然说这个时候也有一些非刷新页面的数据更新方式（比如通过隐藏的<code>iframe</code>等），但是这些都属于hack手段，不是标准化的技术，可以认为在Ajax普及之前，页面刷新是主要的数据更新方式。</p>
+<h2 id="二、-短轮询：最直白的请求"><a href="#二、-短轮询：最直白的请求" class="headerlink" title="二、 短轮询：最直白的请求"></a>二、 短轮询：最直白的请求</h2><p>这种情况的改善是在2005年左右，随着Ajax（Asynchronous JavaScript and XML）的提出和兴起，这种通过异步发送HTTP请求，并使用这些服务端返回的内容更新页面相关部分，而无需重新加载整个页面的技术，让人们看到了数据实时更新的希望。</p>
+<blockquote>
+<p>当然这里指的是浏览器端，Ajax是浏览器端的一种请求技术，对于其他客户端比如桌面端，本身就支持异步请求。</p>
+</blockquote>
+<h3 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h3><p>短轮询的技术原理很简单，就是前端设置一个定时器，每隔一定的时间（比如3s）就发送一次普通的HTTP请求到服务端，查询有没有最新的数据，服务端在收到请求后返回最新的数据结果或者通知前端无更新内容。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/short_polling.png" alt="短轮询"></p>
+<p>浏览器端代码示例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 短轮询：定时发送请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">shortPoll</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">setInterval</span>(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">&#x27;/short-poll-api&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> data = <span class="keyword">await</span> response.json();</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;Short Polling:&#x27;</span>, data);</span><br><span class="line">  &#125;, <span class="number">3000</span>); <span class="comment">// 每3秒请求一次</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>服务端代码示例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 短轮询处理：直接返回当前数据</span></span><br><span class="line">app.get(<span class="string">&#x27;/short-poll-api&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> hasNewData = checkDataUpdate(); <span class="comment">// 模拟检查数据更新</span></span><br><span class="line">  res.json(&#123; <span class="attr">data</span>: hasNewData ? <span class="string">&#x27;New Data&#x27;</span> : <span class="string">&#x27;No Data&#x27;</span> &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="协议视角"><a href="#协议视角" class="headerlink" title="协议视角"></a>协议视角</h3><p>从代码实现上来看，短轮询很简单，就是一次普通的接口请求，似乎没什么不妥。而从网络协议角度看就会发现短轮询的问题。</p>
+<p>我们都知道HTTP是无状态的，HTTP基于的TCP是有状态的。每次发起短轮询的HTTP请求都会先建立TCP连接，而每个TCP连接在建立的时候都会经过三次握手，在短轮询结束之后会断开连接，又会经过四次挥手。</p>
+<p>即每次请求都是一个独立的TCP连接，每次TCP连接的建立和断开，都是比较大的网络资源消耗，而且大多数情况下是没有数据更新的，无效请求数量较高。</p>
+<p>即便是在Ajax技术诞生时HTTP/1.1中已经默认启用了<code>Connection: Keep-Alive</code>来开启TCP长连接，使多个HTTP请求可以复用一个TCP连接，并且可以通过pipelining技术来同时发生多条请求，但是在HTTP/1.1的时代，还是存在<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903853985366023">队头阻塞</a>和<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/Connection_management_in_HTTP_1.x#%E5%9F%9F%E5%90%8D%E5%88%86%E7%89%87">单域名连接数量的限制</a>（单个域名限制连接数量6个）的问题，同时大量的用户的短轮询也会给服务端带来比较大的压力。</p>
+<blockquote>
+<p>更多HTTP/1.x连接管理的内容：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/Connection_management_in_HTTP_1.x">HTTP/1.x 的连接管理 - HTTP | MDN</a></p>
+</blockquote>
+<h3 id="优缺点和应用场景"><a href="#优缺点和应用场景" class="headerlink" title="优缺点和应用场景"></a>优缺点和应用场景</h3><ul>
+<li>优点：<ul>
+<li>十分简单：浏览器和服务端都不需要做任何特殊逻辑，直接请求即可</li>
+<li>兼容性极佳（所有浏览器都支持）</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>频繁TCP连接建立/关闭（未启用长连接时）</li>
+<li>无效请求占比高（无数据更新时），浪费网络带宽和服务器资源</li>
+<li>数据更新的实时性较差，实时性取决于轮询的间隔</li>
+<li>访问量较大的大型网站，对服务端会有较大的压力</li>
+</ul>
+</li>
+<li>应用场景：<ul>
+<li>对实时性要求没那么高的网站和小型网站</li>
+<li>简单的通知和定时查询的场景</li>
+</ul>
+</li>
+</ul>
+<h2 id="三、-长轮询：等待的艺术"><a href="#三、-长轮询：等待的艺术" class="headerlink" title="三、 长轮询：等待的艺术"></a>三、 长轮询：等待的艺术</h2><p>既然短轮询发送太频繁，服务端即便在没有数据更新的时候也会返回数据，那么有没有什么优化方式呢？有的，长轮询。</p>
+<h3 id="技术原理-1"><a href="#技术原理-1" class="headerlink" title="技术原理"></a>技术原理</h3><p>针对短轮询的问题，我们自然而然地可以想到一个对短轮询的优化方式：在服务端收到请求后不立刻返回，而是把请求挂起，一直等待直到有数据更新或者超时。浏览器端在收到数据响应或者超时后，再重新发起一次请求。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/long_polling.png" alt="长轮询"></p>
+<p>浏览器端代码示例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 长轮询：递归调用，响应后立即重新请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">longPoll</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  fetch(<span class="string">&#x27;/long-poll-api&#x27;</span>)</span><br><span class="line">    .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</span><br><span class="line">    .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;Long Polling:&#x27;</span>, data);</span><br><span class="line">      longPoll(); <span class="comment">// 立即发起下一次请求</span></span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.error(<span class="string">&#x27;Error:&#x27;</span>, err);</span><br><span class="line">      <span class="built_in">setTimeout</span>(longPoll, <span class="number">1000</span>); <span class="comment">// 错误时延迟重试</span></span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>服务端代码示例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 长轮询处理：挂起请求直到数据更新或超时（使用 EventEmitter 模拟数据更新）</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> EventEmitter = <span class="built_in">require</span>(<span class="string">&#x27;events&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> dataEmitter = <span class="keyword">new</span> EventEmitter();</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&#x27;/long-poll-api&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> timeout = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    res.json(&#123; <span class="attr">data</span>: <span class="literal">null</span> &#125;); <span class="comment">// 超时返回空数据</span></span><br><span class="line">  &#125;, <span class="number">30000</span>); <span class="comment">// 强制30秒超时</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 监听数据更新事件</span></span><br><span class="line">  <span class="keyword">const</span> dataHandler = <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">clearTimeout</span>(timeout);</span><br><span class="line">    res.json(&#123; data &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  dataEmitter.once(<span class="string">&#x27;update&#x27;</span>, dataHandler);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 客户端断开连接时清理资源</span></span><br><span class="line">  req.on(<span class="string">&#x27;close&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">clearTimeout</span>(timeout);</span><br><span class="line">    dataEmitter.off(<span class="string">&#x27;update&#x27;</span>, dataHandler);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟数据更新</span></span><br><span class="line"><span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  dataEmitter.emit(<span class="string">&#x27;update&#x27;</span>, <span class="string">&#x27;New Data&#x27;</span>);</span><br><span class="line">&#125;, <span class="built_in">Math</span>.random() * <span class="number">15000</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="协议视角-1"><a href="#协议视角-1" class="headerlink" title="协议视角"></a>协议视角</h3><p>从协议视角来看连接保持的原理，就是：当服务端不立即返回响应时，TCP连接会保持打开状态（由 HTTP Keep-Alive 机制管理），直到：</p>
+<ul>
+<li>服务端主动发送响应</li>
+<li>客户端主动取消请求</li>
+<li>中间设备（代理、负载均衡器）触发超时</li>
+<li>操作系统强制关闭连接</li>
+</ul>
+<p>正是因为HTTP/1.1支持了长连接，才有了长轮询对短轮询的改进。</p>
+<blockquote>
+<p>这里插入一句：</p>
+<p>根据<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc7230#section-6.3">RFC 7230第6.3节</a>，在HTTP/1.1中默认启用了<code>Connection: Keep-Alive</code>，因此在HTTP/1.1的响应头不需要显式设置这个响应头。<br>另外根据<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7540#section-8.1.2.2">RFC 7540第8.1.2.2节</a>，HTTP/2 明确禁止使用<code>Connection</code>字段，现代浏览器（如 Safari）在HTTP/2下会严格遵循规范，可能导致连接被拒绝。</p>
+<p>所以请只有在明确需要兼容HTTP/1.0时再设置<code>Connection: Keep-Alive</code></p>
+</blockquote>
+<h3 id="优缺点和应用场景-1"><a href="#优缺点和应用场景-1" class="headerlink" title="优缺点和应用场景"></a>优缺点和应用场景</h3><ul>
+<li>优点：<ul>
+<li>请求频率低：对比短轮询大大降低了请求频率</li>
+<li>实时性对比短轮询要好</li>
+<li>兼容性好</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>资源占用：服务器需要保持与每个客户端的连接，高并发时压力大</li>
+<li>超时重连时可能会有一些实时性的延迟</li>
+<li>实现较短轮询来说复杂一些</li>
+</ul>
+</li>
+<li>应用场景：<ul>
+<li>中等实时性需求，如邮件通知、订单状态更新等</li>
+<li>作为无法使用 WebSocket/SSE 时的替代方案</li>
+</ul>
+</li>
+</ul>
+<h2 id="四、-SSE：来自服务端的推送"><a href="#四、-SSE：来自服务端的推送" class="headerlink" title="四、 SSE：来自服务端的推送"></a>四、 SSE：来自服务端的推送</h2><p>从上面的短轮询和长轮询的应用场景我们发现，这些场景大多是服务端到前端的单向的数据更新，如果是这样的话，SSE（Server-Sent Events）会是一个更好的选择。</p>
+<p>在2008年左右，SSE作为HTML5标准提案的一部分被提出，支持服务端单向推送，之后在2011年，SSE通过<code>EventSource</code> API实现了标准化，并被主流浏览器逐步支持，最终在HTTP/2中成为正式标准。</p>
+<p><strong>而大多数的网页端的AI大模型对话的流式回答，也正是通过SSE来实现的。</strong></p>
+<h3 id="技术原理-2"><a href="#技术原理-2" class="headerlink" title="技术原理"></a>技术原理</h3><p>SSE和长轮询一样，都是服务端收到请求后不立刻返回，而是保持这个连接打开，之后服务器按照如下要求进行返回：</p>
+<ul>
+<li>响应头：<code>Content-Type: text/event-stream</code>，用于标识SSE数据流</li>
+<li>数据格式：每条消息由<code>data:</code>开头，以<code>\n\n</code>结尾（即用双换行符分隔）</li>
+</ul>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/sse.png" alt="SSE"></p>
+<p>服务端代码示例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> PORT = <span class="number">3000</span>;</span><br><span class="line">app.use(express.static(path.join(__dirname)));</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&#x27;/sse&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.writeHead(<span class="number">200</span>, &#123;</span><br><span class="line">    <span class="comment">// 设置SSE需要的响应头</span></span><br><span class="line">    <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;text/event-stream&#x27;</span>,</span><br><span class="line">    <span class="comment">// 为了保证前端展示的是最新数据，需要设置 Cache-Control: no-cache </span></span><br><span class="line">    <span class="string">&#x27;Cache-Control&#x27;</span>: <span class="string">&#x27;no-cache&#x27;</span>,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 每隔一段时间发送一次数据，模拟实时数据流</span></span><br><span class="line">  <span class="keyword">const</span> interval = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> data = &#123;</span><br><span class="line">      <span class="attr">time</span>: <span class="built_in">Date</span>.now(),</span><br><span class="line">      <span class="comment">// 生成随机字符串模拟数据</span></span><br><span class="line">      <span class="attr">msg</span>: <span class="built_in">Math</span>.random().toString(<span class="number">36</span>).substring(<span class="number">2</span>, <span class="number">12</span>),</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// SSE数据格式要求</span></span><br><span class="line">    res.write(<span class="string">`data: <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(data)&#125;</span>\n\n`</span>);</span><br><span class="line">  &#125;, <span class="number">500</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 断开连接时清理资源</span></span><br><span class="line">  req.on(<span class="string">&#x27;close&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">clearInterval</span>(interval);</span><br><span class="line">    res.end();</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;Client disconnected&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Client connected&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动服务器</span></span><br><span class="line">app.listen(PORT, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Server running on http://localhost:<span class="subst">$&#123;PORT&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>在浏览器端，则通过浏览器通过<code>EventSource</code> API监听服务器推送：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> source;</span><br><span class="line"><span class="keyword">const</span> start = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Started listening to events&#x27;</span>);</span><br><span class="line">  source = <span class="keyword">new</span> EventSource(<span class="string">&#x27;/sse&#x27;</span>);</span><br><span class="line">  source.onmessage = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> data = <span class="built_in">JSON</span>.parse(event.data);</span><br><span class="line">    <span class="built_in">document</span>.getElementById(<span class="string">&#x27;messages&#x27;</span>).innerHTML += <span class="string">`&lt;p&gt;接收到数据: <span class="subst">$&#123;data.msg&#125;</span>&lt;/p&gt;`</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> stop = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (source) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;Stopped listening to events&#x27;</span>);</span><br><span class="line">    source.close();</span><br><span class="line">    <span class="built_in">document</span>.getElementById(<span class="string">&#x27;messages&#x27;</span>).innerHTML += <span class="string">&#x27;&lt;p&gt;Connection closed&lt;/p&gt;&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/sse_get.gif" alt="EventSource实现SSE效果"></p>
+<h3 id="协议视角-2"><a href="#协议视角-2" class="headerlink" title="协议视角"></a>协议视角</h3><p>从协议视角来看，SSE仍然是基于HTTP协议的一个普通请求，并且和长轮询一样是收到请求后不立刻结束请求，而是保持连接打开，通过设置特定的响应头，在同一个请求里返回多个特定格式的数据片段。</p>
+<p>和长轮询不同的是，长轮询是有数据更新时会立刻返回并结束当前请求，需要前端重新发起一个请求。而SSE则是可以持续不断地返回数据，直到数据发送完毕服务端断连接或者前端主动断开连接。</p>
+<p>如果因为网络错误等导致连接断开，浏览器默认自动尝试重新连接。</p>
+<p>而这一切只需要按照SSE的规范，设置响应头<code>Content-Type: text/event-stream</code>和按照特定的数据格式返回即可。</p>
+<h3 id="原生EventSource的不足"><a href="#原生EventSource的不足" class="headerlink" title="原生EventSource的不足"></a>原生EventSource的不足</h3><p>通过EventSource虽然可以实现SSE，但是有一些限制：</p>
+<ul>
+<li><code>EventSource</code>只能支持GET请求<br>在AI大模型对话的这种场景来看，GET请求明显不合适，GET请求只能在URL的query中添加数据，但是浏览器对于URL的长度是有限制的，而且一些敏感的数据也不适合放到query里，这种情况下使用POST请求是更好选择</li>
+<li><code>EventSource</code>只支持发送UTF-8编码的文本，不支持发送二进制流</li>
+</ul>
+<p>针对这两个问题，可以尝试不使用<code>EventSource</code>，而是用<code>fetch</code>来实现SSE：</p>
+<ul>
+<li>前端请求的时候，使用<code>fetch</code> API和<code>ReadableStream</code>可读流来代替<code>EventSource</code></li>
+<li>服务端支持POST方法的请求</li>
+<li>前端和服务端自己实现event-stream的组装和解析</li>
+</ul>
+<p>这里我们用一个模拟AI大模型回答的例子来看下POST请求的SSE如何实现。</p>
+<h3 id="模拟实现AI大模型回答"><a href="#模拟实现AI大模型回答" class="headerlink" title="模拟实现AI大模型回答"></a>模拟实现AI大模型回答</h3><p>服务端代码示例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> PORT = <span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 中间件</span></span><br><span class="line">app.use(express.static(path.join(__dirname)));</span><br><span class="line">app.use(express.json());</span><br><span class="line"></span><br><span class="line"><span class="comment">// POST SSE</span></span><br><span class="line">app.post(<span class="string">&#x27;/post-sse&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;收到POST请求:&#x27;</span>, req.body);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取前端提交的数据</span></span><br><span class="line">  <span class="keyword">const</span> clientName = req.body.name;</span><br><span class="line">  <span class="keyword">const</span> question = req.body.question;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`收到来自 <span class="subst">$&#123;clientName&#125;</span> 的POST SSE请求，用户的问题是: <span class="subst">$&#123;question&#125;</span>`</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 设置SSE所需的响应头</span></span><br><span class="line">  res.writeHead(<span class="number">200</span>, &#123;</span><br><span class="line">    <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;text/event-stream&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Cache-Control&#x27;</span>: <span class="string">&#x27;no-cache&#x27;</span>,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 发送初始消息，包含客户端提供的数据，并在末尾添加换行</span></span><br><span class="line">  res.write(<span class="string">`data: &#123;&quot;message&quot;: &quot;你好，<span class="subst">$&#123;clientName&#125;</span>！收到了你的问题：<span class="subst">$&#123;question&#125;</span>\\n\\n&quot;&#125;\n\n`</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> intervalId;</span><br><span class="line">  <span class="comment">// 读取 ./text.md 文件 模拟大模型回答问题</span></span><br><span class="line">  <span class="keyword">const</span> textFilePath = path.join(__dirname, <span class="string">&#x27;text.md&#x27;</span>);</span><br><span class="line">  fs.readFile(textFilePath, <span class="string">&#x27;utf8&#x27;</span>, <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="built_in">console</span>.error(<span class="string">&#x27;读取文件时出错:&#x27;</span>, err);</span><br><span class="line">      res.write(<span class="string">&#x27;data: &#123;&quot;message&quot;: &quot;读取文件时出错&quot;&#125;\n\n&#x27;</span>);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 每隔 50~100ms 发送 3~5 个字符，模拟大模型回答问题</span></span><br><span class="line">    <span class="keyword">let</span> index = <span class="number">0</span>;</span><br><span class="line">    intervalId = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (index &gt;= data.length) &#123;</span><br><span class="line">        <span class="built_in">clearInterval</span>(intervalId);</span><br><span class="line">        <span class="comment">// 发送完成标记</span></span><br><span class="line">        res.write(<span class="string">&#x27;data: &#123;&quot;message&quot;: &quot;&quot;, &quot;answerFinished&quot;: true&#125;\n\n&#x27;</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`已发送完 <span class="subst">$&#123;clientName&#125;</span> 的问题的回答`</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 延迟一点时间再结束响应，确保最后的消息能被客户端接收</span></span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">`结束 <span class="subst">$&#123;clientName&#125;</span> 的 SSE 连接`</span>);</span><br><span class="line">          res.end();</span><br><span class="line">        &#125;, <span class="number">500</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">const</span> chunkSize = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">3</span>) + <span class="number">3</span>;</span><br><span class="line">      <span class="keyword">const</span> chunk = data.slice(index, index + chunkSize);</span><br><span class="line">      index += chunkSize;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 确保特殊字符被正确转义，特别是换行符</span></span><br><span class="line">      <span class="keyword">const</span> escapedChunk = <span class="built_in">JSON</span>.stringify(chunk).slice(<span class="number">1</span>, -<span class="number">1</span>);</span><br><span class="line">      </span><br><span class="line">      res.write(<span class="string">`data: &#123;&quot;message&quot;: &quot;<span class="subst">$&#123;escapedChunk&#125;</span>&quot;&#125;\n\n`</span>);</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`已发送 <span class="subst">$&#123;chunk.length&#125;</span> 个字符给 <span class="subst">$&#123;clientName&#125;</span>`</span>);</span><br><span class="line">    &#125;, getRandomInterval(<span class="number">50</span>, <span class="number">100</span>));</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 断开连接时清理资源</span></span><br><span class="line">  res.on(<span class="string">&#x27;close&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`客户端 <span class="subst">$&#123;clientName&#125;</span> 断开连接`</span>);</span><br><span class="line">    intervalId &amp;&amp; <span class="built_in">clearInterval</span>(intervalId);</span><br><span class="line">    res.end();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成随机时间间隔</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getRandomInterval</span>(<span class="params">min, max</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * (max - min + <span class="number">1</span>) + min);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动服务器</span></span><br><span class="line">app.listen(PORT, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`SSE 服务器运行在 http://localhost:<span class="subst">$&#123;PORT&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>前端代码示例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> abortController = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">const</span> responseElement = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;aiResponse&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">sendQuestion</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> accumulatedResponse = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 创建AbortController用于取消请求</span></span><br><span class="line">    abortController = <span class="keyword">new</span> AbortController();</span><br><span class="line">    <span class="keyword">const</span> signal = abortController.signal;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 准备请求数据</span></span><br><span class="line">    <span class="keyword">const</span> requestData = &#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;张三&#x27;</span>,</span><br><span class="line">      <span class="attr">question</span>: <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 发送POST请求</span></span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">&#x27;/post-sse&#x27;</span>, &#123;</span><br><span class="line">      <span class="attr">method</span>: <span class="string">&#x27;POST&#x27;</span>,</span><br><span class="line">      <span class="attr">headers</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;text/event-stream&#x27;</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">body</span>: <span class="built_in">JSON</span>.stringify(requestData),</span><br><span class="line">      <span class="attr">signal</span>: signal</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!response.ok) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">`服务器返回错误: <span class="subst">$&#123;response.status&#125;</span>`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 处理SSE数据流</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;已连接，正在接收数据...&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取可读流并创建读取器</span></span><br><span class="line">    <span class="keyword">const</span> reader = response.body.getReader();</span><br><span class="line">    <span class="keyword">const</span> decoder = <span class="keyword">new</span> TextDecoder();</span><br><span class="line">    <span class="keyword">let</span> buffer = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 读取数据流</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; done, value &#125; = <span class="keyword">await</span> reader.read();</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">if</span> (done) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;数据接收完成&#x27;</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 解码二进制数据</span></span><br><span class="line">      <span class="keyword">const</span> chunk = decoder.decode(value, &#123; <span class="attr">stream</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">      buffer += chunk;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 处理SSE格式数据（以\n\n分隔）</span></span><br><span class="line">      <span class="keyword">const</span> events = buffer.split(<span class="string">&#x27;\n\n&#x27;</span>);</span><br><span class="line">      buffer = events.pop() || <span class="string">&#x27;&#x27;</span>; <span class="comment">// 保留可能不完整的最后一部分数据</span></span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 处理每个事件</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">const</span> event <span class="keyword">of</span> events) &#123;</span><br><span class="line">        <span class="keyword">if</span> (event.trim()) &#123;</span><br><span class="line">          <span class="comment">// 解析SSE数据行</span></span><br><span class="line">          <span class="keyword">const</span> dataMatch = event.match(<span class="regexp">/^data: (.+)$/m</span>);</span><br><span class="line">          <span class="keyword">if</span> (dataMatch) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">              <span class="keyword">const</span> data = <span class="built_in">JSON</span>.parse(dataMatch[<span class="number">1</span>]);</span><br><span class="line">              <span class="keyword">if</span> (data.message !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">                <span class="comment">// 追加消息到 accumulatedResponse</span></span><br><span class="line">                accumulatedResponse += data.message;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 将累积的响应数据 accumulatedResponse 更新到页面</span></span><br><span class="line">                responseElement.innerHTML = accumulatedResponse;</span><br><span class="line">              &#125;</span><br><span class="line">              </span><br><span class="line">              <span class="comment">// 如果收到完成标志，中断连接</span></span><br><span class="line">              <span class="keyword">if</span> (data.answerFinished === <span class="literal">true</span>) &#123;</span><br><span class="line">                stopRequest();</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">&#x27;回答完成&#x27;</span>);</span><br><span class="line">              &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">              <span class="built_in">console</span>.error(<span class="string">&#x27;解析JSON出错:&#x27;</span>, e);</span><br><span class="line">              <span class="comment">// 如果不是JSON，直接显示文本</span></span><br><span class="line">              accumulatedResponse += dataMatch[<span class="number">1</span>];</span><br><span class="line">              responseElement.innerHTML = accumulatedResponse;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="keyword">if</span> (error.name === <span class="string">&#x27;AbortError&#x27;</span>) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;请求已取消&#x27;</span>, <span class="literal">false</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.error(<span class="string">&#x27;请求出错:&#x27;</span>, error);</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`错误: <span class="subst">$&#123;error.message&#125;</span>`</span>, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    abortController = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stopRequest</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (abortController) &#123;</span><br><span class="line">    abortController.abort();</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;正在停止请求...&#x27;</span>, <span class="literal">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在服务端，我们通过<code>app.post</code>支持了post请求，并且通过读取一个markdown文件并随机返回不同数量的字符来模拟大模型的回答问题。</p>
+<p>在前端代码中，<code>fetch</code> API的<code>Response.body</code>暴露一个<code>ReadableStream</code>类型的body内容，即一个可读的字节流。同时正是因为是字节流，所以需要通过<code>TextDecoder</code>来解析字节流，之后自行解析后端返回的数据并输出到屏幕。</p>
+<p>如果我们优化一下前端UI的话，并且支持了Markdown的解析的话，就可以得到类似AI输出的效果：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/sse_post.gif" alt="POST SSE模拟AI对话回答"></p>
+<p>再看下Chat GPT的对话，可以看到也是同样的效果：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/chat_gpt.gif" alt="Chat GPT效果"></p>
+<p>其实不想自己实现<code>fetch</code> SSE的话，可以用一些第三方库，比如微软的<a target="_blank" rel="noopener" href="https://github.com/Azure/fetch-event-source">fetch-event-source</a>，实现了类似于原生<code>EventSource</code>的能力，不需要自行解析数据，同时支持POST请求。</p>
+<h3 id="优缺点和应用场景-2"><a href="#优缺点和应用场景-2" class="headerlink" title="优缺点和应用场景"></a>优缺点和应用场景</h3><ul>
+<li>优点：<ul>
+<li>请求频率低：对比短轮询长轮询来说请求频率很低</li>
+<li>实时性很好</li>
+<li>在实时性较好的同时，实现上比WebSocket要简单很多（尤其是<code>EventSource</code>）</li>
+<li><code>EventSource</code>支持自动重连，连接断开后浏览器会自动尝试重新连接，不需要手动维护</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>连接建立后只能服务端到客户端单向通信</li>
+<li>通过<code>EventSource</code>来实现的话，只支持GET请求，不支持发送二进制流，只能发送UTF-8编码的文本</li>
+<li>通过<code>fetch</code>来实现的话则会有一些复杂性</li>
+</ul>
+</li>
+<li>应用场景：<ul>
+<li>实时数据流（如股票行情、新闻推送、日志监控等）</li>
+<li>需要服务器主动推送但无需客户端响应的场景</li>
+</ul>
+</li>
+</ul>
+<h2 id="五、-WebSocket：双向通信的任意门"><a href="#五、-WebSocket：双向通信的任意门" class="headerlink" title="五、 WebSocket：双向通信的任意门"></a>五、 WebSocket：双向通信的任意门</h2><p>SSE作为提案被提出的时间是2008年左右，而与此同时，一个支持双向实时传输的全双工通信方式，WebSocket也被提出来了，并且在<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc6455">RFC 6455</a>中正式发布。</p>
+<blockquote>
+<p>单工、半双工、全双工</p>
+<ul>
+<li>单工：数据只能单向传输，一方只能作为发送方，另一方只能作为接收方，比如A→B</li>
+<li>半双工：数据可以双向传输，但是不能同时进行，同一时间只能存在一个方向的数据传输，比如A→B或者B→A</li>
+<li>全双工：数据可以双向传输，也可以同时进行，即同一时间可以同时存在两个方向的数据传输，A⇄B</li>
+</ul>
+</blockquote>
+<h3 id="技术原理-3"><a href="#技术原理-3" class="headerlink" title="技术原理"></a>技术原理</h3><p>WebSocket最开始是由HTTP发起的请求，为了兼容现有的浏览器和服务器，它使用标准的HTTP端口（80/443），通过一个特殊的HTTP请求头来升级协议。</p>
+<p>客户端：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/chat</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>example.com</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>Upgrade</span><br><span class="line"><span class="attribute">Upgrade</span><span class="punctuation">: </span>websocket</span><br><span class="line"><span class="attribute">Sec-WebSocket-Key</span><span class="punctuation">: </span>dGhlIHNhbXBsZSBub25jZQ==</span><br><span class="line"><span class="attribute">Sec-WebSocket-Version</span><span class="punctuation">: </span>13</span><br></pre></td></tr></table></figure>
+
+<p>服务端</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">101</span> Switching Protocols</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>Upgrade</span><br><span class="line"><span class="attribute">Upgrade</span><span class="punctuation">: </span>websocket</span><br><span class="line"><span class="attribute">Sec-WebSocket-Accept</span><span class="punctuation">: </span>s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</span><br></pre></td></tr></table></figure>
+
+<p>握手成功后，连接从HTTP协议升级为WebSocket协议，这个连接会变成一个<strong>全双工</strong>（双向）、<strong>持久化</strong>的连接。</p>
+<p>一旦连接建立，<strong>客户端和服务器可以随时相互发送数据</strong>，不需要再像 HTTP 那样请求-响应模式：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket.png" alt="WebSocket"></p>
+<h3 id="协议视角-3"><a href="#协议视角-3" class="headerlink" title="协议视角"></a>协议视角</h3><p>从协议的角度看，WebSocket和上面的长短轮询以及SSE完全不同了，WebSocket只是借助HTTP来完成协议的切换，只会在连接建立的时候使用到HTTP协议，一旦协议切换完成，就是一个全新的协议了。</p>
+<p>WebSocket和HTTP一样，都是在传输层TCP协议之上的应用层协议，同时因为不是HTTP，所以也没有HTTP的一些同源跨域的限制（所以WebSocket也是实现跨域请求的一种方式，只不过成本有点高）。</p>
+<h3 id="代码调用"><a href="#代码调用" class="headerlink" title="代码调用"></a>代码调用</h3><p>在使用WebSocket的时候，前端只需要简单地使用<code>WebSocket</code> API即可：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">&#x27;wss://example.com/chat&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接收消息</span></span><br><span class="line">ws.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> data = <span class="built_in">JSON</span>.parse(event.data);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;收到消息:&#x27;</span>, data);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ws.onclose = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;WebSocket连接已关闭&#x27;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">  <span class="attr">username</span>: <span class="string">&#x27;用户1&#x27;</span>,</span><br><span class="line">  <span class="attr">message</span>: <span class="string">&#x27;你好，WebSocket!&#x27;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息到服务器</span></span><br><span class="line">ws.send(<span class="built_in">JSON</span>.stringify(data));</span><br></pre></td></tr></table></figure>
+
+<p>而服务端，也是用类似的方式进行处理：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> WebSocket = <span class="built_in">require</span>(<span class="string">&#x27;ws&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(cors());</span><br><span class="line">app.use(express.static(path.join(__dirname)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建HTTP服务器</span></span><br><span class="line"><span class="keyword">const</span> server = http.createServer(app);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建WebSocket服务器，将其附加到HTTP服务器</span></span><br><span class="line"><span class="keyword">const</span> wss = <span class="keyword">new</span> WebSocket.Server(&#123; server &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听WebSocket连接事件</span></span><br><span class="line">wss.on(<span class="string">&#x27;connection&#x27;</span>, <span class="function">(<span class="params">ws</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;客户端已连接&#x27;</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 发送欢迎消息给客户端</span></span><br><span class="line">  ws.send(<span class="built_in">JSON</span>.stringify(&#123; </span><br><span class="line">    <span class="attr">type</span>: <span class="string">&#x27;system&#x27;</span>, </span><br><span class="line">    <span class="attr">message</span>: <span class="string">&#x27;欢迎连接到WebSocket服务器！&#x27;</span> </span><br><span class="line">  &#125;));</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 监听客户端发来的消息</span></span><br><span class="line">  ws.on(<span class="string">&#x27;message&#x27;</span>, <span class="function">(<span class="params">message</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> data = <span class="built_in">JSON</span>.parse(message);</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;收到消息:&#x27;</span>, data);</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 监听连接关闭事件</span></span><br><span class="line">  ws.on(<span class="string">&#x27;close&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;客户端已断开连接&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 监听错误事件</span></span><br><span class="line">  ws.on(<span class="string">&#x27;error&#x27;</span>, <span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.error(<span class="string">&#x27;WebSocket错误:&#x27;</span>, error);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 另外还可以将每个客户端的 ws 实例保存下来，用来实现给所有已连接的客户端进行消息广播等</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动服务器</span></span><br><span class="line"><span class="keyword">const</span> PORT = process.env.PORT || <span class="number">3000</span>;</span><br><span class="line">server.listen(PORT, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`WebSocket服务器运行在 http://localhost:<span class="subst">$&#123;PORT&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这里用一个网络聊天室的Demo来看下效果：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_chat_room.gif" alt="网络聊天室Demo"></p>
+<p>协议升级：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_upgrade.png" alt="协议升级"></p>
+<p>数据帧：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_data_frame.png" alt="数据帧"></p>
+<p>服务端日志：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/websocket_server_log.png" alt="数据帧"></p>
+<p>上面的聊天室只是一个很小的WebSocket Demo，实际应用中可能还需要考虑心跳处理和断线重连等，比如服务端或者客户端定时发送一个空的心跳包给对方，如果一定时间内没有收到，就认为对方已经离线。</p>
+<h3 id="HTTP-2中的实现"><a href="#HTTP-2中的实现" class="headerlink" title="HTTP/2中的实现"></a>HTTP/2中的实现</h3><p>另外，上面提到过在HTTP/1.1 默认启用了<code>Connection: Keep-Alive</code>，在HTTP/2 甚至明确禁止使用头<code>Connection</code>字段，那么上面的WebSocket的握手方式就明显不适用了，即原始WebSocket（<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc6455">RFC 6455</a>）只支持HTTP/1.1。</p>
+<p>那怎么解决？有没有办法在HTTP/2中使用WebSocket？</p>
+<p>为了让WebSocket可以在HTTP/2上运行，IETF发布了<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc8441">RFC 8441</a>，引入了一种新机制：使用HTTP/2的<code>extended CONNECT</code>方法来升级到WebSocket协议。</p>
+<ul>
+<li>客户端：</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">:method = CONNECT</span><br><span class="line">:protocol = websocket</span><br><span class="line">:scheme = https</span><br><span class="line">:authority = example.com</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>服务端：</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:status = 200</span><br></pre></td></tr></table></figure>
+
+<p>这些冒号开头的请求头，（如 <code>:method</code>, <code>:path</code>, <code>:authority</code> 等）是HTTP/2引入的伪首部字段（pseudo-header fields），和传统HTTP/1.x的请求头格式不同。</p>
+<blockquote>
+<p>在 HTTP/2 和 HTTP/3 中，为了更高效地传输协议控制信息，规范规定了以冒号（:）开头的特殊头字段，这些叫作<strong>伪首部字段（pseudo-header fields）</strong>。</p>
+<p>它们并不是普通的请求头，而是用来描述请求的核心元素，比如方法、路径、协议等。这主要是为了配合HTTP/2的头部压缩（HPACK）机制以及支持多路复用，所以将这些核心字段标准化成<code>:method</code>、<code>:path</code>、<code>:authority</code>等“伪头部”字段，直接编码进头部帧</p>
+</blockquote>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/http2_header.png" alt="HTTP/1.1到HTTP/2 Header的变化"></p>
+<p>通过上面的请求头和响应头，WebSocket连接就可以建立成功，接下来就是WebSocket协议数据帧的交互了。</p>
+<p>为了支持HTTP/2的WebSocket，服务端需要做一些调整：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http2 = <span class="built_in">require</span>(<span class="string">&#x27;http2&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> server = http2.createSecureServer(&#123; </span><br><span class="line">  <span class="attr">key</span>: <span class="string">&#x27;...&#x27;</span>,</span><br><span class="line">  <span class="attr">cert</span>: <span class="string">&#x27;...&#x27;</span> </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.on(<span class="string">&#x27;stream&#x27;</span>, <span class="function">(<span class="params">stream, headers</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (headers[<span class="string">&#x27;:protocol&#x27;</span>] === <span class="string">&#x27;websocket&#x27;</span>) &#123;</span><br><span class="line">    <span class="comment">// 处理 WebSocket 连接</span></span><br><span class="line">    stream.respond(&#123; <span class="string">&#x27;:status&#x27;</span>: <span class="number">200</span> &#125;);</span><br><span class="line">    handleWebSocket(stream);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleWebSocket</span>(<span class="params">stream</span>) </span>&#123;</span><br><span class="line">  stream.on(<span class="string">&#x27;data&#x27;</span>, <span class="function">(<span class="params">chunk</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 处理 WebSocket 数据帧</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而前端则不需要做特殊处理，那些请求头也和HTTP/1.1一样，由浏览器自动处理：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 无论 HTTP/1.1 还是 HTTP/2，代码一致</span></span><br><span class="line"><span class="keyword">const</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">&#x27;wss://example.com/chat&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>然而鉴于以下因素：</p>
+<ul>
+<li>服务器和浏览器对于<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc8441">RFC 8441</a>的机制，并不是完全支持（比如Nginx不支持，Safari部分支持）</li>
+<li>目前的服务器和浏览器都支持HTTP/1.1，在连接时会自动协商使用的HTTP版本</li>
+<li>WebSocket只是借用HTTP来完成握手和协议切换，切换完成后和HTTP本身是哪个版本就没多大关系了，HTTP2并不会对WebSocket带来特别大的优化</li>
+</ul>
+<p>考虑这些因素，目前仍然建议WebSocket走独立的HTTP/1.1路由或者端口。</p>
+<h3 id="优缺点和应用场景-3"><a href="#优缺点和应用场景-3" class="headerlink" title="优缺点和应用场景"></a>优缺点和应用场景</h3><ul>
+<li>优点：<ul>
+<li>全双工通信，实时性最高</li>
+<li>高效（减少HTTP头开销，支持二进制和文本数据）</li>
+<li>跨域通信，WebSocket允许跨域通信</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>实现复杂（需处理连接状态、心跳检测等），对于小型应用有些由于复杂</li>
+<li>可能被防火墙或代理拦截，一些网络环境中，防火墙和代理可能会阻止WebSocket连接</li>
+</ul>
+</li>
+<li>应用场景：<ul>
+<li>高频双向交互，如在线游戏、在线文档的协同编辑等</li>
+<li>实时聊天、金融交易等低延迟场景</li>
+</ul>
+</li>
+</ul>
+<h2 id="六、-插一嘴关于HTTP的版本"><a href="#六、-插一嘴关于HTTP的版本" class="headerlink" title="六、 插一嘴关于HTTP的版本"></a>六、 插一嘴关于HTTP的版本</h2><p>上面提到了好多次不同的HTTP版本，那么我们可能会想到下面几个问题。</p>
+<h3 id="1-查看版本"><a href="#1-查看版本" class="headerlink" title="1. 查看版本"></a>1. 查看版本</h3><p><em><strong>如何在浏览器里怎么查看一个请求的HTTP版本？</strong></em></p>
+<p>这个很简单，直接看浏览器开发者工具的“网络”面板就可以，右键勾选“协议”，就可以直接在协议这一列看到当前的HTTP请求的协议版本</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/fe_polling/check_http_version.png" alt="查看HTTP版本"></p>
+<h3 id="2-支持多版本"><a href="#2-支持多版本" class="headerlink" title="2. 支持多版本"></a>2. 支持多版本</h3><p><em><strong>客户端和服务端怎么支持不同的HTTP版本？</strong></em></p>
+<p>对于HTTP/1.1，目前前后端基本上都默认支持了。</p>
+<p>对于HTTP2，前端不需要做额外处理，只需要启用HTTPS即可，因为浏览器仅在加密连接下支持HTTP/2。</p>
+<p>而在服务端，则需要特殊处理来兼容HTTP/2，以Node实现的服务端为例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http2 = <span class="built_in">require</span>(<span class="string">&#x27;http2&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取SSL证书</span></span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  <span class="attr">key</span>: fs.readFileSync(<span class="string">&#x27;私钥路径/server.key&#x27;</span>),</span><br><span class="line">  <span class="attr">cert</span>: fs.readFileSync(<span class="string">&#x27;证书路径/server.crt&#x27;</span>)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建HTTP/2服务器</span></span><br><span class="line"><span class="keyword">const</span> http2Server = http2.createSecureServer(options, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.writeHead(<span class="number">200</span>);</span><br><span class="line">  res.end(<span class="string">&#x27;Hello from HTTP/2!&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可选：创建HTTP/1.1服务器（非必须，ALPN会自动回退）</span></span><br><span class="line"><span class="keyword">const</span> httpServer = http.createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.writeHead(<span class="number">200</span>);</span><br><span class="line">  res.end(<span class="string">&#x27;Hello from HTTP/1.1!&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听端口（通常HTTP/2用443，HTTP/1.1可共用或分开）</span></span><br><span class="line">http2Server.listen(<span class="number">443</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;HTTP/2 server running on port 443&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">httpServer.listen(<span class="number">80</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;HTTP/1.1 server running on port 80&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>如果使用Nginx作为反向代理服务器的话，则还需要在Nginx上修改配置。</p>
+<h3 id="3-确定版本"><a href="#3-确定版本" class="headerlink" title="3. 确定版本"></a>3. 确定版本</h3><p><em><strong>在请求时，具体使用哪个版本的HTTP是谁来决定的呢？</strong></em></p>
+<p>在请求时，具体使用哪个版本的协议，是由​​客户端和服务端协商​​决定，而非单方强制决定。</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>角色</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>客户端（前端）</td>
+<td>发起连接时声明支持的协议列表（如 <code>ALPN: h2, http/1.1</code>）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>服务端（后端）</td>
+<td>根据自身能力选择最高优先级的协议（如优先选 <code>h2</code>）</td>
+</tr>
+<tr>
+<td>3</td>
+<td>最终协议</td>
+<td>双方共同支持的最高版本（如客户端支持 <code>h2</code>，服务端也支持 → 使用 <code>h2</code>）</td>
+</tr>
+</tbody></table>
+<p>而上面的ALPN，就是​​Application-Layer Protocol Negotiation​​，应用层协议协商，用来建立连接时客户端和服务端协商确认使用哪个版本的协议。</p>
+<h2 id="七、-结语"><a href="#七、-结语" class="headerlink" title="七、 结语"></a>七、 结语</h2><p>这篇文章从AI的流式回答切入，我们一起了解了从页面刷新，到短轮询长轮询，再到SSE和WebSocket，那么再回到最开始的那个问题，如何优雅实现实时数据更新？</p>
+<p>这个问题好像并没有正确的答案，因为没有最完美的技术，只有恰逢其时的选择，每个技术都有自己的优缺点和适用场景，还是要根据自己的业务场景来选择，找到技术和体验的平衡点才是我们要做的事。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7291931828029472806">Web实时通信技术调研：长轮询、短轮询、WebSocket 和 SSE</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7451991754561880115">WebSocket太笨重？试试SSE的轻量级魅力！</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sisterAn/blog/issues/98">HTTP/2对比HTTP/1.1，特性是什么？是如何解决队头阻塞与压缩头部的？</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903853985366023">什么是队头阻塞以及如何解决</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7079936383925616653">HTTP发展史，HTTP1.1与HTTP2.0的区别</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7020964728386093093">一文吃透 WebSocket 原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7481600956309979151">SSE(Server-Sent Events)，解密AI流式输出和呈现</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/16/%E5%AD%97%E5%BD%A2%E6%B7%B7%E6%B7%86%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E7%9A%84%E6%94%BB%E4%B8%8E%E9%98%B2/" rel="prev" title="字形混淆：浏览器里的攻与防">
+                  <i class="fa fa-angle-left"></i> 字形混淆：浏览器里的攻与防
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">冰河</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
