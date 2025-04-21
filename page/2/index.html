@@ -178,7 +178,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-18 15:02:47" itemprop="dateModified" datetime="2024-01-18T15:02:47+08:00">2024-01-18</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -248,17 +248,17 @@
 </ul>
 <p>eslint很多地方只能warning警告或者报错，但是不能自动修复，比如下面的例子：</p>
 <ol>
-<li><p>对于<code>==</code>和<code>===</code>的eslint问题<br><img src="https://static.youfindme.cn/blog/code_normalization/eslint_issue.jpeg" alt="eslint_issue"></p>
-<p><img src="https://static.youfindme.cn/blog/code_normalization/eslint_issue_fix.jpeg" alt="eslint_issue_fix"><br>这个是eslint报的一个问题，点击“快速修复”，只能弹出几个选项，比如disable这个规则，或者展示文档，没有自动修复（下面的copilot不算，这个是GitHub Copilot插件AI修复，不属于自动修复）</p>
+<li><p>对于<code>==</code>和<code>===</code>的eslint问题<br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/eslint_issue.jpeg" alt="eslint_issue"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/eslint_issue_fix.jpeg" alt="eslint_issue_fix"><br>这个是eslint报的一个问题，点击“快速修复”，只能弹出几个选项，比如disable这个规则，或者展示文档，没有自动修复（下面的copilot不算，这个是GitHub Copilot插件AI修复，不属于自动修复）</p>
 </li>
-<li><p>对于prettier的代码风格问题<br><img src="https://static.youfindme.cn/blog/code_normalization/prettier_issue.png" alt="prettier_issue"></p>
-<p> <img src="https://static.youfindme.cn/blog/code_normalization/prettier_issue_fix.png" alt="prettier_issue_fix"></p>
+<li><p>对于prettier的代码风格问题<br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/prettier_issue.png" alt="prettier_issue"></p>
+<p> <img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/prettier_issue_fix.png" alt="prettier_issue_fix"></p>
 </li>
 </ol>
 <p>对于这个代码风格问题，点击“快速修复”，提供了几个自动修复的选项（Fix this …/Fix all …）</p>
 <h5 id="prettier-和-editorconfig"><a href="#prettier-和-editorconfig" class="headerlink" title="prettier 和 editorconfig"></a>prettier 和 editorconfig</h5><p>如果你仔细观察的话，会发现prettier和editorconfig的功能有一些重叠，比如都可以设置缩进、换行符等，那么这两个工具有什么区别呢？</p>
 <p>拿缩进来说，如果在一个项目中的<code>.prettierrc.js</code>中设置了<code>tabWidth: 2</code>，但是我们的VS Code的默认缩进是4个空格。那么prettier在检查代码风格时，会按照2个空格来检测，自动修复的时候，也会把缩进改成2个空格。但是我们在编辑文件时，<strong>按一下Tab键，VS Code会使用4个空格来缩进</strong>。</p>
-<p><img src="https://static.youfindme.cn/blog/code_normalization/tab_size.png" alt="tab_size"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/tab_size.png" alt="tab_size"></p>
 <p>这个时候就需要editorconfig来发挥作用了，在项目中添加一个<code>.editorconfig</code>文件，设置<code>indent_size = 2</code>，这样就可以覆盖VS Code的默认配置，使得VS Code在编辑文件时，<strong>按Tab键，也会使用2个空格来缩进</strong>。</p>
 <h3 id="6-配置eslint和prettier的自动修复"><a href="#6-配置eslint和prettier的自动修复" class="headerlink" title="6. 配置eslint和prettier的自动修复"></a>6. 配置<code>eslint</code>和<code>prettier</code>的自动修复</h3><p>在上面的步骤中，我们已经完成了<code>eslint</code>和<code>prettier</code>的配置，同时通过插件也实现了实时检查，但是对于不符合规范的代码，我们还需要手动去修复，这个时候可以配置一下保存时自动修复的功能。</p>
 <p>在项目中添加一个<code>.vscode/settings.json</code>文件，内容如下：</p>
@@ -294,7 +294,7 @@
 <h3 id="3-修改-husky-pre-commit脚本的内容"><a href="#3-修改-husky-pre-commit脚本的内容" class="headerlink" title="3. 修改.husky/pre-commit脚本的内容"></a>3. 修改<code>.husky/pre-commit</code>脚本的内容</h3><p>将<code>.husky/pre-commit</code>脚本的内容改为<code>npm run lint-staged</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">. &quot;$(dirname &quot;$0&quot;)/_/husky.sh&quot;</span><br><span class="line"></span><br><span class="line">npm run lint-staged</span><br></pre></td></tr></table></figure>
 
-<p>通过上面的步骤，就完成了<code>lint-staged</code>的配置，这个时候再进行 git 提交时，将只检查暂存区（<code>staged</code>）的文件，不会检查项目所有文件，加快了每次提交 lint 检查的速度，同时也不会被历史遗留问题影响。如下图：<br><img src="https://static.youfindme.cn/blog/code_normalization/lint_staged.png" alt="lint_staged"></p>
+<p>通过上面的步骤，就完成了<code>lint-staged</code>的配置，这个时候再进行 git 提交时，将只检查暂存区（<code>staged</code>）的文件，不会检查项目所有文件，加快了每次提交 lint 检查的速度，同时也不会被历史遗留问题影响。如下图：<br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/lint_staged.png" alt="lint_staged"></p>
 <h2 id="四、commitzen"><a href="#四、commitzen" class="headerlink" title="四、commitzen"></a>四、commitzen</h2><p>有了上面的几个配置后，其实已经算是一个比较完善的代码规范配置了，不过还有一些其他的可以去做的事，比如 git 提交记录规范。</p>
 <p>在多人协作开发过程中，如果不注意提交记录的规范，那么每个人可能都有自己的提交风格，如“修复了xxx的bug”、“增加了一个按钮,修改了一处文案”、“config配置文件增加了xxx字段”，更有甚者会在对项目文件做了大量变更后只写一个“增加了若干功能”或“修复了若干问题”这种提交信息。</p>
 <p>那什么才一个好的提交信息呢，我们以<a target="_blank" rel="noopener" href="https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines">Angular提交信息规范</a>来举例说明。</p>
@@ -323,7 +323,7 @@
 <p>向<code>package.json</code>的<code>scripts</code>中添加命令：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;commit&quot;</span>: <span class="string">&quot;git-cz&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这时我们就可以使用<code>npm run commit</code>来代替<code>git commit</code>进行提交了：<img src="https://static.youfindme.cn/blog/code_normalization/commitizen.png" alt="commitizen"></p>
+<p>这时我们就可以使用<code>npm run commit</code>来代替<code>git commit</code>进行提交了：<img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/commitizen.png" alt="commitizen"></p>
 <h3 id="3-配置自定义提交信息规范"><a href="#3-配置自定义提交信息规范" class="headerlink" title="3. 配置自定义提交信息规范"></a>3. 配置自定义提交信息规范</h3><p>如果想定制项目的提交信息规范，可以使用<code>cz-customizable</code>适配器：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev cz-customizable</span><br></pre></td></tr></table></figure>
 
@@ -357,7 +357,7 @@
 <p>这将在<code>./husky/</code>目录下生成一个<code>commit-msg</code>脚本文件，在文件里添加<code>npm run commitlint</code>这个命令，添加完成后文件内容为：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">. &quot;$(dirname &quot;$0&quot;)/_/husky.sh&quot;</span><br><span class="line"></span><br><span class="line">npm run commitlint</span><br></pre></td></tr></table></figure>
 
-<p>这时，如果通过<code>git commit</code>或其他工具在提交时没有按照规范写提交信息，那么本次提交就会被阻止，如下图：<br><img src="https://static.youfindme.cn/blog/code_normalization/commit_lint.png" alt="commit_lint"></p>
+<p>这时，如果通过<code>git commit</code>或其他工具在提交时没有按照规范写提交信息，那么本次提交就会被阻止，如下图：<br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/code_normalization/commit_lint.png" alt="commit_lint"></p>
 <h3 id="4-对于自定义提交信息规范的-lint-校验"><a href="#4-对于自定义提交信息规范的-lint-校验" class="headerlink" title="4. 对于自定义提交信息规范的 lint 校验"></a>4. 对于自定义提交信息规范的 lint 校验</h3><p>上面说的<code>@commitlint/config-conventional</code>是针对Angular规范的校验规则集，对于使用了<code>cz-customizable</code>的自定义提交信息规范，就需要使用<code>commitlint-config-cz</code>这个工具来对自定义规范进行校验了：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev commitlint-config-cz</span><br></pre></td></tr></table></figure>
 
@@ -723,7 +723,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -746,7 +746,7 @@
 <li>版本库：工作区有一个隐藏目录 .git，这个不算工作区，而是 Git 的版本库</li>
 </ul>
 <p>下面这个图展示了工作区、版本库中的暂存区和版本库之间的关系：</p>
-<p><img src="https://static.youfindme.cn/blog/git_command/git_structure.jpg" alt="工作区、暂存区和版本库之间的关系"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/git_command/git_structure.jpg" alt="工作区、暂存区和版本库之间的关系"></p>
 <ul>
 <li>图中左侧为工作区，右侧为版本库。在版本库中标记为 “index” 的区域是暂存区（stage/index），标记为 “master” 的是 master 分支所代表的目录树。</li>
 <li>图中我们可以看出此时 “HEAD” 实际是指向 master 分支的一个”游标”。所以图示的命令中出现 HEAD 的地方可以用 master 来替换。</li>
@@ -1148,7 +1148,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -1200,7 +1200,7 @@
 </ol>
 <p>说完了这几种常见的异步加载js脚本的方式，再来看最后一个问题，什么时候用<code>defer</code>，什么时候用<code>async</code>呢？一般来说，两者之间的选择则是看脚本之间是否有依赖关系，有依赖的话应当要保证执行顺序，应当使用<code>defer</code>没有依赖的话使用<code>async</code>，同时使用的话<code>defer</code>失效。要注意的是两者都不应该使用<code>document.write()</code>，这个导致整个页面被清除重写。</p>
 <p>下面一幅图表明了同步加载以及<code>defer</code>、<code>async</code>加载时的区别，其中绿色线代表 HTML 解析，蓝色线代表网络读取js脚本，红色线代表js脚本执行时间：</p>
-<p><img src="https://static.youfindme.cn/blog/js-load/js-load.png" alt="js-load"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/js-load/js-load.png" alt="js-load"></p>
 
       
     </div>

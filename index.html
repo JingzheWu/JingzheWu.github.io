@@ -537,7 +537,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-12-18 14:22:37" itemprop="dateModified" datetime="2024-12-18T14:22:37+08:00">2024-12-18</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -555,21 +555,21 @@
 </blockquote>
 <h2 id="故事的开始"><a href="#故事的开始" class="headerlink" title="故事的开始"></a>故事的开始</h2><p>不知道大家有没有用过一些剪藏助手的浏览器插件，就可以把在网页上看到内容，通过插件将内容收藏起来。我自己平时就会把这些自己觉得有收藏价值的内容，通过印象笔记、金山文档等剪藏助手收藏起来，供以后翻看。</p>
 <p>但是前段时间，在剪藏一篇文章时，发现了一个奇怪的事情。我打开了一个网站，这个网站是讲历史的，在拿出我的剪藏助手想要收藏时，遇到了下面的问题。这里我随便找一篇这个网站的文章作为例子截图演示一下：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/1_article_example.webp" alt="以这篇文章为例演示一下"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/1_article_example.webp" alt="以这篇文章为例演示一下"></p>
 <p>但是剪藏完之后一看，发现不对的地方了，怎么句子都读不通顺？难道剪藏助手出bug了？</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/2_article_obtained.webp" alt="语句都读不通顺的内容"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/2_article_obtained.webp" alt="语句都读不通顺的内容"></p>
 <p>要知道，所谓的剪藏助手，它的原理就是读取网页的HTML，把里面的文字和样式获取到然后塞到自己新创建的文档里，正常来讲不应该有问题的。打开这个网站浏览器开发者工具看一下：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/3_diff_in_dom.webp" alt="DOM结构中的内容，和最终渲染的内容不一样"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/3_diff_in_dom.webp" alt="DOM结构中的内容，和最终渲染的内容不一样"></p>
 <p>可以看到DOM中的内容，和最终展示的内容确实不一样，而剪藏助手截取的内容，也确实是DOM中的内容无疑，并不是剪藏助手的bug。</p>
 <p>这就奇怪了，为啥内容会不一样呢？明明就是很简单的纯文字渲染，也没有什么魔法在里面。<br>这个时候我注意到右下角有一个CSS属性：<code>font-family</code>，它的值是很奇怪的一个内容：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/4_spetical_font.webp" alt="一串好像是编码后的字符串"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/4_spetical_font.webp" alt="一串好像是编码后的字符串"></p>
 <h2 id="初现端倪"><a href="#初现端倪" class="headerlink" title="初现端倪"></a>初现端倪</h2><p>这个<code>font-family</code>看起来有点奇怪，我们来尝试改一下看看。</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/5_change_font.webp" alt="修改font-family为其他字体"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/5_change_font.webp" alt="修改font-family为其他字体"></p>
 <p>可以看到，在改了字体之后，渲染出来的内容，和DOM里的文字就对得上了，同样的读不通顺的句子。并且在来回切换字体的时候，页面渲染出来的内容也随着字体变化而变化：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/6_change_font.gif" alt="渲染的UI随着font-family变化"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/6_change_font.gif" alt="渲染的UI随着font-family变化"></p>
 <p>看来这个<code>font-family</code>就是问题所在。</p>
 <h2 id="揭开面纱"><a href="#揭开面纱" class="headerlink" title="揭开面纱"></a>揭开面纱</h2><p>既然找到了问题所在，那么我们来看下这个有点特别的<code>font-family</code>是什么，既然不是一个标准字体，那就应该是用户自定义的字体了，自定义在DOM中全局搜一下这个字体:</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/7_custom_font.webp" alt="自定义字体"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/7_custom_font.webp" alt="自定义字体"></p>
 <p>可以看到这个字体是通过base64的方式引入的，并且内容也恰好是<code>data:font/ttf</code>这样一个字体格式。</p>
 <blockquote>
 <p>TTF（TrueType Font），一种二进制格式的文件。TTF 文件包含字体的矢量信息、度量信息和其他相关数据，用于在计算机上显示和打印文本。</p>
@@ -578,9 +578,9 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">base64ToArrayBuffer</span>(<span class="params">base64</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> binaryString = atob(base64.split(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">const</span> len = binaryString.length;</span><br><span class="line">  <span class="keyword">const</span> bytes = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(len);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">    bytes[i] = binaryString.charCodeAt(i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> bytes.buffer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">saveArrayBufferToFile</span>(<span class="params">buffer, filename</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([buffer], &#123; <span class="attr">type</span>: <span class="string">&#x27;font/ttf&#x27;</span> &#125;);</span><br><span class="line">  <span class="keyword">const</span> link = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>);</span><br><span class="line">  link.href = URL.createObjectURL(blob);</span><br><span class="line">  link.download = filename;</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(link);</span><br><span class="line">  link.click();</span><br><span class="line">  <span class="built_in">document</span>.body.removeChild(link);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 示例用法</span></span><br><span class="line"><span class="keyword">const</span> base64Data = <span class="string">&#x27;data:font/ttf;base64,AAEAAAALAIAAAwAwT1MvMg8S...&#x27;</span>; <span class="comment">// 你的 base64 编码数据</span></span><br><span class="line"><span class="keyword">const</span> arrayBuffer = base64ToArrayBuffer(base64Data);</span><br><span class="line">saveArrayBufferToFile(arrayBuffer, <span class="string">&#x27;font.ttf&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>或者通过网上的一下小工具来实现这一步：<a target="_blank" rel="noopener" href="https://blog.csdn.net/u014291497/article/details/54915879">将base64格式的字体信息解码成可用的字体文件</a></p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/8_font_file.png" alt="ttf字体文件"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/8_font_file.png" alt="ttf字体文件"></p>
 <p>用一些字体编辑器打开这个字体文件发现，这个字体文件里有一些自定义的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Glyph">字形（Glyphs）</a>。</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/9_glyphs_in_font.webp" alt="字体文件包含自定义字形"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/9_glyphs_in_font.webp" alt="字体文件包含自定义字形"></p>
 <p>而如果我们去了解一下<a target="_blank" rel="noopener" href="https://help.fontlab.com/fontlab/7/manual/About-Glyphs/">字体相关的知识</a>的话，就会知道：</p>
 <p><strong>字符</strong>是Unicode码位标识的逻辑单元，而<strong>字形</strong>则是字体的图形单元。</p>
 <p><strong>Characters</strong> are logical text units identified by Unicode code points, whereas <strong>glyphs</strong> are graphical font units.</p>
@@ -601,30 +601,30 @@
 </ol>
 <h2 id="谜底"><a href="#谜底" class="headerlink" title="谜底"></a>谜底</h2><p>到这里，谜底差不多就已经揭晓了。</p>
 <p>既然每个字符在渲染的时候，都有一个字形去控制渲染的形状，那么同一个字符可以根据不同的风格以不同的方式渲染或绘制，比如字母A，在不同的字体下可能有不同的形状：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/10_various_a.png" alt="不同字体下的“A”"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/10_various_a.png" alt="不同字体下的“A”"></p>
 <p>同时从另一个角度看，有时字形可能看起来相同，但代表不同的字符。例如，拉丁字母A、西里尔字母А 和希腊大写字母Alpha Α看起来都一样，但代表不同文字的不同字符。</p>
 <p>那更进一步呢？我们是不是在一个字体里，可以把字符“A”的字形，映射到字形“B”，把字符“B”的字形，映射到字形“C”？这样的话一段字符串“AB”，最终浏览器渲染出来的，会是“BC”。</p>
 <p>答案揭晓，上面剪藏内容对不上，就是使用了这种技术，这种常被称为“<strong>字形替换</strong>”或“<strong>字形混淆</strong>”，或者换一个爬虫领域常用的名字，“<a target="_blank" rel="noopener" href="https://juejin.cn/search?query=%E5%AD%97%E4%BD%93%E5%8F%8D%E7%88%AC">字体反爬</a>”。</p>
 <p>它的原理就是使用一个特殊的字体，这个字体将每个字符映射到一个不同的字形。例如，字体可能将字符“A”映射到字形“B”，将字符“B”映射到字形“C”，等等。</p>
 <p>这样，当用户查看网页时，可以将看似乱码的内容，映射到正确的文本，用户会看到正确的文本。但是当他们尝试复制和粘贴文本时，或者说通过剪藏助手这种爬虫工具爬取页面内容时，得到的就是错误的文本。</p>
 <p>我们来简单验证一下这个结论：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/11_random_word.jpeg" alt="随便找几个字"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/11_random_word.jpeg" alt="随便找几个字"></p>
 <p>随便找几个对不上的字看一下，用红框圈出来，去看下字体文件里这几个字的字形：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/12_corresponding_glyphs.webp" alt="字体文件里对应的字形"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/12_corresponding_glyphs.webp" alt="字体文件里对应的字形"></p>
 <p>可以看到果然这些字都在自定义字形里，每个字的左下角是字符，中间是字形，这些字形恰好对应上了上面浏览器里的渲染结果。</p>
 <p>点开一个字查看具体信息也可以看到，比如“管”这个字：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/13_guan_in_font.webp" alt="“管”这个字"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/13_guan_in_font.webp" alt="“管”这个字"></p>
 <p>码位是<code>U+7BA1</code>，去第三方网站上搜一下这个码位对应的字符也确实是“管”：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/14_guan_in_unicode.png" alt="U+7BA1"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/14_guan_in_unicode.png" alt="U+7BA1"></p>
 <p>而这个字符的字形，确实是“这”的形状：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/15_shape_of_zhe.webp" alt="“管”对应“这”的形状"></p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/16_path_of_zhe.webp" alt="“这”的形状矢量图"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/15_shape_of_zhe.webp" alt="“管”对应“这”的形状"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/16_path_of_zhe.webp" alt="“这”的形状矢量图"></p>
 <p>可以看到是类似于SVG的这种矢量图，我们还可以自己随便拖拽这些点，改变字形：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/17_changed_path_of_zhe.webp" alt="被编辑的“这”的矢量图"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/17_changed_path_of_zhe.webp" alt="被编辑的“这”的矢量图"></p>
 <p>而如果有兴趣的话，还可以自己画或者设计一款专属字体，比如我下面自己用鼠标随便画了一个形状，字母“a”的字形，有点丑：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/18_my_custom_a.webp" alt="自定义“a”"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/18_my_custom_a.webp" alt="自定义“a”"></p>
 <p>导出这个ttf文件并在CSS中引用，就可以看到我们自己的字体了：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/19_custom_a_render.webp" alt="使用自定义“a”"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/19_custom_a_render.webp" alt="使用自定义“a”"></p>
 <h2 id="攻与防"><a href="#攻与防" class="headerlink" title="攻与防"></a>攻与防</h2><p>到这里已经把上面遇到的“奇怪”事情搞清楚了，这个网站通过这种技术，来实现反爬虫，防止爬虫抓取内容，也可以防止剪藏助手这类工具剪藏一些内容，因为即便爬虫抓取或者剪藏了HTML里的内容，拿到的也是混淆后的错误内容，想要看到正确的内容，只能通过实时网络获取编码后的字体，来渲染为正确的内容。</p>
 <p>可以说内容的“正确”，只会体现在浏览器的渲染层面，数据层面本身就是错误的。并且，这个字形的混淆以及对应的字体，每次请求都不一样。即每次加载页面请求服务端时，服务端都会先预先对内容进行一次混淆，每次使用的混淆字形都是不同的字符和字形。</p>
 <p>通过上面这些操作，防止了第三方获取到本站的内容，本站内容只能在本站查看，提高了网站的用户留存率之类的。</p>
@@ -642,7 +642,7 @@
 <p>同时这也提醒我们在复制网上一些内容时，一定要检查内容的正确性。</p>
 <h2 id="自己尝试实现一下"><a href="#自己尝试实现一下" class="headerlink" title="自己尝试实现一下"></a>自己尝试实现一下</h2><p>在知道了上面的原理后，我们自己也可以实现字形混淆，但是总不能手动编辑每个字的字形矢量图吧，而且像是上面那种每次打开都会重新对不同字符的字形进行混淆的，肯定是需要把字形混淆的操作脚本化的，那假设我们自己也有一个网站需要对内容进行保护，我们要怎么实现上面的字形混淆逻辑呢？</p>
 <p>我们的目标是：对于一段提供好的文本，针对其中部分字符或者全部字符，进行字形混淆，并生成混淆后的文本以及对应的字体文件。</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/20_expected_handle_flow.png" alt="预期处理流程"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/20_expected_handle_flow.png" alt="预期处理流程"></p>
 <p>整体思路是：</p>
 <ol>
 <li><strong>准备一个基础字体文件</strong><br> 这个基础字体文件用于获取字体中字符信息和字形信息。</li>
@@ -666,13 +666,13 @@
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="css"></span></span><br><span class="line"><span class="css">      <span class="keyword">@font-face</span> &#123;</span></span><br><span class="line"><span class="css">        <span class="attribute">font-family</span>: MyObfuscatedFont;</span></span><br><span class="line"><span class="css">        <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">&#x27;my-obfuscated-font.ttf&#x27;</span>) <span class="built_in">format</span>(<span class="string">&#x27;truetype&#x27;</span>);</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css">      <span class="selector-class">.myFont</span> &#123;</span></span><br><span class="line"><span class="css">        <span class="attribute">font-family</span>: <span class="string">&#x27;MyObfuscatedFont&#x27;</span>;</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;myFont&quot;</span>&gt;</span>找到部嫡进码的说量多至终机们点一个来分是。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>最终效果：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/21_final_res.png" alt="最终效果"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/21_final_res.png" alt="最终效果"></p>
 <p>选中这段文字进行复制，复制到剪贴板的内容也是DOM中的“<em>找到部嫡进码的说量多至终机们点一个来分是。</em>”。</p>
 <p>如果打开生成的字体文件看一下的话，会发现和上面讨论的那个网站的字体文件中的效果也是类似的：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/22_final_font.webp" alt="最终字体文件"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/22_final_font.webp" alt="最终字体文件"></p>
 <p>有我们生成的自定义的字形，并且和上面DOM和渲染中的结果也是一一对应的。</p>
 <p>而如果进行了最大程度的混淆，即对原始文本中所有字符混淆，最终混淆的内容将完全不可读：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/23_final_res_full_obfuscate.png" alt="完全混淆"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/23_final_res_full_obfuscate.png" alt="完全混淆"></p>
 <p>而且由于是随机选择文本和目标字符进行混淆的，每次执行混淆脚本，都会生成完全不同的字体和混淆文本，这个也和上面内容里提到的效果对得上。</p>
 <p>到此为止，我们也算是揭开了字形混淆的“神秘面纱”，也基本上通过代码实现了类似的效果，还可以进一步做的事情就是把字体文件进行base64编码并通过base64字符串来在CSS里引用了。</p>
 <p>那除了上面的这些场景，字形混淆还有哪些用法呢？</p>
@@ -694,12 +694,12 @@
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;iconfont&quot;</span>&gt;</span><span class="symbol">&amp;#xe650;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>这样就可以渲染出这个字符对应的图标，比如我这里：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/24_icon_font_demo.png" alt="iconfont demo"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/24_icon_font_demo.png" alt="iconfont demo"></p>
 <p>这里有一个点要说一下，因为是使用了替换某些字符的字形来实现的icon，为了不影响这些字符的正常展示，肯定是不能把常用中文或者英文等字符的字形来进行替换的，所以目前我看到的是他们使用了<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84#%E5%9F%BA%E6%9C%AC%E5%A4%9A%E6%96%87%E7%A7%8D%E5%B9%B3%E9%9D%A2">Unicode第一平面</a>内的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%A7%81%E4%BA%BA%E4%BD%BF%E7%94%A8%E5%8C%BA">私人使用区</a>的一些字符：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/25_private_area_1.png" alt="私人使用区"></p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/26_private_area_2.webp" alt="私人使用区"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/25_private_area_1.png" alt="私人使用区"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/26_private_area_2.webp" alt="私人使用区"></p>
 <p>可以看到上面<code>span</code>里的字符<code>&amp;#xe650;</code>是用的Unicode的HTML实体字符的形式来写的，码位是<code>e650</code>，可以看到<code>e650</code>正好是落在了第一平面内的私人使用区范围内：</p>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/27_private_area_3.png" alt="U+E650"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/27_private_area_3.png" alt="U+E650"></p>
 <p>而顾名思义，私人使用区就是没有公共定义的Unicode区域，这些区域没有在Unicode标准中指定对应的具体字符是哪个，可以由个人或组织根据需要自行使用。把这些私人使用区的字符的字形，在字体文件中指定为需要使用到的icon，就可以做到不影响常用字符的渲染和展示了。</p>
 <p>而且私人使用区内的字符，因为没有真正的字符来对应，在自定义字体文件没有加载好的时候，也不用担心会使用默认字体渲染出其他字符，而是会展示出一个框<code>口</code>，就像上面DOM结构里看到的那样。</p>
 <p>那这种字体图标的好处在哪里呢？为什么不直接使用图片？其实目前看下来有以下几个优势：</p>
@@ -707,12 +707,12 @@
 <li>相比于图片，字体是矢量的，可以随意缩放而不影响图片的清晰度，在不同分辨率的屏幕上表现都很好</li>
 <li>即使是图片中的矢量图SVG，体积大小也比字体文件中专门优化过的、效率更高的字形描述语言描述的字形，体积要更大，做了一个对比，同样是25个上面的那种图标，字体文件要比SVG的体积小上很多</li>
 </ol>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/28_size_of_font_and_svg.png" alt="字体文件和SVG体积对比"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/28_size_of_font_and_svg.png" alt="字体文件和SVG体积对比"></p>
 <ol start="3">
 <li>减少网络请求次数，如果每个SVG单独下载，那么会发起多个网络请求，但是如何合并到一个字体文件里，只需要一次网络请求即可</li>
 <li>图标作为字体来渲染，可以像操作字体一样来操作图标，比如设置颜色、字重、斜体、字号等，常规图片展示则没办法通过这些来控制</li>
 </ol>
-<p><img src="https://static.youfindme.cn/blog/font_obfuscate/29_control_icon_font.png" alt="使用字体属性控制icon"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/font_obfuscate/29_control_icon_font.png" alt="使用字体属性控制icon"></p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>到这里这篇文章就差不多结束了，简单总结一下字形混淆在各个场景的应用：</p>
 <h3 id="1-内容保护"><a href="#1-内容保护" class="headerlink" title="1. 内容保护"></a>1. 内容保护</h3><p>可以用在内容保护上，防止爬虫爬取或者文档剪藏工具剪藏，保护网站内容，不过从其他角度多想一下，感觉这种技术也不是没有缺点，比如下面的：</p>
 <ul>
@@ -799,7 +799,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-12-17 10:10:19" itemprop="dateModified" datetime="2024-12-17T10:10:19+08:00">2024-12-17</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -819,35 +819,35 @@
 <h2 id="一、-什么是鸿蒙"><a href="#一、-什么是鸿蒙" class="headerlink" title="一、 什么是鸿蒙"></a>一、 什么是鸿蒙</h2><p>在开始之前，先问大家一个问题，大家听说过几种鸿蒙？</p>
 <p>其实到目前为止，我们经常听到的鸿蒙系统，总共有三种，分别是：</p>
 <p>OpenHarmony，HarmonyOS，以及HarmonyOS NEXT。</p>
-<h3 id="1-OpenHarmony"><a href="#1-OpenHarmony" class="headerlink" title="1. OpenHarmony"></a>1. OpenHarmony</h3><p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/open_harmony.png" alt="OpenHarmony"></p>
+<h3 id="1-OpenHarmony"><a href="#1-OpenHarmony" class="headerlink" title="1. OpenHarmony"></a>1. OpenHarmony</h3><p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/open_harmony.png" alt="OpenHarmony"></p>
 <p><a target="_blank" rel="noopener" href="https://www.openharmony.cn/">OpenHarmony（开源鸿蒙系统）</a>，由开放原子开源基金会进行管理。开放原子开源基金会由华为、阿里、腾讯、百度、浪潮、招商银行、360等十家互联网企业共同发起组建。包含了“鸿蒙操作系统”的基础能力，是“纯血”鸿蒙的底座。</p>
 <p>这个版本的鸿蒙是开源的，代码仓库的地址在这里：<a target="_blank" rel="noopener" href="https://gitee.com/openharmony">https://gitee.com/openharmony</a>。</p>
 <p>从我个人的一些粗浅理解来看，OpenHarmony类似于Android里的AOSP，可以装到各种设备上，比如手表、电视甚至是一些嵌入式设备上，详见可见官网的一些<a target="_blank" rel="noopener" href="https://www.openharmony.cn/armList/?id=6">例子</a>。</p>
-<h3 id="2-HarmonyOS"><a href="#2-HarmonyOS" class="headerlink" title="2. HarmonyOS"></a>2. HarmonyOS</h3><p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/harmony_os.png" alt="HarmonyOS"></p>
+<h3 id="2-HarmonyOS"><a href="#2-HarmonyOS" class="headerlink" title="2. HarmonyOS"></a>2. HarmonyOS</h3><p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/harmony_os.png" alt="HarmonyOS"></p>
 <p>基于 OpenHarmony、AOSP等开源项目，同时加入了自己的HMS（因为被美国限制后无法使用GMS）的商用版本，可以兼容安卓，也可以运行部分OpenHarmony开发的鸿蒙原生应用。</p>
 <p>这个也是目前经常被吐槽是“套壳”安卓的系统，截止到目前（2024.04）已经更新到了HarmonyOS 4.2。</p>
-<h3 id="3-HarmonyOS-NEXT"><a href="#3-HarmonyOS-NEXT" class="headerlink" title="3. HarmonyOS NEXT"></a>3. HarmonyOS NEXT</h3><p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/harmony_os_next.png" alt="HarmonyOS NEXT"></p>
+<h3 id="3-HarmonyOS-NEXT"><a href="#3-HarmonyOS-NEXT" class="headerlink" title="3. HarmonyOS NEXT"></a>3. HarmonyOS NEXT</h3><p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/harmony_os_next.png" alt="HarmonyOS NEXT"></p>
 <p>2023年秋季发布的技术预览版，在当前HarmonyOS的基础上去除了AOSP甚至是JVM，不再兼容安卓，只能运行鸿蒙原生应用，同时对OpenHarmony的能里进行了大量的更新，增加和修改了很多API。</p>
 <p>这个也就是所谓的“纯血”鸿蒙系统，可惜的是这个目前我们用不到，需要以公司名义找华为合作开权限，或者个人开发者使用一台Mate60 Pro做专门的开发机。并且目前由于有保密协议，网上也没有太多关于最新API的消息。</p>
 <blockquote>
 <p>NEXT版本文档：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/releasenotes-overview-0000001602419138">https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/releasenotes-overview-0000001602419138</a></p>
 </blockquote>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/can_not_access_next_doc.png" alt="无法直接访问的NEXT版本的开发文档"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/can_not_access_next_doc.png" alt="无法直接访问的NEXT版本的开发文档"></p>
 <p>据说目前HarmonyOS NEXT使用的API版本已经到了API12，目前官网可以访问的最新文档还是API9，所以接下来的内容也都是基于API9的版本来的。</p>
 <h3 id="4-小结"><a href="#4-小结" class="headerlink" title="4. 小结"></a>4. 小结</h3><p>所以一个粗略的视角来看，OpenHarmony、HarmonyOS以及HarmonyOS NEXT这三者之间的关系是这样的：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/relationship.png" alt="三者之间的关系"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/relationship.png" alt="三者之间的关系"></p>
 <h2 id="二、-初识鸿蒙开发"><a href="#二、-初识鸿蒙开发" class="headerlink" title="二、 初识鸿蒙开发"></a>二、 初识鸿蒙开发</h2><p>在大概知道了什么是鸿蒙之后，我们先来简单看一下鸿蒙开发的套件。下图是<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/">官网</a>所描述的一些开发套件，包括了设计、开发、测试、上架所涉及到的技术和产品。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/development_kit.png" alt="鸿蒙开发套件"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/development_kit.png" alt="鸿蒙开发套件"></p>
 <p>我们这篇文章里主要讨论右下角的三个：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkts/">ArkTS</a>、<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkui/">ArkUI</a>、<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkcompiler/">ArkCompiler</a>。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/arkts_arkui.png" alt="ArkTS&amp;ArkUI"></p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/arkcompiler.png" alt="ArkCompiler"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/arkts_arkui.png" alt="ArkTS&amp;ArkUI"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/arkcompiler.png" alt="ArkCompiler"></p>
 <h2 id="三、-关于ArkTS的一些疑惑"><a href="#三、-关于ArkTS的一些疑惑" class="headerlink" title="三、 关于ArkTS的一些疑惑"></a>三、 关于ArkTS的一些疑惑</h2><p>作为一个前端开发，最常用的编程语言就是JavaScript或者TypeScript，那么在看到鸿蒙应用开发用到的编程语言是ArkTS之后，我脑子里最先蹦出来的就是下面这几个问题：</p>
 <p><strong>1. ArkTS语言的运行时是啥？</strong><br>   既然编程语言是TS（TS的拓展，ArkTS），那么它的运行时是什么呢？是V8？JSC？Hermes？还是其他什么呢？<br><strong>2. ArkTS还是单线程语言吗？</strong><br>   ArkTS还是和JS一样，是单线程语言吗？<br><strong>3. 基于TS拓展了什么？</strong><br>   TS是JS的超集，对JS进行了拓展，增加了开发时的类型支持。而ArkTS对对TS又进行了拓展，是TS的超集，那它基于TS拓展了什么内容呢？</p>
 <p>下面我们一个一个来看。</p>
 <h3 id="1-Question1-ArkTS语言的运行时"><a href="#1-Question1-ArkTS语言的运行时" class="headerlink" title="1. Question1 - ArkTS语言的运行时"></a>1. Question1 - ArkTS语言的运行时</h3><p>先说结论，ArkTS的运行时不是V8，不是JSC、Hermes，不是目前任何一种JS引擎。ArkTS的运行时是一个自研的运行时，叫做方舟语言运行时（简称方舟运行时）。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/runtime.png" alt="方舟运行时"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/runtime.png" alt="方舟运行时"></p>
 <p>而这个运行时，执行的也不是JS/TS/ArkTS代码，而是执行的<strong>字节码和机器码</strong>。<br>这是因为方舟运行时是<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkcompiler/">ArkCompiler（方舟编译器）</a>的一部分，对于JS/TS/ArkTS的编译在运行前就进行了（和Hermes有点像，下面会讲到）。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/dev_framework.png" alt="方舟开发框架示意图"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/dev_framework.png" alt="方舟开发框架示意图"></p>
 <p>我们来简单了解一下ArkCompiler，从官网的描述可以看到，ArkCompiler关注的重点主要有三个方面：</p>
 <ul>
 <li>AOT 编译模式</li>
@@ -872,48 +872,48 @@
 </ul>
 <p>我们一个一个来说。</p>
 <h5 id="a-JS变量类型在运行时可能改变"><a href="#a-JS变量类型在运行时可能改变" class="headerlink" title="a. JS变量类型在运行时可能改变"></a>a. JS变量类型在运行时可能改变</h5><p>首先我们来看一张图，这张图描述了现在V8引擎的工作流程，目前Chrome和Node里的JS引擎都是这个：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/v8_work_flow.png" alt="V8现有工作流程"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/v8_work_flow.png" alt="V8现有工作流程"></p>
 <p>从上面可以看到，V8在拿到JS源码后，会先解析成AST，之后经过Ignition解释器把语法树编译成字节码，然后再解释字节码执行。</p>
 <p>于此同时还会收集热点代码，比如代码一共运行了多少次、如何运行的等信息，也就是上面的Feedback的流程。</p>
 <p>如果发现一段代码会被重复执行，则监视器会将此段代码标记为热点代码，交给V8的Turbofan编译器对这段字节码进行编译，编译为对应平台（Intel、ARM、MIPS等）的二进制机器码，并执行机器码，也就是图里的Optimize流程。</p>
 <p>等后面V8再次执行这段代码，则会跳过解释器，直接运行优化后的机器码，从而提升这段代码的运行效率。</p>
 <p>但是我们发现，图里面除了Optimize外，还有一个Deoptimize，<strong>反优化</strong>，也就是说被优化成机器码的代码逻辑，可能还会被反优化回字节码，这是为什么呢？</p>
 <p>其实原因就是上面提到的“JS变量类型在运行时可能改变”，我们来看一个例子：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/type_change_in_js.png" alt="JS变量类型在运行时可能改变"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/type_change_in_js.png" alt="JS变量类型在运行时可能改变"></p>
 <p>比如一个<code>add</code>函数，因为JS没有类型信息，底层编译成字节码后伪代码逻辑大概如这张图所示。会判断<code>x</code>和<code>y</code>的各种类型，逻辑比较复杂。</p>
 <p>在Ignition解释器执行<code>add(1, 2)</code>时，已经知道<code>add</code>函数的两个参数都是整数，那么TurboFan在进一步编译字节码时，就可以假定<code>add</code>函数的参数是整数，这样可以极大地简化生成的汇编代码，不再判断各种类型，伪代码如第三张图里所示。</p>
 <p>接下来的<code>add(3, 4)</code>与<code>add(5, 6)</code>由于入参也是整数，可以直接执行之前编译的机器码，但是<code>add(&quot;7&quot;, &quot;8&quot;)</code>时，发现并不是整数，这时候就只能将这段逻辑Deoptimize为字节码，然后解释执行字节码。</p>
 <p>这就是所谓的Deoptimize，<strong>反优化</strong>。可以看出，如果我们的JS代码中变量的类型变来变去，是会给V8引擎增加不少麻烦，为了提高性能，我们可以尽量不要去改变变量的类型。</p>
 <p>虽然说使用TS可以部分缓解这个问题，但是TS只能约束<strong>开发时</strong>的类型，运行的时候TS的类型信息是会被丢弃的，也无法约束，V8还是要做上面的一些假定类型的优化，无法一开始就编译为机器码。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/type_info_discarded.png" alt="TS类型信息运行时被丢弃"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/type_info_discarded.png" alt="TS类型信息运行时被丢弃"></p>
 <p>可以说TS的类型信息被浪费了，没有给运行时代码特别大的好处。</p>
 <h5 id="b-JS编译为字节码将导致体积增大"><a href="#b-JS编译为字节码将导致体积增大" class="headerlink" title="b. JS编译为字节码将导致体积增大"></a>b. JS编译为字节码将导致体积增大</h5><p>上面说到JS主要用于Web应用，Web应用如果提前编译为字节码将导致体积增大很多，对网络资源的消耗会更大。那么对于非Web应用，其实是可以做到提前编译为字节码的，比如Hermes引擎。</p>
 <p>Hermes作为React Native的运行时，是作为App预装到用户的设备上，除了热更新这种场景外，绝大部分情况下是不需要打开App时动态下载代码资源的，所以体积增大的问题影响不是很大，但是预编译带来的运行时效率提升的好处却比较明显。</p>
 <p>所以相对于V8，Hermes<a target="_blank" rel="noopener" href="https://supercodepower.com/mobile-javascript-engines#3hermes">去掉了JIT，支持了生成字节码</a>，在构建App的时候，就把JS代码进行了预编译，预编译为了Hermes运行时可以直接处理的字节码，省去了在运行阶段解析AST语法树、编译为字节码的工作。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/optimize_in_hermes.png" alt="Hermes对JS编译和执行流程的改进"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/optimize_in_hermes.png" alt="Hermes对JS编译和执行流程的改进"></p>
 <blockquote>
 <p>一句题外话，Hermes去除了对JIT的支持，除了因为JIT会导致JS引擎启动时间变长、内存占用增大外，还有一部分可能的原因是，在iOS上，苹果为了<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21320960/answer/18628710">安全考虑</a>，不允许除了Safari和WebView（只有WKWebView支持JIT，UIWebView不支持）之外的第三方应用里直接使用JSC的JIT能力，也不允许第三方JS运行时支持JIT（<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/429797868">相关问题</a>）。</p>
 <p>甚至V8专门出了一个去掉JIT的<a target="_blank" rel="noopener" href="https://supercodepower.com/mobile-javascript-engines#2v8">JIT-less V8</a>版本来在iOS上集成，Hermes似乎也不太可能完全没考虑到这一点。</p>
 </blockquote>
 <h5 id="c-取长补短"><a href="#c-取长补短" class="headerlink" title="c. 取长补短"></a>c. 取长补短</h5><p>在讨论了V8的JIT和Hermes的预编译之后，我们再来看看ArkCompiler，截取一段<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/8UHznZenc7A_UICta2bETg">官方博客里的描述</a>：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/blog_desc_of_arkcompiler.png" alt="博客描述"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/blog_desc_of_arkcompiler.png" alt="博客描述"></p>
 <p>还记得上面说的“TS的类型信息被浪费了”吗？TS的类型信息只在开发时有用，在编译阶段就被丢弃了，而ArkCompiler就是利用了这一点，直接在App构建阶段，利用TS的类型信息直接预编译为字节码以及优化机器码。</p>
 <p>即在ArkCompiler中，不存在TS-&gt;JS的这一步转译，而是直接从TS编译为了字节码和优化机器码（这里存疑，官网文档没有找到很明确的说法，不是特别确定是否有TS-&gt;JS的转译）。</p>
 <p>同时由于鸿蒙应用也是一个App而不是Web应用，所以ArkCompiler和Hermes一样，也是在构建App时就进行了预编译，而不是在运行阶段做这个事情。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/optimize_in_arkcompiler.png" alt="ArkCompiler对JS/TS编译和执行流程的改进"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/optimize_in_arkcompiler.png" alt="ArkCompiler对JS/TS编译和执行流程的改进"></p>
 <p>简单总结下来，ArkCompiler像Hermes一样支持生成字节码，同时又将V8引擎JIT生成机器码的工作也提前在预编译阶段做了。是比Hermes只生成字节码的AOT更进一步的AOT（同时生成字节码和部分优化后的机器码）。</p>
 <h4 id="LiteActor轻量化并发"><a href="#LiteActor轻量化并发" class="headerlink" title="LiteActor轻量化并发"></a>LiteActor轻量化并发</h4><p>到这里其实已经可以回答上面讲到的第二个问题了，ArkTS还是单线程语言吗？</p>
 <p>答案是：是的，还是单线程语言。但是ArkTS里通过<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/taskpool-vs-worker-0000001632849934-V2">Worker和TaskTool</a>这两种方式支持并发。</p>
 <p>同时ArkCompiler对现有的Worker进行了一些优化，直接看<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/8UHznZenc7A_UICta2bETg">官网博客</a>：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/lite_actor.png" alt="LiteActor轻量化并发"></p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/blog_desc_of_lite_actor.png" alt="LiteActor轻量化并发博客描述"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/lite_actor.png" alt="LiteActor轻量化并发"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/blog_desc_of_lite_actor.png" alt="LiteActor轻量化并发博客描述"></p>
 <p>这里的Actor是什么呢？Actor是一种并发编程里的线程模型。</p>
 <p>线程模型比较常见的就是共享内存模型，多个线程之间共享内存，比如Java里多个线程共享内存数据，需要通过<code>synchronized</code>同步锁之类的来防止数据一致性的问题。</p>
 <p>Actor模型是另一种线程模型，“Actor”是处理并发计算的基本单位，每个Actor都有自己的状态，并且可以接收和发送消息。当一个Actor接收到消息时，它可以改变自己的状态，发送消息给其他Actor，或者创建新的Actor。</p>
 <p>这种模型可以帮助开发者更好地管理复杂的状态和并发问题，因为每个Actor都是独立的，它们之间不会共享状态，这可以避免很多并发问题。同时，Actor模型也使得代码更易于理解和维护，因为每个Actor都是独立的，它们的行为可以被清晰地定义和隔离。</p>
 <p>到这里大家应该已经比较明白了，前端里的Web Worker就是这种线程模型的一种体现，通过Worker来开启不同的线程。</p>
 <h4 id="源码安全"><a href="#源码安全" class="headerlink" title="源码安全"></a>源码安全</h4><p>按照<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkcompiler/">官网</a>的说法，ArkCompiler会把ArkTS编译为字节码，并且ArkCompiler使用多种混淆技术提供更高强度的混淆与保护，使得HarmonyOS应用包中装载的是多重混淆后的字节码，有效提高了应用代码安全的强度。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/source_code_security.gif" alt="源码安全"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/source_code_security.gif" alt="源码安全"></p>
 <h3 id="2-Question2-ArkTS还是单线程语言吗"><a href="#2-Question2-ArkTS还是单线程语言吗" class="headerlink" title="2. Question2 - ArkTS还是单线程语言吗"></a>2. Question2 - ArkTS还是单线程语言吗</h3><p>这个刚刚已经回答了，还是单线程语言，借用官网的描述：</p>
 <blockquote>
 <p>HarmonyOS应用中每个进程都会有一个主线程，主线程有如下职责：</p>
@@ -927,7 +927,7 @@
 </ol>
 <p>除主线程外，还有一类与主线程并行的独立线程Worker，主要用于执行耗时操作，但不可以直接操作UI。Worker线程在主线程中创建，与主线程相互独立。最多可以创建8个Worker。</p>
 </blockquote>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/threading_model.png" alt="ArkTS线程模型"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/threading_model.png" alt="ArkTS线程模型"></p>
 <h3 id="3-Question3-基于TS拓展了什么"><a href="#3-Question3-基于TS拓展了什么" class="headerlink" title="3. Question3 - 基于TS拓展了什么"></a>3. Question3 - 基于TS拓展了什么</h3><p>当前，ArkTS在TS的基础上主要扩展了如下能力：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-basic-syntax-overview-0000001531611153-V2">基本语法</a>：ArkTS定义了声明式UI描述、自定义组件和动态扩展UI元素的能力，再配合ArkUI开发框架中的系统组件及其相关的事件方法、属性方法等共同构成了UI开发的主体。</li>
@@ -938,9 +938,9 @@
 <h2 id="四、-ArkTS-amp-ArkUI"><a href="#四、-ArkTS-amp-ArkUI" class="headerlink" title="四、 ArkTS &amp; ArkUI"></a>四、 ArkTS &amp; ArkUI</h2><p>首先，在聊ArkUI之前，还有一个问题大家可能比较感兴趣：ArkUI是怎么渲染我们写的UI呢？</p>
 <p>答案是<strong>自绘</strong>，类似于Flutter，使用自己的渲染引擎（应该是发展于Skia），而不是像RN那样将UI转为不同平台上的底层UI。</p>
 <p>不管是从官网的描述[<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/arkui/">1</a>]、[<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-ui-development-overview-0000001438467628-V2">2</a>]来看，还是社区里的<a target="_blank" rel="noopener" href="https://juejin.cn/post/7280006531922673719#heading-0">讨论</a>来看，ArkUI的渲染无疑是自绘制的，并且ArkUI和Flutter之间的联系很密切：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/discuss_of_arkui.png" alt="社区里的一些讨论"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/discuss_of_arkui.png" alt="社区里的一些讨论"></p>
 <h3 id="1-基本语法"><a href="#1-基本语法" class="headerlink" title="1. 基本语法"></a>1. 基本语法</h3><p>从前端的角度来看，ArkTS和ArkUI的定位其实就是类似于前端中TS+React+配套状态管理工具（如Redux），可以用TS写声明式UI（有点像写jsx），下面是基本语法：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/basic_grammar.png" alt="基本语法"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/basic_grammar.png" alt="基本语法"></p>
 <ul>
 <li>装饰器<br>用于装饰类、结构、方法以及变量，并赋予其特殊的含义。如上述示例中@Entry、@Component和@State都是装饰器，<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-create-custom-components-0000001473537046-V2#section1430055924816">@Component</a>表示自定义组件，<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-create-custom-components-0000001473537046-V2#section1430055924816">@Entry</a>表示该自定义组件为入口组件，<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-state-0000001474017162-V2">@State</a>表示组件中的状态变量，状态变量变化会触发UI刷新</li>
 <li>自定义组件<br>可复用的UI单元，可组合其他组件，如上述被@Component装饰的<code>struct Hello</code></li>
@@ -954,12 +954,12 @@
 <p>在声明式UI编程框架中，UI是程序状态的运行结果，用户构建了一个UI模型，其中应用的运行时的状态是参数。当参数改变时，UI作为返回结果，也将进行对应的改变。这些运行时的状态变化所带来的UI的重新渲染，在ArkUI中统称为状态管理机制。</p>
 <p>自定义组件拥有变量，变量必须被装饰器装饰才可以成为状态变量，状态变量的改变会引起UI的渲染刷新。如果不使用状态变量，UI只能在初始化时渲染，后续将不会再刷新。 下图展示了State和View（UI）之间的关系。</p>
 </blockquote>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/state_and_ui.png" alt="State和UI"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/state_and_ui.png" alt="State和UI"></p>
 <blockquote>
 <p>View(UI)：UI渲染，指将build方法内的UI描述和@Builder装饰的方法内的UI描述映射到界面。<br>State：状态，指驱动UI更新的数据。用户通过触发组件的事件方法，改变状态数据。状态数据的改变，引起UI的重新渲染。</p>
 </blockquote>
 <p>在ArkUI中，提供了大量的状态管理相关的装饰器，比如<code>@State</code>、<code>@Prop</code>、<code>@Link</code>等。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/overview_of_state.png" alt="ArkTS &amp; ArkUI的状态管理总览"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/overview_of_state.png" alt="ArkTS &amp; ArkUI的状态管理总览"></p>
 <p>更多细节详见<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-state-management-0000001524177629-V2">状态管理</a>。</p>
 <h3 id="3-渲染控制"><a href="#3-渲染控制" class="headerlink" title="3. 渲染控制"></a>3. 渲染控制</h3><p>在ArkUI中，可以像React那样，通过<code>if else</code>，<code>for each</code>等进行跳转渲染、列表渲染等，更多细节详见<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/arkts-rendering-control-0000001504769325-V2">渲染控制</a>。</p>
 <blockquote>
@@ -982,14 +982,14 @@
 <h2 id="五、-其他"><a href="#五、-其他" class="headerlink" title="五、 其他"></a>五、 其他</h2><h3 id="1-包管理工具"><a href="#1-包管理工具" class="headerlink" title="1. 包管理工具"></a>1. 包管理工具</h3><p>HarmonyOS开发中，使用的包管理工具是<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/ide-command-line-ohpm-0000001490235312-V2">ohpm</a>，目前看来像是一个借鉴<a target="_blank" rel="noopener" href="https://pnpm.io/">pnpm</a>的三方包管理工具，详见<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V2/ide-command-line-ohpm-0000001490235312-V2">官方文档</a>。</p>
 <p>另外，鸿蒙也提供了第三方包发布的仓库：<a target="_blank" rel="noopener" href="https://ohpm.openharmony.cn/">https://ohpm.openharmony.cn</a>。</p>
 <h3 id="2-应用程序结构"><a href="#2-应用程序结构" class="headerlink" title="2. 应用程序结构"></a>2. 应用程序结构</h3><p>在鸿蒙系统中，一个应用包含一个或者多个Module，每一个Module都可以独立进行编译和运行。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_app.png" alt="应用程序结构"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/architecture_of_app.png" alt="应用程序结构"></p>
 <p>发布时，每个Module编译为一个<code>.hap</code>后缀的文件，即HAP。每个HarmonyOS应用可以包含多个<code>.hap</code>文件。</p>
 <p>在应用上架到应用市场时，需要把应用包含的所有<code>.hap</code>文件打包为一个<code>.app</code>后缀的文件用于上架。</p>
 <p>但是<code>.app</code>包不能直接安装到设备上，只是上架应用市场的单元，安装到设备上的是<code>.hap</code>。</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_build.png" alt="打包结构"></p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/architecture_of_dev_build.png" alt="开发态和打包后视图"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/architecture_of_build.png" alt="打包结构"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/architecture_of_dev_build.png" alt="开发态和打包后视图"></p>
 <p>鸿蒙应用的整体开发调试与发布部署流程大概是这样的：</p>
-<p><img src="https://static.youfindme.cn/blog/harmony_os_getting_started/dev-debug-release-deploy.png" alt="开发-调试-发布-部署"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/harmony_os_getting_started/dev-debug-release-deploy.png" alt="开发-调试-发布-部署"></p>
 <p>HAP可分为Entry和Feature两种类型：</p>
 <ul>
 <li><strong>Entry类型的HAP</strong>：是应用的主模块<br>在同一个应用中，同一设备类型只支持一个Entry类型的HAP，通常用于实现应用的入口界面、入口图标、主特性功能等。</li>
@@ -1097,9 +1097,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2024-01-27 18:26:00 / 修改时间：18:58:02" itemprop="dateCreated datePublished" datetime="2024-01-27T18:26:00+08:00">2024-01-27</time>
+      <time title="创建时间：2024-01-27 18:26:00" itemprop="dateCreated datePublished" datetime="2024-01-27T18:26:00+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -1167,7 +1173,7 @@
 <li><code>href</code>值为空</li>
 <li><code>href</code>值为<code>javascript: void(0);</code></li>
 </ol>
-<p><img src="https://static.youfindme.cn/blog/void_operator/different_a_link.png" alt="image.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/void_operator/different_a_link.png" alt="image.png"></p>
 <p>可以看到还是有一些区别的。</p>
 <p>不过，目前除了<code>javascript: void(0);</code>比较常见之外，其他利用<code>javascript:</code>伪协议来执行 JavaScript 代码已经十分少见了，同时这种行为也是不太推荐的做法，推荐的做法是给对应的元素绑定事件处理器。</p>
 <p><em><strong>PS：</strong></em></p>
@@ -1266,7 +1272,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-24 19:06:47" itemprop="dateModified" datetime="2024-01-24T19:06:47+08:00">2024-01-24</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -1287,10 +1293,10 @@
 <li>而客户端渲染是页面在客户端（浏览器或者WebView之类的）进行渲染，服务端只会返回空页面（下面例子中会讲到）</li>
 </ul>
 <h2 id="二、-为什么需要SSR"><a href="#二、-为什么需要SSR" class="headerlink" title="二、 为什么需要SSR"></a>二、 为什么需要SSR</h2><p>在讨论为什么需要SSR之前，我们先来看看常见的CSR，比如下面这个很简单的React渲染的页面：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/page_overview.png" alt="page_overview.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/page_overview.png" alt="page_overview.png"></p>
 <p>页面包含一个count计数，点击“Increment”、“Decrement”和“Reset”按钮，分别可以增加计数，减小计数以及重设计数。</p>
 <p>现在我们打开DevTool，看看访问这个地址的时候服务端返回的内容：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/csr_html_content.png" alt="csr_html_content.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/csr_html_content.png" alt="csr_html_content.png"></p>
 <p>从DevTool可以看到，服务端一共返回了两个文件，一个HTML一个JS。</p>
 <p><strong>我们发现HTML里没有任何页面上的元素，是空的</strong>，只有一个root节点和一个main.js脚本。而所有的这些count计数以及下面这些按钮，都是在HTML页面以及main.js下载完成后，浏览器通过执行main.js来进行渲染生成的，这也就是所谓的客户端渲染。</p>
 <p>通过这个我们可以发现，CSR的应用有两个比较明显的问题：</p>
@@ -1300,9 +1306,9 @@
 </blockquote>
 <h3 id="2-首屏加载时间可能较长"><a href="#2-首屏加载时间可能较长" class="headerlink" title="2. 首屏加载时间可能较长"></a>2. 首屏加载时间可能较长</h3><p>由于CSR应用页面里所有的内容，都是通过JS动态生成的，那么在访问页面的时候，除了下载HTML外，还需要额外下载JS脚本才可以展示出页面。</p>
 <p>衡量首屏加载性能的指标有很多，我们这里用常用的<a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint?utm_source=devtools">FCP（First Contentful Paint）</a>，即“首次内容渲染”时间来看下这个页面的表现。由于我们这个页面太过简单，而且是在本地<code>127.0.0.1</code>启动的服务，所以直接感受可能不明显，我们可以在DevTool里设置网络状态，改成“低速3G”来模拟：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/csr_network_panel.png" alt="csr_network_panel.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/csr_network_panel.png" alt="csr_network_panel.png"></p>
 <p>而FCP除了可以用<code>performance</code> API获取到之外，也可以直接在Chrome DevTool的“性能”面板，通过点击面板里的“重新加载”按钮录制得到：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/csr_perf_panel.png" alt="csr_perf_panel.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/csr_perf_panel.png" alt="csr_perf_panel.png"></p>
 <p>从上面的网络瀑布和性能面板可以看到，在“低速3G”的网络状态下，页面在获取到2.01s获取到HTML后，并没有渲染任何内容，而是在又等了4.76s等到JS下载完成之后，才渲染出内容，页面的FCP总计是6822.2ms。</p>
 <p>也就是说，在2.01s的时候，HTML已经下载好的情况下，用户还是无法看到内容，额外等待了4.76s等待JS的下载，首屏加载时间较长。</p>
 <p>下面我们就来尝试把上面这个项目改成支持服务端渲染，来改善这两个CSR的弊端。</p>
@@ -1357,7 +1363,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;start&quot;</span>: <span class="string">&quot;node dist/server.js&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;dev:server&quot;</span>: <span class="string">&quot;webpack --config webpack/server.config.js --mode development --watch --stats verbose&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;build:server&quot;</span>: <span class="string">&quot;webpack build --config webpack/server.config.js --mode production --stats verbose&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>执行<code>npm run dev:server</code>以及<code>npm start</code>之后，打开<code>127.0.0.1:3007</code>或者<code>localhost:3007</code>看下：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/ssr_no_js.gif" alt="ssr_no_js.gif"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/ssr_no_js.gif" alt="ssr_no_js.gif"></p>
 <p>果然，这次服务端返回的HTML不再是空的了，页面上的元素直接就可以在HTML中看到。</p>
 <p>但是这里奇怪的是，页面的样式没有了，点击这些按钮也不再生效了，同时从网络请求里看到，服务端也只返回了一个HTML，没有JS，这是为什么呢？</p>
 <h2 id="五、-同构-amp-hydrate"><a href="#五、-同构-amp-hydrate" class="headerlink" title="五、 同构 &amp; hydrate"></a>五、 同构 &amp; hydrate</h2><p>其实，这是因为我们上面实现的SSR还不是一个完整的React SSR项目。<code>renderToString</code>虽然可以在服务端把组件渲染为HTML，但是却无法实现事件监听器的挂载或者绑定（毕竟事件绑定是要绑定到浏览器上真实的DOM上，而不是HTML字符串上），所以在<code>renderToString</code>的时候会把事件处理器给过滤掉。</p>
@@ -1370,9 +1376,9 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm run dev</span><br><span class="line">npm run dev:server</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
 
 <p>打开<code>127.0.0.1:3007</code>或者<code>localhost:3007</code>看下：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/ssr_render.gif" alt="ssr_render.gif"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/ssr_render.gif" alt="ssr_render.gif"></p>
 <p>看起来好像OK了，既有服务端渲染（返回的HTML不为空，直接就有页面上的元素），又有客户端渲染（事件绑定成功，有页面交互）。但是如果这个时候你查看一下控制台的话，会发现会有一个Waring：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/ssr_render_warn.png" alt="ssr_render_warn.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/ssr_render_warn.png" alt="ssr_render_warn.png"></p>
 <p>说是调用<code>ReactDOM.render()</code>去渲染（水合，或者说注水）一个服务端渲染的页面的行为会在React 18停止支持。</p>
 <h3 id="2-hydrate"><a href="#2-hydrate" class="headerlink" title="2. hydrate"></a>2. hydrate</h3><p>其实这个从<a target="_blank" rel="noopener" href="https://react.dev/reference/react-dom/server/renderToString#reference">React官网</a>也可以看到，在服务端使用<code>renderToString</code>外进行服务端渲染后，还需要在客户端使用<code>hydrate</code>（或者<code>hydrateRoot</code>，后者是React 18中的写法），来完成事件绑定和页面的交互性逻辑。</p>
 <p>来改下代码，在<code>src/index.tsx</code>中，改为如下内容：</p>
@@ -1390,7 +1396,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm run dev</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
 
 <p>访问<code>127.0.0.1:3007</code>或者<code>localhost:3007</code>，发现已经没有Waring了：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/ssr_hydrate_no_warn.png" alt="ssr_hydrate_no_warn.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/ssr_hydrate_no_warn.png" alt="ssr_hydrate_no_warn.png"></p>
 <h3 id="3-hydrate和render的区别"><a href="#3-hydrate和render的区别" class="headerlink" title="3. hydrate和render的区别"></a>3. hydrate和render的区别</h3><p><code>render()</code>和<code>hydrate()</code>在大部分情况下的行为是相似的，这两个都会将React元素渲染到指定的DOM节点中，但是在处理服务端渲染返回的HTML是有一些区别。</p>
 <p>服务端渲染的时候，服务端会渲染React元素并且生成一个HTML字符串返回给客户端（也就是浏览器），之后客户端会用这个HTML来生成DOM。在同构渲染的时候，客户端还会重新执行一遍JS代码，重新生成一个React组件树和相应的DOM节点。而<code>render()</code>和<code>hydrate()</code>的区别就在这里。</p>
 <p><code>render()</code>会直接创建一个新的React组件数和相应的DOM节点，而<code>hydrate()</code>则是在生成的时候，会判断这个节点是否已经在服务端渲染好，<strong>会尽可能地保留现有的DOM，只更新必要的部分</strong>。</p>
@@ -1405,8 +1411,8 @@
 <h3 id="1-SEO"><a href="#1-SEO" class="headerlink" title="1. SEO"></a>1. SEO</h3><p>首先是之前SEO不友好的问题。</p>
 <p>在做了SSR渲染后，从服务端返回的HTML里就已经包含了页面上的元素，搜索引擎爬虫在抓取和解析网页时，可以获取到完整的网页内容，显然SSR渲染可以解决这个问题（当前想要更好的SEO效果，还有其他可以优化的地方，不过这些就和CSR/SSR无关了）。</p>
 <h3 id="2-FCP"><a href="#2-FCP" class="headerlink" title="2. FCP"></a>2. FCP</h3><p>其次，我们来看一下首屏的加载时间，还是通过设置DevTool里设置网络状态，改成“低速3G”来看一下FCP：</p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/ssr_network_panel.png" alt="ssr_network_panel.png"></p>
-<p><img src="https://static.youfindme.cn/blog/react_ssr_from_scratch/ssr_perf_panel.png" alt="ssr_perf_panel.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/ssr_network_panel.png" alt="ssr_network_panel.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/react_ssr_from_scratch/ssr_perf_panel.png" alt="ssr_perf_panel.png"></p>
 <p>从上面可以看到，虽然网络面板内的HTML和JS整体的加载时间和之前几乎一样（都是6.8s左右），但是从性能面板里可以看到，页面的FCP是2043.2ms，比之前的6822.2ms少了将近70%。</p>
 <p>从时间轴的截图上也可以发现，页面在HTML下载成功之后（2.02s），就立刻可以看到页面内容，虽然页面的交互还是需要等到6.8s JS下载完成，但是从用户体验上来讲，缩短页面的白屏时间，用户可以更快的看到页面内容，对于用户体验是一个很大的提升。</p>
 <p>也就是说，SSR确实解决了CSR的两个痛点。</p>
@@ -1594,7 +1600,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -1611,28 +1617,28 @@
 <p>作为一个实时事件日志监控平台，Sentry可以记录和聚合我们应用中的报错、打点等，不管是Sentry自动捕获的错误，还是我们主动上报的错误，都可以在Sentry提供的可视化平台看到，方便开发者及时发现、分析和排查应用中存在的问题。</p>
 <p>但是在使用Sentry的过程中，我们发现了一些使用起来不那么方便的地方，这个就是我们今天要一起讨论的问题——Sentry Issue的分组（Issue Grouping）。</p>
 <h2 id="二、先看看什么是Sentry-Issue"><a href="#二、先看看什么是Sentry-Issue" class="headerlink" title="二、先看看什么是Sentry Issue"></a>二、先看看什么是Sentry Issue</h2><p>在Sentry中，每一条日志上报都是一个事件（Event）,在Sentry的Discover面板中，我们可以看到所有上报的Event，比如我这个项目：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/discover.png" alt="Discover面板"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/discover.png" alt="Discover面板"></p>
 <p>Event分为两种类型，Transaction和Error。</p>
 <p>Transaction事件主要用于性能监控。它记录了一个请求或任务从开始到结束的完整生命周期，包括各种详细的性能数据，如请求的开始时间、结束时间、总耗时、各个阶段的耗时等。</p>
 <p>Error事件主要用于错误跟踪。它记录了应用运行过程中发生的错误或异常，包括错误的类型、位置、堆栈跟踪等信息。</p>
 <p>而<strong>Issue就是Error类型的Event的聚合</strong>，Sentry会把一些相似的Error进行聚合，合并成一个Issue，这样我们就可以看到某个特定Error发生的频率和趋势，而不仅仅是只能看到单个Error Event。</p>
 <p>Sentry的Issue可以在Issues面板中看到，如下图所示：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issues.png" alt="Issue面板"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/issues.png" alt="Issue面板"></p>
 <p>从这个面板可以看到某个Issue（即某个类型的Error），上报了几次，有多少用户遇到了这个Error，以及这个Error数量变化的趋势，帮助我们快速确认问题的严重程度和影响范围。</p>
 <h2 id="三、我们遇到啥问题了？"><a href="#三、我们遇到啥问题了？" class="headerlink" title="三、我们遇到啥问题了？"></a>三、我们遇到啥问题了？</h2><p>从上面的描述可以看到，Sentry把Error进行聚合，合并成一个个Issue，帮助我们查看某个类型Error的一些信息，看起来是挺好的。</p>
 <p>但是在我们的项目里，Sentry好像并不是这么做的，比如下图：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/repeat_issues.png" alt="重复的Issue"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/repeat_issues.png" alt="重复的Issue"></p>
 <p>说好的自动聚合分组呢？</p>
 <p>同样的一个Error（或者是极其相似的Error）,并没有被聚合为同一个Issue，而是分到了不同的几个Issue里，并且这些Issue的名字几乎一摸一样，每个Issue还各自展示一个Event次数。</p>
 <p>而且这个问题不止出现在某一种类型的Error上，几乎所有的Error上报都或多或少地存在这种问题，导致不能很好地分析某种Error的影响或者变化趋势。</p>
 <p>而且有时候即便我们手动Ignore某个Issue，未来还是会不断地有新的这个Issue出现，或者我们像下面这样手动Merge两个Issue，也还是会源源不断地产生新的、没有被Merge进手动Merge的分组内的Issue。</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/merge_issues.png" alt="手动Merge"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/merge_issues.png" alt="手动Merge"></p>
 <h2 id="四、研究下Sentry是怎么对Error分组的"><a href="#四、研究下Sentry是怎么对Error分组的" class="headerlink" title="四、研究下Sentry是怎么对Error分组的"></a>四、研究下Sentry是怎么对Error分组的</h2><p>在解决我们遇到的问题之前，还是要先了解下Sentry是怎么对Error进行分组的，知道原理才能着手解决。</p>
 <p>看了下官方文档<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/">Issue Grouping | Sentry Documentation</a>，这才揭开了Sentry分组的面纱。</p>
 <h3 id="1-Sentry-Issue的Fingerprint和分组"><a href="#1-Sentry-Issue的Fingerprint和分组" class="headerlink" title="1. Sentry Issue的Fingerprint和分组"></a>1. Sentry Issue的Fingerprint和分组</h3><p>在Sentry中，有一个“指纹”的概念，Fingerprint，Fingerprint是标识Event的一种方式，每个Event（包括Error和Transaction）都有一个Fingerprint。</p>
 <p>Sentry会根据某种规则，来给每一个Event生成Fingerprint，具有相同Fingerprint的Event会被Sentry分为一组，这就是Sentry分组的基本原则。</p>
 <h4 id="1-1-如何在Sentry上查看一个Event的Fingerprint呢？"><a href="#1-1-如何在Sentry上查看一个Event的Fingerprint呢？" class="headerlink" title="1.1 如何在Sentry上查看一个Event的Fingerprint呢？"></a>1.1 如何在Sentry上查看一个Event的Fingerprint呢？</h4><p>从Discover或者Issues列表中，随便点击一个进入Error详情（Transaction不行，下面会讲原因），点击查看这个Error对应原始JSON数据：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_detail_json.png" alt="查看原始JSON"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/issue_detail_json.png" alt="查看原始JSON"></p>
 <p>在原始JSON中搜索fingerprint字段，可以看到如下所示：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;fingerprint&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;&#123;&#123; default &#125;&#125;&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -1645,7 +1651,7 @@
 <p>我们这次只讨论Error类型的Event Fingerprint生成规则。</p>
 <p>首先，Sentry每个版本生成Fingerprint的默认规则可能会有一些差异，每次Sentry默认的Fingerprint生成规则变化了之后，Sentry都会发布一个新版本，所以Fingerprint生成规则变化了之后，不会影响已有的Event。</p>
 <p>每次新建一个Project，都会自动使用目前最新版本的Fingerprint生成规则，如果想要现有的Project升级到最新的Fingerprint生成规则，需要在设置里手动修改，具体位置为：<strong>Settings &gt; Project &gt; [Your Project] &gt; Processing &gt; Issue Grouping &gt; Upgrade Grouping</strong>.如下图：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/upgrade_grouping.png" alt="升级分组"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/upgrade_grouping.png" alt="升级分组"></p>
 <p>所有版本的Fingerprint生成规则都是最先考虑<code>Stack Trace</code>，然后是<code>Exception</code>, 最后是<code>message</code>。</p>
 <h5 id="a-按照Stack-Trace分组"><a href="#a-按照Stack-Trace分组" class="headerlink" title="a. 按照Stack Trace分组"></a>a. 按照Stack Trace分组</h5><p>对于一个上报的Error Event，如果他的原始数据中有调用堆栈信息，就会完全根据调用堆栈来进行分组（即不考虑其他的），主要会使用下列信息：</p>
 <ul>
@@ -1704,7 +1710,7 @@
 <h4 id="1-3-分析一下"><a href="#1-3-分析一下" class="headerlink" title="1.3 分析一下"></a>1.3 分析一下</h4><p>到这里我们可以先分析一下，为什么我们的项目会出现上面说的问题了。</p>
 <p>首先，我们的项目没有修改过任何和Event Fingerprint有关的设置，使用的是默认分组规则，即使用调用堆栈<code>Stack Trace</code>，异常类型<code>Exception</code>，和日志消息<code>message</code>来进行分组。而绝大部分都是使用调用堆栈进行分组。</p>
 <p>我们的JS项目由于某种原因，在编译后没有把Source Maps上传到Sentry，导致代码的变量名、函数名、代码结构等在不同版本或者不同的构建记录后，都会发生变化，所以即便某个Issue被Ignore或者被手动Merge，到下一个版本，由于同一个Error的调用栈变化了，生成了完全不同的Fingerprint，导致没有被分为一组。</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/mixed_call_stack.png" alt="混淆压缩后的代码的调用栈"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/mixed_call_stack.png" alt="混淆压缩后的代码的调用栈"></p>
 <blockquote>
 <p><strong>💡注意：</strong><br>代码混淆之后并不是会让Sentry没办法对Error生成Fingerprint以及分组，即使代码被混淆和压缩，只要所有用户都使用的是同一份混淆和压缩后的代码，那么同一个地方的Error应该会生成相同的堆栈跟踪，Sentry应该能够正确地将这些错误分到同一组。</p>
 <p>真正的问题在于多个版本或者多个构建之间，每次压缩混淆后的代码都不一样，从而导致不同版本直接Error分组混乱。</p>
@@ -1724,14 +1730,14 @@
 </ol>
 <p>下面我们一个个来看。</p>
 <h3 id="2-手动合并Issue"><a href="#2-手动合并Issue" class="headerlink" title="2. 手动合并Issue"></a>2. 手动合并Issue</h3><p>在Sentry项目的Issues列表中，手动选择2或者更多个Issue，然后点击Merge，即可合并为一个分组。</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/merge_issues.png" alt="手动Merge"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/merge_issues.png" alt="手动Merge"></p>
 <p>需要注意的是，Sentry并不会根据我们如何手动Merge，来改变或者推断出任何新的分组规则，新产生的Issue还是会按照之前的规则来分组，然后根据放到我们手动Merge的Issue集合中。</p>
 <p>这也解释了为什么我们项目中，每次手动Merge之后，还是会产生新的没有被进入Merge后的分组，因为“Sentry并不会根据我们如何手动Merge，来改变或者推断出任何新的分组规则”。</p>
 <h3 id="3-Stack-Trace-Rules"><a href="#3-Stack-Trace-Rules" class="headerlink" title="3. Stack Trace Rules"></a>3. Stack Trace Rules</h3><p>虽然按照Sentry官网的文档的说法，Stack Trace Rules要比Fingerprint Rules复杂一些，我们还是先来讲下Stack Trace Rules。</p>
 <p>在比较旧的Sentry版本中，Stack Trace Rules也叫作Grouping Enhancements或者Custom Grouping Enhancements。</p>
 <p>具体设置位置为：<strong>Settings &gt; Project &gt; [Your Project] &gt; Processing &gt; Issue Grouping &gt; Stack Trace Rules</strong>。</p>
 <p>或者旧版本中为：<strong>Settings &gt; Project &gt; [Your Project] &gt; General Settings &gt; Custom Grouping Enhancements</strong>。</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/stack_trace_rules.png" alt="Stack Trace Rules"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/stack_trace_rules.png" alt="Stack Trace Rules"></p>
 <p>修改Stack Trace Rules会影响<strong>输入到Stack Trace分组算法中的数据</strong>。我们可以通过规则来改变哪些stack trace frames被视为”in-app”，这会影响Sentry如何将Issue分组。例如，我们可以将某些通常被视为”not in-app”的frames标记为”in-app”，这样它们就会被包含在分组算法中。</p>
 <p>在自定义的Stack Trace Rules中，每一行都是一条规则。每条规则有匹配项（matcher）、表达式（expression），以及跟在后面的操作（action）组成：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">matcher-name:expression other-matcher:expression ... action1 action2 ...</span><br></pre></td></tr></table></figure>
@@ -1746,7 +1752,7 @@
 <h3 id="4-Fingerprint-Rules"><a href="#4-Fingerprint-Rules" class="headerlink" title="4. Fingerprint Rules"></a>4. Fingerprint Rules</h3><p>在比较旧的Sentry版本中，也叫作Server Side Fingerprinting（叫这个名字是为了和SDK Fingerprinting对应）。</p>
 <p>具体设置位置为：<strong>Settings &gt; Project &gt; [Your Project] &gt; Processing &gt; Issue Grouping &gt; Fingerprint Rules</strong>。</p>
 <p>或者旧版本中为：<strong>Settings &gt; Project &gt; [Your Project] &gt; General Settings &gt; Server Side Fingerprinting</strong>。</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/fingerprint_rules.png" alt="Fingerprint Rules"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/fingerprint_rules.png" alt="Fingerprint Rules"></p>
 <p>Fingerprint Rules的配置方式和Stack Trace Rules类似，只有语法上不同。但是和Stack Trace Rules不同的是，Fingerprint Rules允许我们直接指定一个Issue的Fingerprint，它会完全覆盖默认的分组规则。</p>
 <p>可以理解为，<strong>Stack Trace Rules更关注如何改变分组算法的输入数据</strong>（比如翻转一些标志位，或者对调用栈做一些裁剪），而<strong>Fingerprint Rules则直接指定了分组的结果</strong>。</p>
 <p>首先，Fingerprint Rules同样是每一行是一条规则。每一条规则的Matcher和Stack Trace Rules的语法规则也是一样的，并且都可以设置<code>!</code>来表示取反，以及设置<code>#</code>来注释。</p>
@@ -1840,11 +1846,11 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger:my.package.* level:error -&gt; error-logger, &#123;&#123; logger &#125;&#125; title=&quot;Error from Logger &#123;&#123; logger &#125;&#125;&quot;</span><br></pre></td></tr></table></figure>
 
 <p><strong>自定义标题前：</strong></p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_before_rename.png" alt="自定义标题前"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/issue_before_rename.png" alt="自定义标题前"></p>
 <p><strong>自定义标题后：</strong></p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/issue_after_rename.png" alt="自定义标题后"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/issue_after_rename.png" alt="自定义标题后"></p>
 <p>在设置了自定义标题后，就可以在Error的原始JSON数据中看到title发生了变化：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/title_changed_in_json.png" alt="自定义标题后的JSON"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/title_changed_in_json.png" alt="自定义标题后的JSON"></p>
 <blockquote>
 <p><strong>🔔 注意：</strong></p>
 <p>只有比较新的版本（比如Sentry 23.x）才支持设置自定义的title在旧版本的Sentry中（比如Sentry 20.x），上面的写法会让Sentry把后面的<code>title=&quot;Error from Logger &#123;&#123; logger &#125;&#125;&quot;</code>认为是Fingerprint的一部分。</p>
@@ -1852,7 +1858,7 @@
 </blockquote>
 <h4 id="4-4-怎么确定有没有匹配上自定义的Fingerprint-Rules"><a href="#4-4-怎么确定有没有匹配上自定义的Fingerprint-Rules" class="headerlink" title="4.4 怎么确定有没有匹配上自定义的Fingerprint Rules?"></a>4.4 怎么确定有没有匹配上自定义的Fingerprint Rules?</h4><p>在添加了自定义的Fingerprint Rules之后，我们如何确定某个Event有没有命中呢？</p>
 <p>其实我们直接查看对于的JSON数据即可，如果匹配上的话，会看到下图这样：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/finger_print_in_json.png" alt="匹配上的JSON"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/finger_print_in_json.png" alt="匹配上的JSON"></p>
 <p>我们可以在_fingerprint_info中看到当前Event的各种信息</p>
 <ul>
 <li><code>client_fingerprint</code>，对应的是这个Event的SDK Fingerprint（下面会讲到，当前Event没有设置SDK Fingerprint，所以为default）</li>
@@ -1860,7 +1866,7 @@
 </ul>
 <p>同时下面的<code>fingerprint</code>字段，也展示了当前Event最终的Fingerprint。</p>
 <p>如果是旧版Sentry的话，这里就没有<code>_fingerprint_info</code>这个字段了，同时会把我们设置的title认为是Fingerprint的一部分，会是下面这样：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/old_version_custom_title_in_json.png" alt="旧版Sentry的JSON"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/old_version_custom_title_in_json.png" alt="旧版Sentry的JSON"></p>
 <h3 id="5-SDK-Fingerprint"><a href="#5-SDK-Fingerprint" class="headerlink" title="5. SDK Fingerprint"></a>5. SDK Fingerprint</h3><p>如果上面说的Fingerprint Rules，不能满足我们的需要，那么我们可以使用SDK Fingerprint来更灵活地生成Fingerprint。</p>
 <blockquote>
 <p>从上面的Fingerprint Rules文档可以看到，Fingerprint Rules只有少部分Matchers支持设置通配符，所以可能没那么灵活。</p>
@@ -1921,9 +1927,9 @@
 <li>……</li>
 </ul>
 <p>这些过滤器可能和不同版本的Sentry有关，比较旧的版本中，可能会缺少一些过滤器。</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/built_in_filters.png" alt="内置过滤器"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/built_in_filters.png" alt="内置过滤器"></p>
 <h4 id="6-2-自定义过滤器"><a href="#6-2-自定义过滤器" class="headerlink" title="6.2 自定义过滤器"></a>6.2 自定义过滤器</h4><p>可以创建自定义过滤器，目前支持以下三种，以下三种在匹配时，都是大小写不敏感的。</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/custom_filters.png" alt="自定义过滤器"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/custom_filters.png" alt="自定义过滤器"></p>
 <h5 id="a-特定IP地址"><a href="#a-特定IP地址" class="headerlink" title="a. 特定IP地址"></a>a. 特定IP地址</h5><p>可以设置IP地址，过滤特定IP的错误上报，比如<code>127.0.0.1</code>。</p>
 <h5 id="b-特定发布版本"><a href="#b-特定发布版本" class="headerlink" title="b. 特定发布版本"></a>b. 特定发布版本</h5><ul>
 <li>发布版本，指的是在Sentry.init的时候，传入的release字段。</li>
@@ -1940,7 +1946,7 @@
 </ul>
 <p>在设置完之后，可以检查下Issue的原始JSON数据，设置的过滤器会根据JSON里的<code>title</code>字段进行匹配，可以检查下是否有问题。</p>
 <p>在设置好过滤器之后，我们就可以看到有多少Event被过滤掉了：</p>
-<p><img src="https://static.youfindme.cn/blog/sentry_issue_grouping/filterd_issues.png" alt="过滤掉的Event"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/sentry_issue_grouping/filterd_issues.png" alt="过滤掉的Event"></p>
 <h2 id="五、治理"><a href="#五、治理" class="headerlink" title="五、治理"></a>五、治理</h2><p>到这里我们已经搞明白Sentry对Issue分组的原理了，也知道了怎么自定义分组。那我们是使用Stack Trace Rules还是Fingerprint Rules来处理呢？</p>
 <p>使用Stack Trace Rules本质上还是根据调用栈来进行分组，但是这就需要我们必须上传Source Maps。</p>
 <p>在上传了Source Maps的情况下，可以通过设置调用栈Stack Trace Rules来<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/stack-trace-rules/#cut-stack-traces">裁切调用栈</a>，或者限制Sentry在生成调用栈Fingerprint的时候需要考虑的<a target="_blank" rel="noopener" href="https://docs.sentry.io/product/data-management-settings/event-grouping/stack-trace-rules/#stack-trace-frame-limits">top帧数量</a>。</p>
@@ -2015,7 +2021,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -3013,9 +3019,9 @@
 
 <h4 id="4-3-直接查看文件中字符的二进制"><a href="#4-3-直接查看文件中字符的二进制" class="headerlink" title="4.3 直接查看文件中字符的二进制"></a>4.3 直接查看文件中字符的二进制</h4><p>说了这么多，都是在讲解，那有什么办法直接查看某个字符或者字符串的二进制编码呢？最简单的我们可以通过一些文本编辑器来看，比如sublime。还是以“机”和“𐐷”为例。</p>
 <p>在sublime中输入一个字符，然后以某种编码格式保存，我们这里分别用UTF-8，UTF-16 BE，UTF-16 LE来保存：</p>
-<p><img src="https://static.youfindme.cn/blog/character_encoding/save_by_sublime.png" alt="save_by_sublime.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/character_encoding/save_by_sublime.png" alt="save_by_sublime.png"></p>
 <p>然后打开终端，通过<code>xbb -b</code>命令分别查看三个文件的二进制内容：</p>
-<p><img src="https://static.youfindme.cn/blog/character_encoding/show_binary.png" alt="show_binary.png"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/character_encoding/show_binary.png" alt="show_binary.png"></p>
 <p>可以看到二进制内容，和上面讲到的是完全一致的。</p>
 <h2 id="六、小结"><a href="#六、小结" class="headerlink" title="六、小结"></a>六、小结</h2><p>到这里基本上已经说完了，字符编码从二进制，到ASCII问世，到Latin-1、2、3…，再到GB2312、Shift_JIS的“战国时代”，直到最后Unicode万国码“一统天下”。而随Unicode诞生的，还有UTF-32、UTF-16、UTF-8、UCS-2等。</p>
 <p>可以看到一个小的字符编码引起的Bug，后面可以挖出这么多，有时候日常开发中不那么起眼的一些点，后面也有很多有趣的内容。</p>
@@ -3095,7 +3101,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-02 20:36:19" itemprop="dateModified" datetime="2024-01-02T20:36:19+08:00">2024-01-02</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -3111,7 +3117,7 @@
           <h2 id="什么是深色模式"><a href="#什么是深色模式" class="headerlink" title="什么是深色模式"></a>什么是深色模式</h2><p>深色模式（Dark Mode），或者叫暗色模式，黑夜模式，是和日常使用的浅色（亮色）模式（Light Mode）相对应的一种UI主题。</p>
 <p>深色模式最早来源于人机交互领域的研究和实践，从2018年左右开始，Apple推出了<strong>iOS 13</strong>，其中包含了系统级别的深色模式，可以将整个系统的界面切换为暗色调。</p>
 <p>Google也在<strong>Android 10</strong>中推出了类似的深色模式功能，使深色模式得到了更广泛的应用和推广。</p>
-<p><img src="https://static.youfindme.cn/blog/dark_mode/dark_mode_example.png" alt="iOS官网的深色模式示例"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/dark_mode_example.png" alt="iOS官网的深色模式示例"></p>
 <p>它不是简单的把背景变为黑色，文字变为白色，而是一整套的配色主题，这种模式相比浅色模式更加柔和，可以减少亮度对用户眼睛造成的刺激和疲劳。</p>
 <p>随着越来越多的应用开始支持深色模式，作为开发也理应多了解下深色模式。</p>
 <h2 id="首先，怎么打开深色模式"><a href="#首先，怎么打开深色模式" class="headerlink" title="首先，怎么打开深色模式"></a>首先，怎么打开深色模式</h2><p>在说怎么实现之前，先来说说我们要怎么打开深色模式，一般来说只需要在系统调节亮度的地方就可以调节深色模式，具体我们可以看各个系统的官方网站即可：<br>如何打开深色模式</p>
@@ -3126,7 +3132,7 @@
 <li>打开Chrome DevTools</li>
 <li><code>Command</code>+<code>Shift</code>+<code>P</code></li>
 <li>输入dark或者light</li>
-<li>打开深色或者浅色模式<img src="https://static.youfindme.cn/blog/dark_mode/open_dark_mode_in_devtool.png" alt="打开深色模式"><br><img src="https://static.youfindme.cn/blog/dark_mode/open_light_mode_in_devtool.png" alt="打开浅色模式"></li>
+<li>打开深色或者浅色模式<img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/open_dark_mode_in_devtool.png" alt="打开深色模式"><br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/open_light_mode_in_devtool.png" alt="打开浅色模式"></li>
 </ol>
 <p>不过要注意的是，浏览器DevTools里开启深色模式，在关闭开发者工具后就会失效。</p>
 <h2 id="自动适配-声明页面支持深色模式"><a href="#自动适配-声明页面支持深色模式" class="headerlink" title="自动适配 - 声明页面支持深色模式"></a>自动适配 - 声明页面支持深色模式</h2><p>其实，在支持深色模式的浏览器中，有一套默认的深色模式，只需要我们在应用中声明，即可自动适配深色模式，声明有两种方式：</p>
@@ -3134,16 +3140,16 @@
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">	The page supports both dark and light color schemes,</span></span><br><span class="line"><span class="comment">	and the page author prefers light.</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;color-scheme&quot;</span> <span class="attr">content</span>=<span class="string">&quot;light dark&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>通过上述声明，告诉浏览器这个页面支持深色模式和浅色模式，并且页面更倾向于浅色模式。在声明了这个之后，当系统切换到深色模式时，浏览器将会把我们的页面自动切换到默认的深色模式配色，如下所示：</p>
-<p><img src="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
 <h3 id="2-在CSS里添加color-scheme属性"><a href="#2-在CSS里添加color-scheme属性" class="headerlink" title="2. 在CSS里添加color-scheme属性"></a>2. 在CSS里添加<code>color-scheme</code>属性</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  The page supports both dark and light color schemes,</span></span><br><span class="line"><span class="comment">  and the page author prefers light.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="selector-pseudo">:root</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>-scheme: light dark;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>通过上面在<code>:root</code>元素上添加<code>color-scheme</code>属性，值为<code>light dark</code>，可以实现和<code>meta</code>标签一样的效果，同时这个属性不只可用于<code>:root</code>级别，也可用于单个元素级别，比<code>meta</code>标签更灵活。</p>
 <p>但是提供<code>color-scheme</code>CSS属性需要首先下载CSS（如果通过<code>&lt;link rel=&quot;stylesheet&quot;&gt;</code>引用）并进行解析，使用<code>meta</code>可以更快地使用所需配色方案呈现页面背景。两者各有优劣吧。</p>
 <h2 id="自定义适配"><a href="#自定义适配" class="headerlink" title="自定义适配"></a>自定义适配</h2><h3 id="1-自动适配的问题"><a href="#1-自动适配的问题" class="headerlink" title="1. 自动适配的问题"></a>1. 自动适配的问题</h3><p>在上面说了我们可以通过一些标签或者CSS属性声明，来自动适配深色模式，但是从自动适配的结果来看，适配的并不理想：</p>
-<p><img src="https://static.youfindme.cn/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/left_light_right_auto_dark.png" alt="左边浅色，右边是浏览器自动适配的深色"></p>
 <ul>
 <li><p>首先是默认的黑色字体，到深色模式下变成了纯白色<code>#FFFFFF</code>，和黑色背景（虽然说不是纯黑）对比起来很扎眼，在一些设计相关的文章[<a target="_blank" rel="noopener" href="https://36kr.com/p/1724109946881">1</a>][<a target="_blank" rel="noopener" href="https://www.woshipm.com/pd/4068702.html">2</a>]里提到，深色模式下避免使用纯黑和纯白，否则更容易使人眼睛👁疲劳，同时容易在页面滚动时出现拖影：</p>
-<p>  <img src="https://static.youfindme.cn/blog/dark_mode/smearing_when_scrolling.png" alt="滚动时出现拖影，图片来源「即刻」"></p>
+<p>  <img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/smearing_when_scrolling.png" alt="滚动时出现拖影，图片来源「即刻」"></p>
 </li>
 <li><p>自动适配只能适配没有指定颜色和背景色的内容，比如上面的1、2、3级文字还有背景，没有显式设置<code>color</code>和<code>background-color</code>。</p>
 <p>  对于设置了颜色和背景色（这种现象在开发中很常见吧）的内容，就无法自动适配，比如上面的7个色块的背景色，写死了颜色，但是色块上的文字没有设置颜色。最终在深色渲染下渲染出的效果就是，色块背景色没变，但是色块上的文字变成了白色，导致一些文字很难看清。</p>
@@ -3155,13 +3161,13 @@
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.textLevel1</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#404040</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.textLevel2</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#808080</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.textLevel3</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#bfbfbf</span>;</span><br><span class="line">  <span class="attribute">margin-bottom</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@media</span> (<span class="attribute">prefers-color-scheme</span>: dark) &#123;</span><br><span class="line">  <span class="selector-class">.textLevel1</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.9</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.textLevel2</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.6</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.textLevel3</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#FFFFFF</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>通过媒体查询设置元素在深色模式下的1、2、3级文字的颜色，在浅色模式下设置不同的颜色，在深色模式下，增加不透明度：</p>
-<p><img src="https://static.youfindme.cn/blog/dark_mode/left_auto_right_manul.png" alt="左边的是自动适配的浅色深色，右边是自定义适配的浅色深色"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/left_auto_right_manul.png" alt="左边的是自动适配的浅色深色，右边是自定义适配的浅色深色"></p>
 <p>对于<code>prefers-color-scheme</code>的兼容性也不必担心，主流浏览器基本都支持了：</p>
-<p><img src="https://static.youfindme.cn/blog/dark_mode/prefers_color_scheme.png" alt="prefers-color-scheme"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/prefers_color_scheme.png" alt="prefers-color-scheme"></p>
 <h4 id="2-JS监听主题颜色"><a href="#2-JS监听主题颜色" class="headerlink" title="2). JS监听主题颜色"></a>2). JS监听主题颜色</h4><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/matchMedia">Window.matchMedia() - Web API 接口参考 | MDN</a></p>
 <p>通过CSS媒体查询适配深色模式已经很方便了，完全不需要修改JS代码逻辑，那为什么还需要JS监听主题颜色呢？</p>
 <p>因为通过CSS媒体查询虽然方便，但是只能跟随系统的主题颜色变化，假设用户想要类似于下面的自定义主题颜色，不跟随系统变化，或者业务上想做一些什么高级的操作，那么CSS媒体查询就无能为力了。</p>
-<p><img src="https://static.youfindme.cn/blog/dark_mode/custom_mode.gif" alt="custom_theme.gif"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/custom_mode.gif" alt="custom_theme.gif"></p>
 <p>在JS中，可以通过<code>window.matchMedia(&#39;(prefers-color-scheme: dark)&#39;).match</code>来判断当前的颜色主题：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> darkModeMediaQuery = <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (darkModeMediaQuery.matches) &#123;</span><br><span class="line">  <span class="comment">// dark mode</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// light mode</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">darkModeMediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, <span class="function">(<span class="params">event: MediaQueryListEvent</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.matches) &#123;</span><br><span class="line">    <span class="comment">// dark mode</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// light mode</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
@@ -3172,7 +3178,7 @@
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> ThemeType = <span class="string">&#x27;light&#x27;</span> | <span class="string">&#x27;dark&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useTheme</span>(<span class="params"></span>): <span class="title">ThemeType</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [theme, setTheme] = useState&lt;ThemeType&gt;(</span><br><span class="line">    <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>).matches ? <span class="string">&#x27;dark&#x27;</span> : <span class="string">&#x27;light&#x27;</span></span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> mediaQuery = <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> handleChange = <span class="function">() =&gt;</span> setTheme(mediaQuery.matches ? <span class="string">&#x27;dark&#x27;</span> : <span class="string">&#x27;light&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    mediaQuery.addEventListener(<span class="string">&#x27;change&#x27;</span>, handleChange);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> mediaQuery.removeEventListener(<span class="string">&#x27;change&#x27;</span>, handleChange);</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> theme;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> useTheme;</span><br></pre></td></tr></table></figure>
 
 <p><code>window.matchMedia</code>的兼容性也挺好的：</p>
-<p><img src="https://static.youfindme.cn/blog/dark_mode/window_match_media.png" alt="window.matchMedia"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/dark_mode/window_match_media.png" alt="window.matchMedia"></p>
 <p>通过JS监听颜色主题变化之后，那可玩性就很多了，我们可以通过下面这些方式来适配深色模式：</p>
 <ul>
 <li><p>动态添加类名覆盖样式</p>
@@ -3293,7 +3299,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-03 10:55:27" itemprop="dateModified" datetime="2024-01-03T10:55:27+08:00">2024-01-03</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -3331,7 +3337,7 @@
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; funcA, funcB &#125; <span class="keyword">from</span> <span class="string">&#x27;../src/utils&#x27;</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">&#x27;../src/utils&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> originalModule = jest.requireActual(<span class="string">&#x27;../src/utils&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    ...originalModule,</span><br><span class="line">    <span class="attr">funcA</span>: jest.fn(),</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">describe(<span class="string">&#x27;utils.ts 单元测试&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  test(<span class="string">&#x27;测试 funcB&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    funcB();</span><br><span class="line">    expect(funcA).toBeCalled();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>运行单测会得到一个报错</p>
-<p><img src="https://static.youfindme.cn/blog/jest_techniques/get_error_for_test.png" alt="jest单测报错"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/get_error_for_test.png" alt="jest单测报错"></p>
 <p>很明显，我们对<code>funcA</code>的mock失败了，为什么会有这样的结果呢，因为我们从模块外部导入的<code>funcA</code>引用和模块内部直接使用的<code>funcA</code>引用并不是同一个，通过<code>jest.mock</code>修改<code>funcA</code>并不会影响内部的调用。对于这种情况，建议的解决方法有两种：</p>
 <ul>
 <li>拆分文件，将<code>funcA</code>拆分到不同的文件。这种做法可能会造成文件过多且分散的问题。</li>
@@ -3387,7 +3393,7 @@
  <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcA&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  funcA(<span class="function">(<span class="params">data</span>) =&gt;</span> expect(data).toEqual(<span class="number">2</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p> 像上面那样，<code>funcA</code>会在回调里传入1，单测里就算是直接断言结果为2，也是可以直接通过单测的：</p>
-<p> <img src="https://static.youfindme.cn/blog/jest_techniques/callback_async_unit_test.png" alt="callback异步单测"></p>
+<p> <img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/callback_async_unit_test.png" alt="callback异步单测"></p>
 <p> 这是因为jest在运行完<code>funcA</code>后就直接结束了，不会等待<code>setTimeout</code>的回调，自然也就没有执行<code>expect</code>断言。正确的做法是，传入一个<code>done</code>参数：</p>
  <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcA&#x27;</span>, <span class="function">(<span class="params">done</span>) =&gt;</span> &#123;</span><br><span class="line">  funcA(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    expect(data).toEqual(<span class="number">2</span>);</span><br><span class="line">    done();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
@@ -3421,11 +3427,11 @@
 
 <p>除了<code>test.each</code>外，还有<code>describe.each</code>，更多具体用法可以参考<a target="_blank" rel="noopener" href="https://jestjs.io/docs/api#testeachtablename-fn-timeout">test.each</a>和<a target="_blank" rel="noopener" href="https://jestjs.io/docs/api#describeeachtablename-fn-timeout">describe.each</a></p>
 <h2 id="十三、使用-test-js、-test-ts、-test-tsx"><a href="#十三、使用-test-js、-test-ts、-test-tsx" class="headerlink" title="十三、使用.test.js、.test.ts、.test.tsx"></a>十三、使用<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code></h2><p>这点是一个建议，建议单测文件以<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>命名，如对于<code>utils.ts</code>，建议对应的单测以<code>utils.test.ts</code>命名，这样每个单测文件单单从文件名来说就具有清晰的语义，即这是一个单测文件，而不是一个具有具体功能的源码文件。</p>
-<p>同时，在搜索文件或者全局搜索字符串时，列表里的文件更清晰可见容易辨认。更进一步来说，现在很多IDE的文件图片icon插件，针对不同的文件名结尾，都有不同的渲染，更加方便辨认：<br><img src="https://static.youfindme.cn/blog/jest_techniques/search_file.png" alt="search_file"><br><img src="https://static.youfindme.cn/blog/jest_techniques/global_search.png" alt="global_search"></p>
+<p>同时，在搜索文件或者全局搜索字符串时，列表里的文件更清晰可见容易辨认。更进一步来说，现在很多IDE的文件图片icon插件，针对不同的文件名结尾，都有不同的渲染，更加方便辨认：<br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/search_file.png" alt="search_file"><br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/global_search.png" alt="global_search"></p>
 <h2 id="十四、配合使用Jest-Runner插件"><a href="#十四、配合使用Jest-Runner插件" class="headerlink" title="十四、配合使用Jest Runner插件"></a>十四、配合使用<code>Jest Runner</code>插件</h2><p>另外推荐一个VSCode插件，<code>Jest Runner</code>，这个插件会在<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>中，渲染几个按钮选项：</p>
-<p><img src="https://static.youfindme.cn/blog/jest_techniques/run_debug.png" alt="run_debug"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/run_debug.png" alt="run_debug"></p>
 <p>点击<code>Run</code>或<code>Debug</code>，可以只运行或调试某一个<code>test</code>或者<code>describe</code>，不需要重新全局<code>npm run test</code>也不用单独<code>jest</code>执行这个文件，极大提高写单测的效率：</p>
-<p><img src="https://static.youfindme.cn/blog/jest_techniques/run_debug_result.png" alt="run_debug_result"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/run_debug_result.png" alt="run_debug_result"></p>
 <p>这个插件只针对<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>这几个文件类型有效，所以这也是上面建议单测文件使用使用<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>命名的原因之一。</p>
 <p>同时，插件提供的<code>Debug</code>，也省去了繁琐的<code>launch.json</code>配置，可以方便地进行断点调试。</p>
 <h2 id="十五、其他技巧"><a href="#十五、其他技巧" class="headerlink" title="十五、其他技巧"></a>十五、其他技巧</h2><h3 id="1-jest配合enzyme对React-forwardRef组件进行测试"><a href="#1-jest配合enzyme对React-forwardRef组件进行测试" class="headerlink" title="1. jest配合enzyme对React.forwardRef组件进行测试"></a>1. jest配合enzyme对React.forwardRef组件进行测试</h3><p>对于React.forwardRef组件，假设有如下用例</p>

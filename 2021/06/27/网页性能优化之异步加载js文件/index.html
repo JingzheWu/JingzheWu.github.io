@@ -26,13 +26,13 @@
 <meta property="og:site_name" content="冰河">
 <meta property="og:description" content="一个网页的有很多地方可以进行性能优化，比较常见的一种方式就是异步加载js脚本文件。在谈异步加载之前，先来看看浏览器加载js文件的原理。  浏览器加载 JavaScript 脚本，主要通过&lt;script&gt;元素完成。正常的网页加载流程是这样的。  浏览器一边下载 HTML 网页，一边开始解析。也就是说，不等到下载完，就开始解析。 解析过程中，浏览器发现&lt;script&gt;元素，就暂">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://static.youfindme.cn/blog/js-load/js-load.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/js-load/js-load.png">
 <meta property="article:published_time" content="2021-06-27T13:01:37.000Z">
-<meta property="article:modified_time" content="2023-12-28T08:08:35.044Z">
+<meta property="article:modified_time" content="2025-04-21T02:47:55.872Z">
 <meta property="article:author" content="冰河">
 <meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://static.youfindme.cn/blog/js-load/js-load.png">
+<meta name="twitter:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/js-load/js-load.png">
 
 
 <link rel="canonical" href="https://youfindme.top/2021/06/27/%E7%BD%91%E9%A1%B5%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BDjs%E6%96%87%E4%BB%B6/">
@@ -183,7 +183,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-12-28 16:08:35" itemprop="dateModified" datetime="2023-12-28T16:08:35+08:00">2023-12-28</time>
+      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
     </span>
 
   
@@ -234,7 +234,7 @@
 </ol>
 <p>说完了这几种常见的异步加载js脚本的方式，再来看最后一个问题，什么时候用<code>defer</code>，什么时候用<code>async</code>呢？一般来说，两者之间的选择则是看脚本之间是否有依赖关系，有依赖的话应当要保证执行顺序，应当使用<code>defer</code>没有依赖的话使用<code>async</code>，同时使用的话<code>defer</code>失效。要注意的是两者都不应该使用<code>document.write()</code>，这个导致整个页面被清除重写。</p>
 <p>下面一幅图表明了同步加载以及<code>defer</code>、<code>async</code>加载时的区别，其中绿色线代表 HTML 解析，蓝色线代表网络读取js脚本，红色线代表js脚本执行时间：</p>
-<p><img src="https://static.youfindme.cn/blog/js-load/js-load.png" alt="js-load"></p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/js-load/js-load.png" alt="js-load"></p>
 
     </div>
 
