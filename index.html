@@ -172,7 +172,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-04-20 21:15:12 / 修改时间：21:59:12" itemprop="dateCreated datePublished" datetime="2025-04-20T21:15:12+08:00">2025-04-20</time>
+      <time title="创建时间：2025-04-20 21:15:12 / 修改时间：22:13:07" itemprop="dateCreated datePublished" datetime="2025-04-20T21:15:12+08:00">2025-04-20</time>
     </span>
 
   
@@ -293,8 +293,11 @@
 <p>而这一切只需要按照SSE的规范，设置响应头<code>Content-Type: text/event-stream</code>和按照特定的数据格式返回即可。</p>
 <h3 id="原生EventSource的不足"><a href="#原生EventSource的不足" class="headerlink" title="原生EventSource的不足"></a>原生EventSource的不足</h3><p>通过EventSource虽然可以实现SSE，但是有一些限制：</p>
 <ul>
-<li><code>EventSource</code>只能支持GET请求<br>在AI大模型对话的这种场景来看，GET请求明显不合适，GET请求只能在URL的query中添加数据，但是浏览器对于URL的长度是有限制的，而且一些敏感的数据也不适合放到query里，这种情况下使用POST请求是更好选择</li>
-<li><code>EventSource</code>只支持发送UTF-8编码的文本，不支持发送二进制流</li>
+<li><p><code>EventSource</code>只能支持GET请求</p>
+<p>在AI大模型对话的这种场景来看，GET请求明显不合适，GET请求只能在URL的query中添加数据，但是浏览器对于URL的长度是有限制的，而且一些敏感的数据也不适合放到query里，这种情况下使用POST请求是更好选择</p>
+</li>
+<li><p><code>EventSource</code>只支持发送UTF-8编码的文本，不支持发送二进制流</p>
+</li>
 </ul>
 <p>针对这两个问题，可以尝试不使用<code>EventSource</code>，而是用<code>fetch</code>来实现SSE：</p>
 <ul>
