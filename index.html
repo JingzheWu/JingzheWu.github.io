@@ -172,7 +172,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-11-19 11:28:44 / 修改时间：12:17:46" itemprop="dateCreated datePublished" datetime="2025-11-19T11:28:44+08:00">2025-11-19</time>
+      <time title="创建时间：2025-11-19 11:28:44 / 修改时间：14:26:32" itemprop="dateCreated datePublished" datetime="2025-11-19T11:28:44+08:00">2025-11-19</time>
     </span>
 
   
@@ -198,7 +198,7 @@
 <p>为了解决这些问题，通常有下面两个手段：</p>
 <ol>
 <li>微调大模型</li>
-<li>手动给LLM添加额外知识</li>
+<li>手动给LLM添加额外知识，即外挂知识库</li>
 </ol>
 <h2 id="二、-微调-vs-外挂知识库"><a href="#二、-微调-vs-外挂知识库" class="headerlink" title="二、 微调 vs 外挂知识库"></a>二、 微调 vs 外挂知识库</h2><h3 id="1-微调Fine-tuning"><a href="#1-微调Fine-tuning" class="headerlink" title="1. 微调Fine-tuning"></a>1. 微调Fine-tuning</h3><p>所谓<strong>微调（Fine-tuning）</strong>，就是在预训练模型的基础上，使用特定任务的数据（如私有数据、专业领域知识、最新的信息等）进行进一步训练，让模型在特定领域表现更好。</p>
 <p>举个比较形象的例子，通过预训练得到的大模型，就是学习了小学到高中的通识教育的知识，学会语言、数学、常识、逻辑思维，知识面广但不够专业。</p>
@@ -243,10 +243,10 @@
 <p>向量通常用一个有序的数字数组来表示，比如：</p>
 <ul>
 <li>2维向量: [3, 4]，可以理解为一个有x轴和y轴的平面直角坐标系，从原点指向[3, 4]这个坐标点的一个向量</li>
-<li>3维向量: [1, 2, 3]，可以理解为一个有x、y、z三个轴的空间直角坐标系，从原点执行[1, 2, 3]这个坐标点的一个向量</li>
+<li>3维向量: [1, 2, 3]，可以理解为一个有x、y、z三个轴的空间直角坐标系，从原指向[1, 2, 3]这个坐标点的一个向量</li>
 <li>高维向量: [0.2, 0.5, 0.1, …, 0.8]，以此类推，在数学或者计算机领域，一个向量可以有任意多个维度， 比如有几百甚至上千维</li>
 </ul>
-<p>而在AI领域，向量是<strong>原始数据的数值化表示</strong>,用来捕捉语义信息，比如</p>
+<p>而在AI领域，向量是<strong>原始数据的数值化表示</strong>，用来捕捉语义信息，比如</p>
 <ul>
 <li>文本“苹果很好吃”，可以用这样一个向量表示：[0.12, 0.34, 0.89, …, 0.45]</li>
 <li>图片🍎，可以用这样一个向量表示：[0.23, 0.67, 0.12, …, 0.91]</li>
@@ -370,7 +370,7 @@
 <p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/chunking_embedding.png" alt="知识库向量化过程"></p>
 <h2 id="五、-RAG-R-Retrieval"><a href="#五、-RAG-R-Retrieval" class="headerlink" title="五、 RAG - R (Retrieval)"></a>五、 RAG - R (Retrieval)</h2><p>在准备好知识库之后，就可以和LLM进行问答了。那在提出问题后，如何让LLM知晓知识库的内容呢？答案就是RAG中的R，<strong>Retrieval检索</strong>。</p>
 <p>在上面的知识库的准备过程中，我们使用了某个<strong>Embedding Model</strong>进行了知识库的向量化，那么在用户提出问题Query之后，也需要使用相同的<strong>Embedding Model</strong>，对用户的输入Query进行相同的向量化。</p>
-<p>在都进行了向量化之后，就可以开始在向量数据库中检索了。</p>
+<p>在都进行了向量化之后，就可以开始在向量数据库中检索了，检索和用户的Query相似语义的向量。</p>
 <h3 id="相似度匹配"><a href="#相似度匹配" class="headerlink" title="相似度匹配"></a>相似度匹配</h3><p>和普通数据库基于关键字的检索不同，向量数据库是基于语义的检索。那怎么判断两个向量的语义是否接近，常见的衡量标准有：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7">余弦相似度（Cosine Similarity）</a></li>
@@ -406,14 +406,20 @@
 <td align="left">典型应用场景有最大内积搜索（MIPS）、推荐召回、因子分解机/embedding 打分。</td>
 </tr>
 </tbody></table>
-<p>而在RAG语义搜索中，通常使用余弦相似度来计算两个向量是否相似，即通过跑男的两个向量的夹角，来判断两个向量的语义是否接近。还是以上面的这个图为例：</p>
+<p>而在RAG语义搜索中，通常使用余弦相似度来计算两个向量是否相似，即通过判断两个向量的夹角大小，来判断两个向量的语义是否接近。还是以上面的这个图为例：</p>
 <p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_space_with_arrow.png" alt="向量空间夹角"></p>
 <p>在这个向量空间里，Chicken和“鸡”的图片之间，向量的夹角很小，Dog和Wolf夹角很小，Banana和Apple夹角很小，Apple和Apple公司的Logo夹角很小。但是动物和水果之间的向量夹角就很大了，语义上相差很远。</p>
 <blockquote>
-<p>为什么用余弦相似度？<br>因为文本长度不重要（一句话和一段话可能表达同一意思），我们只关心语义方向是否一致。</p>
+<p>为什么用余弦相似度？</p>
+<p>因为文本长度不重要（一句话和一段话可能表达同一意思），我们只关心语义方向是否一致。</p>
 </blockquote>
 <h3 id="ANN"><a href="#ANN" class="headerlink" title="ANN"></a>ANN</h3><p>在上面的图中，我们还看到了一个叫做Approximate Nearest Neighbor（ANN）近似最近邻检索算法的东西，这个和余弦相似度有什么关系呢？</p>
-<p>简单来讲，ANN是“怎么快地找相似向量”（检索算法/索引），余弦相似度是“用什么标准衡量相似”（度量/打分）；在RAG中它们是配套使用的：用余弦相似度等度量定义“近邻”，再用ANN在大规模向量库上高效近似地找这些近邻。</p>
+<p>简单来讲：</p>
+<ul>
+<li>ANN是“怎么快地找相似向量”（检索算法/索引）</li>
+<li>余弦相似度是“用什么标准衡量相似”（度量/打分）</li>
+</ul>
+<p>在RAG中它们是配套使用的，用余弦相似度等度量定义“近邻”，再用ANN在大规模向量库上高效近似地找这些近邻。</p>
 <h3 id="完整过程"><a href="#完整过程" class="headerlink" title="完整过程"></a>完整过程</h3><p>在完成检索后，通常会拿到Top-K最相关的几条数据。假设用户输入的问题是“如何配置HTTPS？”，那么过程大概如下：</p>
 <ol>
 <li><p>用户提问：“如何配置HTTPS？”</p>
@@ -502,18 +508,15 @@
 <table>
 <thead>
 <tr>
-<th></th>
 <th>组成</th>
 <th>作用</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Transformer</td>
 <td>Encoder编码器</td>
 <td>理解输入，提取特征</td>
 </tr>
 <tr>
-<td>Transformer</td>
 <td>Decoder解码器</td>
 <td>生成输出，逐字生成</td>
 </tr>
