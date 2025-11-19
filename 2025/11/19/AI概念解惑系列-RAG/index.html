@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"youfindme.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="随着最近几年AI在各个领域大放异彩，作为一个前端开发，我也对AI里的各种技术概念产生了浓厚的兴趣，希望能详细了解这些技术概念和背后的原理后，找寻和前端结合的一些思路。今天我们就来一起了解下AI领域常用到的一个技术——RAG（Retrieval-Augmented Generation），检索增强生成。 一、 开始之前在开始介绍RAG之前，我们先来简单回顾一下大语言模型LLM的原理。 LLM通过预训">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI概念解惑系列 - RAG">
+<meta property="og:url" content="https://youfindme.top/2025/11/19/AI%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%83%91%E7%B3%BB%E5%88%97-RAG/index.html">
+<meta property="og:site_name" content="冰河">
+<meta property="og:description" content="随着最近几年AI在各个领域大放异彩，作为一个前端开发，我也对AI里的各种技术概念产生了浓厚的兴趣，希望能详细了解这些技术概念和背后的原理后，找寻和前端结合的一些思路。今天我们就来一起了解下AI领域常用到的一个技术——RAG（Retrieval-Augmented Generation），检索增强生成。 一、 开始之前在开始介绍RAG之前，我们先来简单回顾一下大语言模型LLM的原理。 LLM通过预训">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_flow_simple.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_arc.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/embedding.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_demo.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_space.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/king_queen_man_woman.jpeg">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/text_chunking.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/chunking_embedding.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/cosine.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/L2.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/inner_product.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_space_with_arrow.png">
+<meta property="og:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_arc.png">
+<meta property="article:published_time" content="2025-11-19T03:28:44.000Z">
+<meta property="article:modified_time" content="2025-11-19T04:13:46.109Z">
+<meta property="article:author" content="冰河">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_flow_simple.png">
+
+
+<link rel="canonical" href="https://youfindme.top/2025/11/19/AI%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%83%91%E7%B3%BB%E5%88%97-RAG/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://youfindme.top/2025/11/19/AI%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%83%91%E7%B3%BB%E5%88%97-RAG/","path":"2025/11/19/AI概念解惑系列-RAG/","title":"AI概念解惑系列 - RAG"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AI概念解惑系列 - RAG | 冰河</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">冰河</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D"><span class="nav-number">1.</span> <span class="nav-text">一、 开始之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E5%BE%AE%E8%B0%83-vs-%E5%A4%96%E6%8C%82%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">二、 微调 vs 外挂知识库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BE%AE%E8%B0%83Fine-tuning"><span class="nav-number">2.1.</span> <span class="nav-text">1. 微调Fine-tuning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%A4%96%E6%8C%82%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="nav-number">2.2.</span> <span class="nav-text">2. 外挂知识库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AF%B9%E6%AF%94"><span class="nav-number">2.3.</span> <span class="nav-text">3. 对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-RAG"><span class="nav-number">3.</span> <span class="nav-text">三、 RAG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81-%E5%90%91%E9%87%8F%E5%92%8C%E5%90%91%E9%87%8F%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">四、 向量和向量化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E9%87%8F%EF%BC%88Vector%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">向量（Vector）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E5%8C%96%EF%BC%88Vectorization-Embedding%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">向量化（Vectorization&#x2F;Embedding）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%90%91%E9%87%8F%E5%8C%96"><span class="nav-number">4.3.</span> <span class="nav-text">如何向量化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81-RAG-R-Retrieval"><span class="nav-number">5.</span> <span class="nav-text">五、 RAG - R (Retrieval)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E4%BC%BC%E5%BA%A6%E5%8C%B9%E9%85%8D"><span class="nav-number">5.1.</span> <span class="nav-text">相似度匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ANN"><span class="nav-number">5.2.</span> <span class="nav-text">ANN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E8%BF%87%E7%A8%8B"><span class="nav-number">5.3.</span> <span class="nav-text">完整过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81-RAG-A-Augmented"><span class="nav-number">6.</span> <span class="nav-text">六、 RAG - A (Augmented)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81-RAG-G-Generation"><span class="nav-number">7.</span> <span class="nav-text">七、 RAG - G (Generation)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81-FAQ"><span class="nav-number">8.</span> <span class="nav-text">九、 FAQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81-%E5%B0%8F%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">十、 小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">冰河</p>
+  <div class="site-description" itemprop="description">冰河的个人网站</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2025/11/19/AI%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%83%91%E7%B3%BB%E5%88%97-RAG/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="AI概念解惑系列 - RAG | 冰河">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AI概念解惑系列 - RAG
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-11-19 11:28:44 / 修改时间：12:13:46" itemprop="dateCreated datePublished" datetime="2025-11-19T11:28:44+08:00">2025-11-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>随着最近几年AI在各个领域大放异彩，作为一个前端开发，我也对AI里的各种技术概念产生了浓厚的兴趣，希望能详细了解这些技术概念和背后的原理后，找寻和前端结合的一些思路。今天我们就来一起了解下AI领域常用到的一个技术——<strong>RAG（Retrieval-Augmented Generation）</strong>，检索增强生成。</p>
+<h2 id="一、-开始之前"><a href="#一、-开始之前" class="headerlink" title="一、 开始之前"></a>一、 开始之前</h2><p>在开始介绍RAG之前，我们先来简单回顾一下大语言模型LLM的原理。</p>
+<p>LLM通过预训练，让模型学习了全网公开的知识（网页、书籍、论文、代码等等），得到一堆“参数”，之后根据用户的输入来不断地预测下一个token应该是什么，最终得到输出。</p>
+<p>这种训练好的模型，在通用领域有着比较好的表现。但是根据LLM的原理，我们也能发现它的一些不足：</p>
+<ul>
+<li>“<strong>预训练</strong>”：由于是使用了旧的数据进行的训练，对于在训练之后产生新信息，LLM无法回答</li>
+<li>“<strong>公开的知识</strong>”：LLM使用了公开的知识训练，对于一些非公开的内容，或者专业数据，LLM同样无法回答</li>
+<li>“<strong>预测</strong>”：因为LLM本质上是一个“看前文、猜下文”的大规模统计生成器，所以对于它不知道的信息，在回答时往往会“胡说八道”，也就是常说的Hallucination，“<strong>幻觉</strong>”</li>
+</ul>
+<p>对于普通用户一些不要求实时性的通用性问题来说，上面这些不是什么大问题，但是一旦涉及到<strong>实时性、专业数据、企业内私有数据</strong>时，上面的问题就会严重影响用户体验。</p>
+<p>为了解决这些问题，通常有下面两个手段：</p>
+<ol>
+<li>微调大模型</li>
+<li>手动给LLM添加额外知识</li>
+</ol>
+<h2 id="二、-微调-vs-外挂知识库"><a href="#二、-微调-vs-外挂知识库" class="headerlink" title="二、 微调 vs 外挂知识库"></a>二、 微调 vs 外挂知识库</h2><h3 id="1-微调Fine-tuning"><a href="#1-微调Fine-tuning" class="headerlink" title="1. 微调Fine-tuning"></a>1. 微调Fine-tuning</h3><p>所谓<strong>微调（Fine-tuning）</strong>，就是在预训练模型的基础上，使用特定任务的数据（如私有数据、专业领域知识、最新的信息等）进行进一步训练，让模型在特定领域表现更好。</p>
+<p>举个比较形象的例子，通过预训练得到的大模型，就是学习了小学到高中的通识教育的知识，学会语言、数学、常识、逻辑思维，知识面广但不够专业。</p>
+<p>而微调阶段（Fine-tuning）类似于专业教育，就好像学习了专业领域课程、成为某个领域的专家。</p>
+<p>即“<strong>通用模型 + 专业数据 + 针对性训练 = 专业模型</strong>”：</p>
+<ul>
+<li>GPT + 代码数据 + 代码任务训练 = CodeGPT</li>
+<li>GPT + 医学数据 + 医学任务训练 = MedicalGPT</li>
+<li>GPT + 法律数据 + 法律任务训练 = LegalGPT</li>
+</ul>
+<h3 id="2-外挂知识库"><a href="#2-外挂知识库" class="headerlink" title="2. 外挂知识库"></a>2. 外挂知识库</h3><p>在和LLM交互时，我们可以通过一些特殊手段，从外部知识库检索相关信息提供给LLM，相当于给AI配个”外挂知识库”，让它可以获取到专业领域知识、私有数据、实时信息等等。</p>
+<p>而RAG就是比较常用的手段。</p>
+<h3 id="3-对比"><a href="#3-对比" class="headerlink" title="3. 对比"></a>3. 对比</h3><p>对比这两个不难发现，微调是内化知识到了模型参数中，最终的效果肯定是稍微好一些的。</p>
+<p>但是考虑到微调下面这些点：</p>
+<ul>
+<li>需要<strong>大量的标注训练数据</strong>（需要对文档等进行数据清洗、标注等）</li>
+<li><strong>较高的训练成本</strong>（比如训练需要较高的算力，有不小的经济成本和时间成本）</li>
+<li><strong>较高的实现难度</strong>（需要AI领域的专业知识）</li>
+<li><strong>无法保持数据是最新的</strong>（内化的知识需要重新训练才能更新）</li>
+</ul>
+<p>对于个人或者中小型企业来说，通过RAG外挂知识库是一个更合适的选择：</p>
+<ul>
+<li>只需要<strong>结构化的文档</strong></li>
+<li><strong>不需要训练</strong></li>
+<li><strong>较低的实现难度</strong>（大多是工程方面的实现）</li>
+<li><strong>知识库更新很方便</strong>（不需要重新训练，只需要重新向量化即可）</li>
+</ul>
+<h2 id="三、-RAG"><a href="#三、-RAG" class="headerlink" title="三、 RAG"></a>三、 RAG</h2><p>那我们来看下RAG是什么，所谓<strong>RAG（Retrieval-Augmented Generation）</strong>检索增强生成，就是：</p>
+<ol>
+<li><strong>检索(Retrieval)</strong>: 从外部知识库中检索相关信息</li>
+<li><strong>增强(Augmented)</strong>: 将检索到的信息作为上下文</li>
+<li><strong>生成(Generation)</strong>: 大模型基于检索内容生成回答</li>
+</ol>
+<p>它的本质就是上面说的给LLM外挂一个知识库，而它的工作过程，简单来讲就是下面这样：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_flow_simple.png" alt="工作流程"></p>
+<p>而一个RAG完整工程的架构示意图，则如下所示：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_arc.png" alt="架构示意图"></p>
+<p>看不懂？没关系，我们一步一步来讲解。</p>
+<h2 id="四、-向量和向量化"><a href="#四、-向量和向量化" class="headerlink" title="四、 向量和向量化"></a>四、 向量和向量化</h2><p>首先，最基础的一个概念，什么是<strong>向量（Vector）</strong>和<strong>向量化（Vectorization/Embedding）</strong>。</p>
+<h3 id="向量（Vector）"><a href="#向量（Vector）" class="headerlink" title="向量（Vector）"></a>向量（Vector）</h3><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%90%91%E9%87%8F">向量</a>我们应该不陌生，我们最早应该在高中就学过了，就是一个同时具有数值和方向的量。相对应的，标量则只有数值，没有方向。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector.png" alt="向量"></p>
+<p>向量通常用一个有序的数字数组来表示，比如：</p>
+<ul>
+<li>2维向量: [3, 4]，可以理解为一个有x轴和y轴的平面直角坐标系，从原点指向[3, 4]这个坐标点的一个向量</li>
+<li>3维向量: [1, 2, 3]，可以理解为一个有x、y、z三个轴的空间直角坐标系，从原点执行[1, 2, 3]这个坐标点的一个向量</li>
+<li>高维向量: [0.2, 0.5, 0.1, …, 0.8]，以此类推，在数学或者计算机领域，一个向量可以有任意多个维度， 比如有几百甚至上千维</li>
+</ul>
+<p>而在AI领域，向量是<strong>原始数据的数值化表示</strong>,用来捕捉语义信息，比如</p>
+<ul>
+<li>文本“苹果很好吃”，可以用这样一个向量表示：[0.12, 0.34, 0.89, …, 0.45]</li>
+<li>图片🍎，可以用这样一个向量表示：[0.23, 0.67, 0.12, …, 0.91]</li>
+</ul>
+<p>而具体是怎么把一串文本或者图片转换为向量的，就是向量化所做的工作了。</p>
+<h3 id="向量化（Vectorization-Embedding）"><a href="#向量化（Vectorization-Embedding）" class="headerlink" title="向量化（Vectorization/Embedding）"></a>向量化（Vectorization/Embedding）</h3><p>向量化，就是将非结构化原始数据(文本、图片、音频等)转换为向量的过程。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/embedding.png" alt="向量化"></p>
+<p>而为了将一个非结构化数据，变为向量，我们首先需要给这个数据定义好它的<strong>维度</strong>。</p>
+<p>世界上的所有数据，都可以根据它在某一项特点上的程度而打一个分，数值越高代表这个原始数据在这个特点上的特征越强烈。我们规定**数值的范围是[-1, 1]**，1代表完全符合这个特征，-1代表拥有完全相反的特征。</p>
+<p>例如下面这个二维的向量空间：</p>
+<ul>
+<li>横坐标代表情感极性，越靠近1代表越正向的情感，越靠近-1代表越负向的情感</li>
+<li>纵坐标代表内容类型，越靠近1代表越主观的观点评价，越靠近-1代表越客观的事实陈述</li>
+</ul>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_demo.png" alt="二维向量示例"></p>
+<p>上面的几个原始文本数据里：</p>
+<blockquote>
+<ol>
+<li>这部电影太精彩了，演员表演完美<ul>
+<li>横轴（情感）：+0.9（强烈正面）</li>
+<li>纵轴（内容类型）：+0.8（明显观点评价）</li>
+<li>坐标：[0.9, 0.8]</li>
+</ul>
+</li>
+<li>水的沸点是100摄氏度<ul>
+<li>横轴（情感）：0.0（完全中性）</li>
+<li>纵轴（内容类型）：-0.9（纯粹事实）</li>
+<li>坐标：[0.0, -0.9]</li>
+</ul>
+</li>
+<li>这个产品质量很差，完全不符合预期<ul>
+<li>横轴（情感）：-0.8（明显负面）</li>
+<li>纵轴（内容类型）：+0.7（个人评价）</li>
+<li>坐标：[-0.8, 0.7]</li>
+</ul>
+</li>
+<li>令人失望的是，数据显示销售额下降了20%”<ul>
+<li>横轴（情感）：-0.6（负面情绪）</li>
+<li>纵轴（内容类型）：-0.3（偏向事实但带有主观色彩）</li>
+<li>坐标：[-0.6, -0.3]</li>
+</ul>
+</li>
+<li>数据表明用户流失率高达30%<ul>
+<li>横轴（情感）：-0.7（负面情绪）</li>
+<li>纵轴（内容类型）：-0.8（事实陈述，且没有明显主观评价在里面）</li>
+<li>坐标：[-0.7, -0.8]</li>
+</ul>
+</li>
+<li>我们彩票中了500万<ul>
+<li>横轴（情感）：+0.9（正面）</li>
+<li>纵轴（内容类型）：-0.8（事实陈述，且没有明显主观评价在里面）</li>
+<li>坐标：[0.9, -0.8]</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>可以看到，在我们对原始的文本数据从不同维度打分后会出现</p>
+<ul>
+<li>相似文本会聚集：比如所有正面评价都会集中在第一象限</li>
+<li>距离/夹角反映相似度：坐标距离/夹角越近，文本在情感和类型上越相似</li>
+</ul>
+<p>我们的例子里只有两个维度，而在实际应用中可能有几百上千个维度，每个维度代表不同特征，这样的话就可以得到一个高维的向量空间，在向量空间内可以体现出不同数据之间或近或远的关系。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_space.png" alt="向量空间"></p>
+<p>另外，向量化除了叫做Vectorization外，也时候也会叫做<strong>Embedding，嵌入</strong>。这是因为向量化的过程，不只是将一个非结构化数据转为向量数字，更重要的是在这个过程中，将原始数据的语义信息嵌入到了向量空间中,使得语义关系被保留。</p>
+<p>举个例子，通常情况下“国王King”和“王后Queen”常出现在相似的上下文中，“男人Man”和“女人Women”经常出现在相似的上下文中。</p>
+<p>皇室词汇（King, Queen, Prince）之间的相似度整体大于它们与普通人词汇（Man, Women）的相似度。但是“国王King”和“男人Man”之间又有一些相似，“王后Queen”和“女人Women”之间有一些相似。</p>
+<p>而将这四个单词进行向量化后，可能如下图所示：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/king_queen_man_woman.jpeg" alt="语义嵌入"></p>
+<p>“国王King”、“王后Queen”、“男人Man”、“女人Women”的语义以及语义关系被嵌入了向量空间，做到了：</p>
+<ol>
+<li><strong>保持语义关系</strong>: 意思相近的词在向量空间中也靠近</li>
+<li><strong>支持语义运算</strong>: 实现了<code>king - man + woman ≈ queen</code>这种神奇的运算</li>
+</ol>
+<h3 id="如何向量化"><a href="#如何向量化" class="headerlink" title="如何向量化"></a>如何向量化</h3><p>向量化是一个很复杂的过程，通常都是使用模型来实现的，即“<strong>Embedding models</strong>”，比如OpenAI的text-embedding-ada-002（需要API密钥访问），或者也可以使用一些开源的模型。</p>
+<p>通常一个模型向量化数据后的维度越高，在后续进行信息检索时就会越精准。</p>
+<p>其实除了调用模型这一步之外，完整的向量化过程还有一些其他工作要做，整个过程大概如下：</p>
+<ol>
+<li><p>读取文档</p>
+<ul>
+<li>PDF → 提取文本</li>
+<li>Word → 提取文本  </li>
+<li>Markdown → 读取内容</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>清洗文本</p>
+<ul>
+<li>去除乱码</li>
+<li>统一格式</li>
+<li>去除无用内容（页眉页脚等）</li>
+</ul>
+</li>
+<li><p>把文本进行切割，即<strong>文本分块 (Chunking)</strong></p>
+<p> 为什么要分块？因为原始文档可能特别长，几千上万字，不方便后续进行向量化和检索。</p>
+<p> 而分块的规则也有多种，比如根据标点符号分割，但是可能会存在有的块长度很长，有的又很短的情况；也可以根据固定长度分割，但是可能会导致一个完整的语义被切割到不同的块，每个块里的部分词变得毫无语义价值。</p>
+<p> 所以RAG 分割一般用<strong>相同块大小</strong> + <strong>块重叠</strong>的办法，即所谓的<strong>滑动窗口分块</strong>，这和按长度截断来分割有点像。用这种办法，在一定程度上能避免文档原意被截断导致分出来的片段变得没价值，而且重叠块里有重复的信息，能让模型更好地理解文档内容。</p>
+<p> <img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/text_chunking.png" alt="文本分块"></p>
+</li>
+<li><p>使用某个模型进行<strong>向量化（Embedding）</strong></p>
+<ul>
+<li><p>BGE-base-zh (中文效果好)</p>
+</li>
+<li><p>all-MiniLM-L6-v2 (英文，轻量)</p>
+</li>
+<li><p>text-embedding-ada-002 (OpenAI，需联网)</p>
+<p> 假设选择BGE-base-zh (中文)，输出维度768维，模型大小约 400MB</p>
+</li>
+</ul>
+</li>
+<li><p>将向量化后的数据存入向量数据库，<strong>构建索引（Indexing）</strong></p>
+<p> 普通的数据存储有数据库，那么向量的存储，也有专门的<strong>向量数据库</strong>，它是专为存储与检索高维嵌入向量而设计的数据库。支持基于相似度的检索并可结合元数据过滤，常用于语义搜索、推荐和 RAG。常见的数据库有：</p>
+<ul>
+<li>Chroma</li>
+<li>Milvus</li>
+<li>Qdrant</li>
+</ul>
+<p> 假设选择Chroma，那么它的每条记录的存储结构大概为：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;id&quot;</span>: <span class="string">&quot;doc_1_chunk_1&quot;</span>,</span><br><span class="line">  <span class="string">&quot;vector&quot;</span>: [<span class="number">0.23</span>, <span class="number">0.45</span>, ..., <span class="number">0.12</span>],  <span class="comment">// 768维向量</span></span><br><span class="line">  <span class="string">&quot;metadata&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;source&quot;</span>: <span class="string">&quot;系统架构文档.pdf&quot;</span>,</span><br><span class="line">    <span class="string">&quot;chunk_index&quot;</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">&quot;text&quot;</span>: <span class="string">&quot;第一章 系统架构...&quot;</span>  <span class="comment">// 原始文本</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>在做完上述的几个步骤之后，就算是完成了RAG的准备工作，即给LLM准备好了“外挂的知识库”。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/chunking_embedding.png" alt="知识库向量化过程"></p>
+<h2 id="五、-RAG-R-Retrieval"><a href="#五、-RAG-R-Retrieval" class="headerlink" title="五、 RAG - R (Retrieval)"></a>五、 RAG - R (Retrieval)</h2><p>在准备好知识库之后，就可以和LLM进行问答了。那在提出问题后，如何让LLM知晓知识库的内容呢？答案就是RAG中的R，<strong>Retrieval检索</strong>。</p>
+<p>在上面的知识库的准备过程中，我们使用了某个<strong>Embedding Model</strong>进行了知识库的向量化，那么在用户提出问题Query之后，也需要使用相同的<strong>Embedding Model</strong>，对用户的输入Query进行相同的向量化。</p>
+<p>在都进行了向量化之后，就可以开始在向量数据库中检索了。</p>
+<h3 id="相似度匹配"><a href="#相似度匹配" class="headerlink" title="相似度匹配"></a>相似度匹配</h3><p>和普通数据库基于关键字的检索不同，向量数据库是基于语义的检索。那怎么判断两个向量的语义是否接近，常见的衡量标准有：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7">余弦相似度（Cosine Similarity）</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB">欧氏L2（Euclidean L2/Square L2）</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%86%85%E7%A7%AF">内积IP（Inner Product）</a></li>
+</ul>
+<p>这三个的具体定义和区别如下所示：</p>
+<table>
+<thead>
+<tr>
+<th align="left">算法</th>
+<th align="left">公式</th>
+<th align="left">定义</th>
+<th align="left">适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">余弦相似度（Cosine Similarity）</td>
+<td align="left"><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/cosine.png" alt="cosine"></td>
+<td align="left">余弦相似度通过测量两个向量的夹角的余弦值来度量它们之间的相似性。<br/>仅反映方向一致性而与长度无关。</td>
+<td align="left">当你关心“语义方向/形状”而不想被向量长度影响。<br/>典型应用场景有文本/图像嵌入检索、RAG 向量检索、语义去重、语义聚合。</td>
+</tr>
+<tr>
+<td align="left">欧氏L2（Euclidean L2/Square L2）</td>
+<td align="left"><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/L2.png" alt="L2"></td>
+<td align="left">对两向量差的平方和开平方来度量几何距离（或向量自身长度），反映它们在空间中的直线距离。</td>
+<td align="left">当你你需要真正的几何距离（度量性质、三角不等式）时。<br/>典型应用场景有K-means 聚类（目标是平方 L2）、最小二乘/MSE、几何邻近、部分 ANN 索引默认。</td>
+</tr>
+<tr>
+<td align="left">内积（Inner Product/Dot Product）</td>
+<td align="left"><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/inner_product.png" alt="Inner Product"></td>
+<td align="left">将两个向量对应分量相乘后求和，得到同时受方向与长度影响的对齐程度（线性打分）。</td>
+<td align="left">典型应用场景有最大内积搜索（MIPS）、推荐召回、因子分解机/embedding 打分。</td>
+</tr>
+</tbody></table>
+<p>而在RAG语义搜索中，通常使用余弦相似度来计算两个向量是否相似，即通过跑男的两个向量的夹角，来判断两个向量的语义是否接近。还是以上面的这个图为例：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_space_with_arrow.png" alt="向量空间夹角"></p>
+<p>在这个向量空间里，Chicken和“鸡”的图片之间，向量的夹角很小，Dog和Wolf夹角很小，Banana和Apple夹角很小，Apple和Apple公司的Logo夹角很小。但是动物和水果之间的向量夹角就很大了，语义上相差很远。</p>
+<blockquote>
+<p>为什么用余弦相似度？<br>因为文本长度不重要（一句话和一段话可能表达同一意思），我们只关心语义方向是否一致。</p>
+</blockquote>
+<h3 id="ANN"><a href="#ANN" class="headerlink" title="ANN"></a>ANN</h3><p>在上面的图中，我们还看到了一个叫做Approximate Nearest Neighbor（ANN）近似最近邻检索算法的东西，这个和余弦相似度有什么关系呢？</p>
+<p>简单来讲，ANN是“怎么快地找相似向量”（检索算法/索引），余弦相似度是“用什么标准衡量相似”（度量/打分）；在RAG中它们是配套使用的：用余弦相似度等度量定义“近邻”，再用ANN在大规模向量库上高效近似地找这些近邻。</p>
+<h3 id="完整过程"><a href="#完整过程" class="headerlink" title="完整过程"></a>完整过程</h3><p>在完成检索后，通常会拿到Top-K最相关的几条数据。假设用户输入的问题是“如何配置HTTPS？”，那么过程大概如下：</p>
+<ol>
+<li><p>用户提问：“如何配置HTTPS？”</p>
+</li>
+<li><p>用户问题向量化，使用和文档向量化时相同的Embedding Model</p>
+</li>
+<li><p>得到Query的向量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query_vector = [0.31, 0.48, 0.73, ..., 0.15]  // 768维</span><br></pre></td></tr></table></figure></li>
+<li><p>在向量数据库中搜索</p>
+</li>
+<li><p>计算相似度<br> Chroma自动计算query_vector与所有向量数据库中向量的相似度</p>
+<ul>
+<li>向量1: [0.23, 0.45, …] → 相似度 0.45</li>
+<li>向量2: [0.31, 0.52, …] → 相似度 0.89 ⭐</li>
+<li>向量3: [0.12, 0.34, …] → 相似度 0.32</li>
+<li>…</li>
+<li>向量8234: [0.29, 0.51, …] → 相似度 0.91 ⭐⭐</li>
+<li>向量8235: [0.35, 0.48, …] → 相似度 0.87 ⭐</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>返回 Top-K 最相关的，假设我们设置 K=3，返回相似度最高的3个文本块</p>
+<p> 结果：<br> a. (相似度 0.91) “4.2 HTTPS配置步骤：首先需要申请SSL证书…”<br> b. (相似度 0.89) “安全配置章节：HTTPS是保障网站安全的关键…”<br> c. (相似度 0.87) “第五章 证书管理：SSL/TLS证书的申请与部署…”</p>
+</li>
+</ol>
+<h2 id="六、-RAG-A-Augmented"><a href="#六、-RAG-A-Augmented" class="headerlink" title="六、 RAG - A (Augmented)"></a>六、 RAG - A (Augmented)</h2><p>在得到Top-K相关的数据后，会把这几条结果的原始数据（每条数据的metadata中会有原始数据），和用户的Query，一起给LLM。为什么叫<strong>Augmented增强</strong>呢？</p>
+<p>其实Augmented，就是一个Prompt Engineering提示词工程相关的工作，把Query和知识库中的相关数据，通过一些特殊的Prompt给到LLM，让LLM更好地回答问题。即通过清晰的结构 + 明确的指令，让模型知道该参考什么。例如，一个完整的增强后的提示词可能如下所示：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">你是一个技术支持助手。请根据以下参考资料回答用户问题。</span><br><span class="line"></span><br><span class="line"><span class="section">## 参考资料</span></span><br><span class="line"></span><br><span class="line"><span class="section">### 文档1（相关度：91%）</span></span><br><span class="line">来源：网络安全配置手册.pdf</span><br><span class="line">内容：&#123;检索到的文本块1&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">### 文档2（相关度：89%）</span></span><br><span class="line">来源：服务器部署指南.pdf  </span><br><span class="line">内容：&#123;检索到的文本块2&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">### 文档3（相关度：87%）</span></span><br><span class="line">来源：证书管理文档.pdf</span><br><span class="line">内容：&#123;检索到的文本块3&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">## 回答要求</span></span><br><span class="line"><span class="bullet">1.</span> 必须基于上述参考资料</span><br><span class="line"><span class="bullet">2.</span> 如果资料不足，明确说明</span><br><span class="line"><span class="bullet">3.</span> 给出具体步骤</span><br><span class="line"><span class="bullet">4.</span> 标注信息来源</span><br><span class="line"></span><br><span class="line"><span class="section">## 用户问题</span></span><br><span class="line">如何配置HTTPS？</span><br><span class="line"></span><br><span class="line"><span class="section">## 你的回答</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="七、-RAG-G-Generation"><a href="#七、-RAG-G-Generation" class="headerlink" title="七、 RAG - G (Generation)"></a>七、 RAG - G (Generation)</h2><p>最后一步的Generation生成，就和平时使用LLM没什么区别了，LLM会根据提示词，来回答问题并按照指定的格式来输出内容。即：</p>
+<ol>
+<li>读取参考资料</li>
+<li>理解用户问题</li>
+<li>从资料中提取相关信息</li>
+<li>组织成结构化回答</li>
+<li>逐字生成输出</li>
+</ol>
+<p>以上面的问题为例，LLM最终生成的内容可能如下所示：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">根据参考资料，HTTPS配置步骤如下：</span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> <span class="strong">**申请SSL证书**</span></span><br><span class="line"><span class="bullet">   -</span> 可以通过Let&#x27;s Encrypt获取免费证书</span><br><span class="line"><span class="bullet">   -</span> 或购买商业证书（来源：证书管理文档）</span><br><span class="line"></span><br><span class="line"><span class="bullet">2.</span> <span class="strong">**安装证书**</span></span><br><span class="line"></span><br><span class="line">   <span class="code">```bash</span></span><br><span class="line"><span class="code">   sudo cp cert.pem /etc/ssl/certs/</span></span><br><span class="line"><span class="code">   sudo cp key.pem /etc/ssl/private/</span></span><br><span class="line"><span class="code">   # ...</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>…</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">到这里，整个RAG的过程就算是结束了。</span><br><span class="line"></span><br><span class="line">![RAG流程](https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/query_with_vector.png)</span><br><span class="line"></span><br><span class="line">## 八、 完整RAG过程</span><br><span class="line"></span><br><span class="line">现在把上面几个步骤结合起来：</span><br><span class="line"></span><br><span class="line">```plain</span><br><span class="line">私有的知识库</span><br><span class="line">→ 文本分块Chunking</span><br><span class="line">→ 向量化Embedding</span><br><span class="line">→ 存储向量构建索引Indexing</span><br><span class="line">→ 用户提问Query</span><br><span class="line">→ 检索Retrieval</span><br><span class="line">→ 增强Augmented</span><br><span class="line">→ 生成Generation</span><br></pre></td></tr></table></figure>
+
+<p>之后就得到了最开始的这个架构示意图：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_arc.png" alt="架构示意图"></p>
+<h2 id="九、-FAQ"><a href="#九、-FAQ" class="headerlink" title="九、 FAQ"></a>九、 FAQ</h2><p>下面是一些常见的问题：</p>
+<ol>
+<li><p><strong>RAG和传统的全文模糊搜索有什么区别？</strong></p>
+<p> 传统的模糊搜索是关键词匹配的，比如</p>
+<ul>
+<li>用户搜索：”如何做蛋糕”</li>
+<li>系统匹配：只能找到包含”蛋糕”字样的文档</li>
+<li>结果：❌ 找不到”烘焙教程”、”甜点制作”等相关内容</li>
+</ul>
+<p> 而RAG最重要的一步就是把知识库做了向量化，是根据语义进行搜索的</p>
+<ul>
+<li>用户搜索：”如何做蛋糕”</li>
+<li>系统理解：用户想学习烘焙技能</li>
+<li>结果：✅ 找到”烘焙教程”、”甜点制作”、”面包制作”等相关内容</li>
+</ul>
+</li>
+<li><p><strong>既然RAG里面还是要要通过构造提示词来吧参考资料放入提示词，那这和“直接在问题里把参考文档也输入进去”有什么区别？</strong></p>
+<p> 这是因为我们要考虑成本和效率，一个知识库可能很大，成百上千个文档，数万数十万字，在实际操作的时候，要考虑到：</p>
+<ul>
+<li>Token限制：GPT-4 最多128K tokens ≈ 10万字，知识库无法塞进去</li>
+<li>成本问题：即使能塞进去，128K tokens可能一次调用可能要几美元，成本激增</li>
+<li>效率低下：LLM要读完所有无关内容</li>
+<li>响应缓慢：处理海量文本需要很长时间<br>所以RAG中R检索这一步，就是在做过滤，它的本质就是把“无限大”的知识库变成“刚刚好”的上下文</li>
+</ul>
+</li>
+<li><p><strong>在做向量化的时候，使用到的Embedding Model和LLM的Model有什么关联，为什么Embedding Model可以识别原始数据的语义？</strong></p>
+<p> 简单来讲，<strong>Embedding模型</strong>和<strong>大语言模型</strong>，他们的基础架构是相似，但目标和训练方式不同。<br> 两者都基于Transformer架构，即：</p>
+<ul>
+<li>多头自注意力机制 (Multi-Head Attention)</li>
+<li>前馈神经网络 (Feed-Forward)</li>
+<li>层归一化 (Layer Normalization)</li>
+<li>位置编码 (Positional Encoding)</li>
+</ul>
+<p> 但是</p>
+<ul>
+<li>Embedding Model：专门学习“理解和表示”，输出是向量</li>
+<li>LLM：专门学习“生成文本”，输出是文字<br>完整的Transformer可以理解为Encoder编码器 + Decoder解码器。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>组成</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transformer</td>
+<td>Encoder编码器</td>
+<td>理解输入，提取特征</td>
+</tr>
+<tr>
+<td></td>
+<td>Decoder解码器</td>
+<td>生成输出，逐字生成</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<p>Embedding模型主要用的是Encoder，大语言模型主要用Decoder。而Embedding模型之所以比LLM小很多（如BGE-base-zh只有400M），主要是因为它的任务相对简单（映射到向量空间），不需要生成能力，也就不需要记忆海量知识和复杂的推理能力。</p>
+<h2 id="十、-小结"><a href="#十、-小结" class="headerlink" title="十、 小结"></a>十、 小结</h2><p>这篇文章里，我们一起了解了一下RAG，以及这个技术如何通过外挂知识库解决大语言模型的三大局限：</p>
+<ul>
+<li>时效性不足（无法处理训练后新数据）</li>
+<li>私有数据缺失</li>
+<li>幻觉问题</li>
+</ul>
+<p>它的核心机制包含三个阶段：</p>
+<ul>
+<li>基于语义的向量化检索</li>
+<li>结构化提示词增强上下文</li>
+<li>以及大模型的知识整合生成</li>
+</ul>
+<p>这样就能实现低成本、易于维护的专业领域知识融合。相比微调方案， RAG无需训练标注数据且支持实时更新，适合用在企业知识库问答、实时政策解读这些场景里。</p>
+<p>还有就是这篇文章（或者说《AI概念解惑》这个系列）更专注于概念解惑和原理解析，所以没有包含什么代码实操。</p>
+<p>另外这也只是一个简单的原理解析，实际的RAG工程中可能还会包含很多其他的步骤，比如：</p>
+<ul>
+<li>文本分块时可能会同时使用语义分块+滑动窗口分块</li>
+<li>Retrieval阶段可能不只是用向量相似度检索，会使用向量相似度+关键词（如BM25）的混合检索<ul>
+<li>为什么？因为向量相似度只对语义敏感，对关键词不敏感，比如“Python 3.12”和“Python 3.13”的向量基本相同，但是用户可能是提问具体Python版本的问题</li>
+</ul>
+</li>
+<li>在Retrieval检索后还可能存在一个Reranking重排的步骤<ul>
+<li>对候选片段进行精细化打分和排序</li>
+</ul>
+</li>
+<li>对于用户的问题Query可能会增加一个Query Rewriting<ul>
+<li>是为了让问题更规范，比如从一个口语化的表达到一个规范化的表达</li>
+</ul>
+</li>
+<li>使用多路检索（Multi-Path Retrieval）、上下文压缩（Context Compression）、自我反思（Self-Reflection）等手段进行优化</li>
+<li>引入RAG评分机制，对RAG的输出结果进行评估</li>
+<li>…</li>
+</ul>
+<p>感兴趣的可以自行搜索了解。</p>
+<p>希望这篇文章能帮助你理解RAG的核心原理和应用场景，如果这篇文章有什么问题，辛苦大家指正。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7464756728685936694">检索增强生成技术RAG：向量化与大模型的结合</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7251903805980524581">被 AI 带火的向量数据库是什么</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7554986681502957587#heading-5">大模型系列教程：什么是RAG（检索增强生成模型）技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7379831020495732773">RAG-检索增强生成</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7502279037948313651">第一章：RAG 开发入门与基础概念</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/647646322">文本 Embedding 基本概念和应用实现原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://weaviate.io/blog/distance-metrics-in-vector-search">Distance Metrics in Vector Search</a></li>
+<li><a target="_blank" rel="noopener" href="https://datacream.substack.com/p/rag-explained-understanding-embeddings">RAG Explained: Understanding Embeddings, Similarity, and Retrieval</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/20/%E5%89%8D%E7%AB%AF%E8%BD%AE%E8%AF%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" rel="prev" title="前端轮询那些事儿">
+                  <i class="fa fa-angle-left"></i> 前端轮询那些事儿
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">冰河</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

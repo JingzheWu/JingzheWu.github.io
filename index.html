@@ -115,7 +115,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -133,6 +133,456 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2025/11/19/AI%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%83%91%E7%B3%BB%E5%88%97-RAG/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="冰河">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冰河">
+      <meta itemprop="description" content="冰河的个人网站">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 冰河">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/11/19/AI%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%83%91%E7%B3%BB%E5%88%97-RAG/" class="post-title-link" itemprop="url">AI概念解惑系列 - RAG</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-11-19 11:28:44 / 修改时间：12:13:46" itemprop="dateCreated datePublished" datetime="2025-11-19T11:28:44+08:00">2025-11-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>随着最近几年AI在各个领域大放异彩，作为一个前端开发，我也对AI里的各种技术概念产生了浓厚的兴趣，希望能详细了解这些技术概念和背后的原理后，找寻和前端结合的一些思路。今天我们就来一起了解下AI领域常用到的一个技术——<strong>RAG（Retrieval-Augmented Generation）</strong>，检索增强生成。</p>
+<h2 id="一、-开始之前"><a href="#一、-开始之前" class="headerlink" title="一、 开始之前"></a>一、 开始之前</h2><p>在开始介绍RAG之前，我们先来简单回顾一下大语言模型LLM的原理。</p>
+<p>LLM通过预训练，让模型学习了全网公开的知识（网页、书籍、论文、代码等等），得到一堆“参数”，之后根据用户的输入来不断地预测下一个token应该是什么，最终得到输出。</p>
+<p>这种训练好的模型，在通用领域有着比较好的表现。但是根据LLM的原理，我们也能发现它的一些不足：</p>
+<ul>
+<li>“<strong>预训练</strong>”：由于是使用了旧的数据进行的训练，对于在训练之后产生新信息，LLM无法回答</li>
+<li>“<strong>公开的知识</strong>”：LLM使用了公开的知识训练，对于一些非公开的内容，或者专业数据，LLM同样无法回答</li>
+<li>“<strong>预测</strong>”：因为LLM本质上是一个“看前文、猜下文”的大规模统计生成器，所以对于它不知道的信息，在回答时往往会“胡说八道”，也就是常说的Hallucination，“<strong>幻觉</strong>”</li>
+</ul>
+<p>对于普通用户一些不要求实时性的通用性问题来说，上面这些不是什么大问题，但是一旦涉及到<strong>实时性、专业数据、企业内私有数据</strong>时，上面的问题就会严重影响用户体验。</p>
+<p>为了解决这些问题，通常有下面两个手段：</p>
+<ol>
+<li>微调大模型</li>
+<li>手动给LLM添加额外知识</li>
+</ol>
+<h2 id="二、-微调-vs-外挂知识库"><a href="#二、-微调-vs-外挂知识库" class="headerlink" title="二、 微调 vs 外挂知识库"></a>二、 微调 vs 外挂知识库</h2><h3 id="1-微调Fine-tuning"><a href="#1-微调Fine-tuning" class="headerlink" title="1. 微调Fine-tuning"></a>1. 微调Fine-tuning</h3><p>所谓<strong>微调（Fine-tuning）</strong>，就是在预训练模型的基础上，使用特定任务的数据（如私有数据、专业领域知识、最新的信息等）进行进一步训练，让模型在特定领域表现更好。</p>
+<p>举个比较形象的例子，通过预训练得到的大模型，就是学习了小学到高中的通识教育的知识，学会语言、数学、常识、逻辑思维，知识面广但不够专业。</p>
+<p>而微调阶段（Fine-tuning）类似于专业教育，就好像学习了专业领域课程、成为某个领域的专家。</p>
+<p>即“<strong>通用模型 + 专业数据 + 针对性训练 = 专业模型</strong>”：</p>
+<ul>
+<li>GPT + 代码数据 + 代码任务训练 = CodeGPT</li>
+<li>GPT + 医学数据 + 医学任务训练 = MedicalGPT</li>
+<li>GPT + 法律数据 + 法律任务训练 = LegalGPT</li>
+</ul>
+<h3 id="2-外挂知识库"><a href="#2-外挂知识库" class="headerlink" title="2. 外挂知识库"></a>2. 外挂知识库</h3><p>在和LLM交互时，我们可以通过一些特殊手段，从外部知识库检索相关信息提供给LLM，相当于给AI配个”外挂知识库”，让它可以获取到专业领域知识、私有数据、实时信息等等。</p>
+<p>而RAG就是比较常用的手段。</p>
+<h3 id="3-对比"><a href="#3-对比" class="headerlink" title="3. 对比"></a>3. 对比</h3><p>对比这两个不难发现，微调是内化知识到了模型参数中，最终的效果肯定是稍微好一些的。</p>
+<p>但是考虑到微调下面这些点：</p>
+<ul>
+<li>需要<strong>大量的标注训练数据</strong>（需要对文档等进行数据清洗、标注等）</li>
+<li><strong>较高的训练成本</strong>（比如训练需要较高的算力，有不小的经济成本和时间成本）</li>
+<li><strong>较高的实现难度</strong>（需要AI领域的专业知识）</li>
+<li><strong>无法保持数据是最新的</strong>（内化的知识需要重新训练才能更新）</li>
+</ul>
+<p>对于个人或者中小型企业来说，通过RAG外挂知识库是一个更合适的选择：</p>
+<ul>
+<li>只需要<strong>结构化的文档</strong></li>
+<li><strong>不需要训练</strong></li>
+<li><strong>较低的实现难度</strong>（大多是工程方面的实现）</li>
+<li><strong>知识库更新很方便</strong>（不需要重新训练，只需要重新向量化即可）</li>
+</ul>
+<h2 id="三、-RAG"><a href="#三、-RAG" class="headerlink" title="三、 RAG"></a>三、 RAG</h2><p>那我们来看下RAG是什么，所谓<strong>RAG（Retrieval-Augmented Generation）</strong>检索增强生成，就是：</p>
+<ol>
+<li><strong>检索(Retrieval)</strong>: 从外部知识库中检索相关信息</li>
+<li><strong>增强(Augmented)</strong>: 将检索到的信息作为上下文</li>
+<li><strong>生成(Generation)</strong>: 大模型基于检索内容生成回答</li>
+</ol>
+<p>它的本质就是上面说的给LLM外挂一个知识库，而它的工作过程，简单来讲就是下面这样：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_flow_simple.png" alt="工作流程"></p>
+<p>而一个RAG完整工程的架构示意图，则如下所示：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_arc.png" alt="架构示意图"></p>
+<p>看不懂？没关系，我们一步一步来讲解。</p>
+<h2 id="四、-向量和向量化"><a href="#四、-向量和向量化" class="headerlink" title="四、 向量和向量化"></a>四、 向量和向量化</h2><p>首先，最基础的一个概念，什么是<strong>向量（Vector）</strong>和<strong>向量化（Vectorization/Embedding）</strong>。</p>
+<h3 id="向量（Vector）"><a href="#向量（Vector）" class="headerlink" title="向量（Vector）"></a>向量（Vector）</h3><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%90%91%E9%87%8F">向量</a>我们应该不陌生，我们最早应该在高中就学过了，就是一个同时具有数值和方向的量。相对应的，标量则只有数值，没有方向。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector.png" alt="向量"></p>
+<p>向量通常用一个有序的数字数组来表示，比如：</p>
+<ul>
+<li>2维向量: [3, 4]，可以理解为一个有x轴和y轴的平面直角坐标系，从原点指向[3, 4]这个坐标点的一个向量</li>
+<li>3维向量: [1, 2, 3]，可以理解为一个有x、y、z三个轴的空间直角坐标系，从原点执行[1, 2, 3]这个坐标点的一个向量</li>
+<li>高维向量: [0.2, 0.5, 0.1, …, 0.8]，以此类推，在数学或者计算机领域，一个向量可以有任意多个维度， 比如有几百甚至上千维</li>
+</ul>
+<p>而在AI领域，向量是<strong>原始数据的数值化表示</strong>,用来捕捉语义信息，比如</p>
+<ul>
+<li>文本“苹果很好吃”，可以用这样一个向量表示：[0.12, 0.34, 0.89, …, 0.45]</li>
+<li>图片🍎，可以用这样一个向量表示：[0.23, 0.67, 0.12, …, 0.91]</li>
+</ul>
+<p>而具体是怎么把一串文本或者图片转换为向量的，就是向量化所做的工作了。</p>
+<h3 id="向量化（Vectorization-Embedding）"><a href="#向量化（Vectorization-Embedding）" class="headerlink" title="向量化（Vectorization/Embedding）"></a>向量化（Vectorization/Embedding）</h3><p>向量化，就是将非结构化原始数据(文本、图片、音频等)转换为向量的过程。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/embedding.png" alt="向量化"></p>
+<p>而为了将一个非结构化数据，变为向量，我们首先需要给这个数据定义好它的<strong>维度</strong>。</p>
+<p>世界上的所有数据，都可以根据它在某一项特点上的程度而打一个分，数值越高代表这个原始数据在这个特点上的特征越强烈。我们规定**数值的范围是[-1, 1]**，1代表完全符合这个特征，-1代表拥有完全相反的特征。</p>
+<p>例如下面这个二维的向量空间：</p>
+<ul>
+<li>横坐标代表情感极性，越靠近1代表越正向的情感，越靠近-1代表越负向的情感</li>
+<li>纵坐标代表内容类型，越靠近1代表越主观的观点评价，越靠近-1代表越客观的事实陈述</li>
+</ul>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_demo.png" alt="二维向量示例"></p>
+<p>上面的几个原始文本数据里：</p>
+<blockquote>
+<ol>
+<li>这部电影太精彩了，演员表演完美<ul>
+<li>横轴（情感）：+0.9（强烈正面）</li>
+<li>纵轴（内容类型）：+0.8（明显观点评价）</li>
+<li>坐标：[0.9, 0.8]</li>
+</ul>
+</li>
+<li>水的沸点是100摄氏度<ul>
+<li>横轴（情感）：0.0（完全中性）</li>
+<li>纵轴（内容类型）：-0.9（纯粹事实）</li>
+<li>坐标：[0.0, -0.9]</li>
+</ul>
+</li>
+<li>这个产品质量很差，完全不符合预期<ul>
+<li>横轴（情感）：-0.8（明显负面）</li>
+<li>纵轴（内容类型）：+0.7（个人评价）</li>
+<li>坐标：[-0.8, 0.7]</li>
+</ul>
+</li>
+<li>令人失望的是，数据显示销售额下降了20%”<ul>
+<li>横轴（情感）：-0.6（负面情绪）</li>
+<li>纵轴（内容类型）：-0.3（偏向事实但带有主观色彩）</li>
+<li>坐标：[-0.6, -0.3]</li>
+</ul>
+</li>
+<li>数据表明用户流失率高达30%<ul>
+<li>横轴（情感）：-0.7（负面情绪）</li>
+<li>纵轴（内容类型）：-0.8（事实陈述，且没有明显主观评价在里面）</li>
+<li>坐标：[-0.7, -0.8]</li>
+</ul>
+</li>
+<li>我们彩票中了500万<ul>
+<li>横轴（情感）：+0.9（正面）</li>
+<li>纵轴（内容类型）：-0.8（事实陈述，且没有明显主观评价在里面）</li>
+<li>坐标：[0.9, -0.8]</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>可以看到，在我们对原始的文本数据从不同维度打分后会出现</p>
+<ul>
+<li>相似文本会聚集：比如所有正面评价都会集中在第一象限</li>
+<li>距离/夹角反映相似度：坐标距离/夹角越近，文本在情感和类型上越相似</li>
+</ul>
+<p>我们的例子里只有两个维度，而在实际应用中可能有几百上千个维度，每个维度代表不同特征，这样的话就可以得到一个高维的向量空间，在向量空间内可以体现出不同数据之间或近或远的关系。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_space.png" alt="向量空间"></p>
+<p>另外，向量化除了叫做Vectorization外，也时候也会叫做<strong>Embedding，嵌入</strong>。这是因为向量化的过程，不只是将一个非结构化数据转为向量数字，更重要的是在这个过程中，将原始数据的语义信息嵌入到了向量空间中,使得语义关系被保留。</p>
+<p>举个例子，通常情况下“国王King”和“王后Queen”常出现在相似的上下文中，“男人Man”和“女人Women”经常出现在相似的上下文中。</p>
+<p>皇室词汇（King, Queen, Prince）之间的相似度整体大于它们与普通人词汇（Man, Women）的相似度。但是“国王King”和“男人Man”之间又有一些相似，“王后Queen”和“女人Women”之间有一些相似。</p>
+<p>而将这四个单词进行向量化后，可能如下图所示：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/king_queen_man_woman.jpeg" alt="语义嵌入"></p>
+<p>“国王King”、“王后Queen”、“男人Man”、“女人Women”的语义以及语义关系被嵌入了向量空间，做到了：</p>
+<ol>
+<li><strong>保持语义关系</strong>: 意思相近的词在向量空间中也靠近</li>
+<li><strong>支持语义运算</strong>: 实现了<code>king - man + woman ≈ queen</code>这种神奇的运算</li>
+</ol>
+<h3 id="如何向量化"><a href="#如何向量化" class="headerlink" title="如何向量化"></a>如何向量化</h3><p>向量化是一个很复杂的过程，通常都是使用模型来实现的，即“<strong>Embedding models</strong>”，比如OpenAI的text-embedding-ada-002（需要API密钥访问），或者也可以使用一些开源的模型。</p>
+<p>通常一个模型向量化数据后的维度越高，在后续进行信息检索时就会越精准。</p>
+<p>其实除了调用模型这一步之外，完整的向量化过程还有一些其他工作要做，整个过程大概如下：</p>
+<ol>
+<li><p>读取文档</p>
+<ul>
+<li>PDF → 提取文本</li>
+<li>Word → 提取文本  </li>
+<li>Markdown → 读取内容</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>清洗文本</p>
+<ul>
+<li>去除乱码</li>
+<li>统一格式</li>
+<li>去除无用内容（页眉页脚等）</li>
+</ul>
+</li>
+<li><p>把文本进行切割，即<strong>文本分块 (Chunking)</strong></p>
+<p> 为什么要分块？因为原始文档可能特别长，几千上万字，不方便后续进行向量化和检索。</p>
+<p> 而分块的规则也有多种，比如根据标点符号分割，但是可能会存在有的块长度很长，有的又很短的情况；也可以根据固定长度分割，但是可能会导致一个完整的语义被切割到不同的块，每个块里的部分词变得毫无语义价值。</p>
+<p> 所以RAG 分割一般用<strong>相同块大小</strong> + <strong>块重叠</strong>的办法，即所谓的<strong>滑动窗口分块</strong>，这和按长度截断来分割有点像。用这种办法，在一定程度上能避免文档原意被截断导致分出来的片段变得没价值，而且重叠块里有重复的信息，能让模型更好地理解文档内容。</p>
+<p> <img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/text_chunking.png" alt="文本分块"></p>
+</li>
+<li><p>使用某个模型进行<strong>向量化（Embedding）</strong></p>
+<ul>
+<li><p>BGE-base-zh (中文效果好)</p>
+</li>
+<li><p>all-MiniLM-L6-v2 (英文，轻量)</p>
+</li>
+<li><p>text-embedding-ada-002 (OpenAI，需联网)</p>
+<p> 假设选择BGE-base-zh (中文)，输出维度768维，模型大小约 400MB</p>
+</li>
+</ul>
+</li>
+<li><p>将向量化后的数据存入向量数据库，<strong>构建索引（Indexing）</strong></p>
+<p> 普通的数据存储有数据库，那么向量的存储，也有专门的<strong>向量数据库</strong>，它是专为存储与检索高维嵌入向量而设计的数据库。支持基于相似度的检索并可结合元数据过滤，常用于语义搜索、推荐和 RAG。常见的数据库有：</p>
+<ul>
+<li>Chroma</li>
+<li>Milvus</li>
+<li>Qdrant</li>
+</ul>
+<p> 假设选择Chroma，那么它的每条记录的存储结构大概为：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;id&quot;</span>: <span class="string">&quot;doc_1_chunk_1&quot;</span>,</span><br><span class="line">  <span class="string">&quot;vector&quot;</span>: [<span class="number">0.23</span>, <span class="number">0.45</span>, ..., <span class="number">0.12</span>],  <span class="comment">// 768维向量</span></span><br><span class="line">  <span class="string">&quot;metadata&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;source&quot;</span>: <span class="string">&quot;系统架构文档.pdf&quot;</span>,</span><br><span class="line">    <span class="string">&quot;chunk_index&quot;</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">&quot;text&quot;</span>: <span class="string">&quot;第一章 系统架构...&quot;</span>  <span class="comment">// 原始文本</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>在做完上述的几个步骤之后，就算是完成了RAG的准备工作，即给LLM准备好了“外挂的知识库”。</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/chunking_embedding.png" alt="知识库向量化过程"></p>
+<h2 id="五、-RAG-R-Retrieval"><a href="#五、-RAG-R-Retrieval" class="headerlink" title="五、 RAG - R (Retrieval)"></a>五、 RAG - R (Retrieval)</h2><p>在准备好知识库之后，就可以和LLM进行问答了。那在提出问题后，如何让LLM知晓知识库的内容呢？答案就是RAG中的R，<strong>Retrieval检索</strong>。</p>
+<p>在上面的知识库的准备过程中，我们使用了某个<strong>Embedding Model</strong>进行了知识库的向量化，那么在用户提出问题Query之后，也需要使用相同的<strong>Embedding Model</strong>，对用户的输入Query进行相同的向量化。</p>
+<p>在都进行了向量化之后，就可以开始在向量数据库中检索了。</p>
+<h3 id="相似度匹配"><a href="#相似度匹配" class="headerlink" title="相似度匹配"></a>相似度匹配</h3><p>和普通数据库基于关键字的检索不同，向量数据库是基于语义的检索。那怎么判断两个向量的语义是否接近，常见的衡量标准有：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7">余弦相似度（Cosine Similarity）</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB">欧氏L2（Euclidean L2/Square L2）</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%86%85%E7%A7%AF">内积IP（Inner Product）</a></li>
+</ul>
+<p>这三个的具体定义和区别如下所示：</p>
+<table>
+<thead>
+<tr>
+<th align="left">算法</th>
+<th align="left">公式</th>
+<th align="left">定义</th>
+<th align="left">适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">余弦相似度（Cosine Similarity）</td>
+<td align="left"><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/cosine.png" alt="cosine"></td>
+<td align="left">余弦相似度通过测量两个向量的夹角的余弦值来度量它们之间的相似性。<br/>仅反映方向一致性而与长度无关。</td>
+<td align="left">当你关心“语义方向/形状”而不想被向量长度影响。<br/>典型应用场景有文本/图像嵌入检索、RAG 向量检索、语义去重、语义聚合。</td>
+</tr>
+<tr>
+<td align="left">欧氏L2（Euclidean L2/Square L2）</td>
+<td align="left"><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/L2.png" alt="L2"></td>
+<td align="left">对两向量差的平方和开平方来度量几何距离（或向量自身长度），反映它们在空间中的直线距离。</td>
+<td align="left">当你你需要真正的几何距离（度量性质、三角不等式）时。<br/>典型应用场景有K-means 聚类（目标是平方 L2）、最小二乘/MSE、几何邻近、部分 ANN 索引默认。</td>
+</tr>
+<tr>
+<td align="left">内积（Inner Product/Dot Product）</td>
+<td align="left"><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/inner_product.png" alt="Inner Product"></td>
+<td align="left">将两个向量对应分量相乘后求和，得到同时受方向与长度影响的对齐程度（线性打分）。</td>
+<td align="left">典型应用场景有最大内积搜索（MIPS）、推荐召回、因子分解机/embedding 打分。</td>
+</tr>
+</tbody></table>
+<p>而在RAG语义搜索中，通常使用余弦相似度来计算两个向量是否相似，即通过跑男的两个向量的夹角，来判断两个向量的语义是否接近。还是以上面的这个图为例：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/vector_space_with_arrow.png" alt="向量空间夹角"></p>
+<p>在这个向量空间里，Chicken和“鸡”的图片之间，向量的夹角很小，Dog和Wolf夹角很小，Banana和Apple夹角很小，Apple和Apple公司的Logo夹角很小。但是动物和水果之间的向量夹角就很大了，语义上相差很远。</p>
+<blockquote>
+<p>为什么用余弦相似度？<br>因为文本长度不重要（一句话和一段话可能表达同一意思），我们只关心语义方向是否一致。</p>
+</blockquote>
+<h3 id="ANN"><a href="#ANN" class="headerlink" title="ANN"></a>ANN</h3><p>在上面的图中，我们还看到了一个叫做Approximate Nearest Neighbor（ANN）近似最近邻检索算法的东西，这个和余弦相似度有什么关系呢？</p>
+<p>简单来讲，ANN是“怎么快地找相似向量”（检索算法/索引），余弦相似度是“用什么标准衡量相似”（度量/打分）；在RAG中它们是配套使用的：用余弦相似度等度量定义“近邻”，再用ANN在大规模向量库上高效近似地找这些近邻。</p>
+<h3 id="完整过程"><a href="#完整过程" class="headerlink" title="完整过程"></a>完整过程</h3><p>在完成检索后，通常会拿到Top-K最相关的几条数据。假设用户输入的问题是“如何配置HTTPS？”，那么过程大概如下：</p>
+<ol>
+<li><p>用户提问：“如何配置HTTPS？”</p>
+</li>
+<li><p>用户问题向量化，使用和文档向量化时相同的Embedding Model</p>
+</li>
+<li><p>得到Query的向量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query_vector = [0.31, 0.48, 0.73, ..., 0.15]  // 768维</span><br></pre></td></tr></table></figure></li>
+<li><p>在向量数据库中搜索</p>
+</li>
+<li><p>计算相似度<br> Chroma自动计算query_vector与所有向量数据库中向量的相似度</p>
+<ul>
+<li>向量1: [0.23, 0.45, …] → 相似度 0.45</li>
+<li>向量2: [0.31, 0.52, …] → 相似度 0.89 ⭐</li>
+<li>向量3: [0.12, 0.34, …] → 相似度 0.32</li>
+<li>…</li>
+<li>向量8234: [0.29, 0.51, …] → 相似度 0.91 ⭐⭐</li>
+<li>向量8235: [0.35, 0.48, …] → 相似度 0.87 ⭐</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>返回 Top-K 最相关的，假设我们设置 K=3，返回相似度最高的3个文本块</p>
+<p> 结果：<br> a. (相似度 0.91) “4.2 HTTPS配置步骤：首先需要申请SSL证书…”<br> b. (相似度 0.89) “安全配置章节：HTTPS是保障网站安全的关键…”<br> c. (相似度 0.87) “第五章 证书管理：SSL/TLS证书的申请与部署…”</p>
+</li>
+</ol>
+<h2 id="六、-RAG-A-Augmented"><a href="#六、-RAG-A-Augmented" class="headerlink" title="六、 RAG - A (Augmented)"></a>六、 RAG - A (Augmented)</h2><p>在得到Top-K相关的数据后，会把这几条结果的原始数据（每条数据的metadata中会有原始数据），和用户的Query，一起给LLM。为什么叫<strong>Augmented增强</strong>呢？</p>
+<p>其实Augmented，就是一个Prompt Engineering提示词工程相关的工作，把Query和知识库中的相关数据，通过一些特殊的Prompt给到LLM，让LLM更好地回答问题。即通过清晰的结构 + 明确的指令，让模型知道该参考什么。例如，一个完整的增强后的提示词可能如下所示：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">你是一个技术支持助手。请根据以下参考资料回答用户问题。</span><br><span class="line"></span><br><span class="line"><span class="section">## 参考资料</span></span><br><span class="line"></span><br><span class="line"><span class="section">### 文档1（相关度：91%）</span></span><br><span class="line">来源：网络安全配置手册.pdf</span><br><span class="line">内容：&#123;检索到的文本块1&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">### 文档2（相关度：89%）</span></span><br><span class="line">来源：服务器部署指南.pdf  </span><br><span class="line">内容：&#123;检索到的文本块2&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">### 文档3（相关度：87%）</span></span><br><span class="line">来源：证书管理文档.pdf</span><br><span class="line">内容：&#123;检索到的文本块3&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">## 回答要求</span></span><br><span class="line"><span class="bullet">1.</span> 必须基于上述参考资料</span><br><span class="line"><span class="bullet">2.</span> 如果资料不足，明确说明</span><br><span class="line"><span class="bullet">3.</span> 给出具体步骤</span><br><span class="line"><span class="bullet">4.</span> 标注信息来源</span><br><span class="line"></span><br><span class="line"><span class="section">## 用户问题</span></span><br><span class="line">如何配置HTTPS？</span><br><span class="line"></span><br><span class="line"><span class="section">## 你的回答</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="七、-RAG-G-Generation"><a href="#七、-RAG-G-Generation" class="headerlink" title="七、 RAG - G (Generation)"></a>七、 RAG - G (Generation)</h2><p>最后一步的Generation生成，就和平时使用LLM没什么区别了，LLM会根据提示词，来回答问题并按照指定的格式来输出内容。即：</p>
+<ol>
+<li>读取参考资料</li>
+<li>理解用户问题</li>
+<li>从资料中提取相关信息</li>
+<li>组织成结构化回答</li>
+<li>逐字生成输出</li>
+</ol>
+<p>以上面的问题为例，LLM最终生成的内容可能如下所示：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">根据参考资料，HTTPS配置步骤如下：</span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> <span class="strong">**申请SSL证书**</span></span><br><span class="line"><span class="bullet">   -</span> 可以通过Let&#x27;s Encrypt获取免费证书</span><br><span class="line"><span class="bullet">   -</span> 或购买商业证书（来源：证书管理文档）</span><br><span class="line"></span><br><span class="line"><span class="bullet">2.</span> <span class="strong">**安装证书**</span></span><br><span class="line"></span><br><span class="line">   <span class="code">```bash</span></span><br><span class="line"><span class="code">   sudo cp cert.pem /etc/ssl/certs/</span></span><br><span class="line"><span class="code">   sudo cp key.pem /etc/ssl/private/</span></span><br><span class="line"><span class="code">   # ...</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>…</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">到这里，整个RAG的过程就算是结束了。</span><br><span class="line"></span><br><span class="line">![RAG流程](https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/query_with_vector.png)</span><br><span class="line"></span><br><span class="line">## 八、 完整RAG过程</span><br><span class="line"></span><br><span class="line">现在把上面几个步骤结合起来：</span><br><span class="line"></span><br><span class="line">```plain</span><br><span class="line">私有的知识库</span><br><span class="line">→ 文本分块Chunking</span><br><span class="line">→ 向量化Embedding</span><br><span class="line">→ 存储向量构建索引Indexing</span><br><span class="line">→ 用户提问Query</span><br><span class="line">→ 检索Retrieval</span><br><span class="line">→ 增强Augmented</span><br><span class="line">→ 生成Generation</span><br></pre></td></tr></table></figure>
+
+<p>之后就得到了最开始的这个架构示意图：</p>
+<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/ai_rag/rag_arc.png" alt="架构示意图"></p>
+<h2 id="九、-FAQ"><a href="#九、-FAQ" class="headerlink" title="九、 FAQ"></a>九、 FAQ</h2><p>下面是一些常见的问题：</p>
+<ol>
+<li><p><strong>RAG和传统的全文模糊搜索有什么区别？</strong></p>
+<p> 传统的模糊搜索是关键词匹配的，比如</p>
+<ul>
+<li>用户搜索：”如何做蛋糕”</li>
+<li>系统匹配：只能找到包含”蛋糕”字样的文档</li>
+<li>结果：❌ 找不到”烘焙教程”、”甜点制作”等相关内容</li>
+</ul>
+<p> 而RAG最重要的一步就是把知识库做了向量化，是根据语义进行搜索的</p>
+<ul>
+<li>用户搜索：”如何做蛋糕”</li>
+<li>系统理解：用户想学习烘焙技能</li>
+<li>结果：✅ 找到”烘焙教程”、”甜点制作”、”面包制作”等相关内容</li>
+</ul>
+</li>
+<li><p><strong>既然RAG里面还是要要通过构造提示词来吧参考资料放入提示词，那这和“直接在问题里把参考文档也输入进去”有什么区别？</strong></p>
+<p> 这是因为我们要考虑成本和效率，一个知识库可能很大，成百上千个文档，数万数十万字，在实际操作的时候，要考虑到：</p>
+<ul>
+<li>Token限制：GPT-4 最多128K tokens ≈ 10万字，知识库无法塞进去</li>
+<li>成本问题：即使能塞进去，128K tokens可能一次调用可能要几美元，成本激增</li>
+<li>效率低下：LLM要读完所有无关内容</li>
+<li>响应缓慢：处理海量文本需要很长时间<br>所以RAG中R检索这一步，就是在做过滤，它的本质就是把“无限大”的知识库变成“刚刚好”的上下文</li>
+</ul>
+</li>
+<li><p><strong>在做向量化的时候，使用到的Embedding Model和LLM的Model有什么关联，为什么Embedding Model可以识别原始数据的语义？</strong></p>
+<p> 简单来讲，<strong>Embedding模型</strong>和<strong>大语言模型</strong>，他们的基础架构是相似，但目标和训练方式不同。<br> 两者都基于Transformer架构，即：</p>
+<ul>
+<li>多头自注意力机制 (Multi-Head Attention)</li>
+<li>前馈神经网络 (Feed-Forward)</li>
+<li>层归一化 (Layer Normalization)</li>
+<li>位置编码 (Positional Encoding)</li>
+</ul>
+<p> 但是</p>
+<ul>
+<li>Embedding Model：专门学习“理解和表示”，输出是向量</li>
+<li>LLM：专门学习“生成文本”，输出是文字<br>完整的Transformer可以理解为Encoder编码器 + Decoder解码器。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>组成</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transformer</td>
+<td>Encoder编码器</td>
+<td>理解输入，提取特征</td>
+</tr>
+<tr>
+<td></td>
+<td>Decoder解码器</td>
+<td>生成输出，逐字生成</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<p>Embedding模型主要用的是Encoder，大语言模型主要用Decoder。而Embedding模型之所以比LLM小很多（如BGE-base-zh只有400M），主要是因为它的任务相对简单（映射到向量空间），不需要生成能力，也就不需要记忆海量知识和复杂的推理能力。</p>
+<h2 id="十、-小结"><a href="#十、-小结" class="headerlink" title="十、 小结"></a>十、 小结</h2><p>这篇文章里，我们一起了解了一下RAG，以及这个技术如何通过外挂知识库解决大语言模型的三大局限：</p>
+<ul>
+<li>时效性不足（无法处理训练后新数据）</li>
+<li>私有数据缺失</li>
+<li>幻觉问题</li>
+</ul>
+<p>它的核心机制包含三个阶段：</p>
+<ul>
+<li>基于语义的向量化检索</li>
+<li>结构化提示词增强上下文</li>
+<li>以及大模型的知识整合生成</li>
+</ul>
+<p>这样就能实现低成本、易于维护的专业领域知识融合。相比微调方案， RAG无需训练标注数据且支持实时更新，适合用在企业知识库问答、实时政策解读这些场景里。</p>
+<p>还有就是这篇文章（或者说《AI概念解惑》这个系列）更专注于概念解惑和原理解析，所以没有包含什么代码实操。</p>
+<p>另外这也只是一个简单的原理解析，实际的RAG工程中可能还会包含很多其他的步骤，比如：</p>
+<ul>
+<li>文本分块时可能会同时使用语义分块+滑动窗口分块</li>
+<li>Retrieval阶段可能不只是用向量相似度检索，会使用向量相似度+关键词（如BM25）的混合检索<ul>
+<li>为什么？因为向量相似度只对语义敏感，对关键词不敏感，比如“Python 3.12”和“Python 3.13”的向量基本相同，但是用户可能是提问具体Python版本的问题</li>
+</ul>
+</li>
+<li>在Retrieval检索后还可能存在一个Reranking重排的步骤<ul>
+<li>对候选片段进行精细化打分和排序</li>
+</ul>
+</li>
+<li>对于用户的问题Query可能会增加一个Query Rewriting<ul>
+<li>是为了让问题更规范，比如从一个口语化的表达到一个规范化的表达</li>
+</ul>
+</li>
+<li>使用多路检索（Multi-Path Retrieval）、上下文压缩（Context Compression）、自我反思（Self-Reflection）等手段进行优化</li>
+<li>引入RAG评分机制，对RAG的输出结果进行评估</li>
+<li>…</li>
+</ul>
+<p>感兴趣的可以自行搜索了解。</p>
+<p>希望这篇文章能帮助你理解RAG的核心原理和应用场景，如果这篇文章有什么问题，辛苦大家指正。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7464756728685936694">检索增强生成技术RAG：向量化与大模型的结合</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7251903805980524581">被 AI 带火的向量数据库是什么</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7554986681502957587#heading-5">大模型系列教程：什么是RAG（检索增强生成模型）技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7379831020495732773">RAG-检索增强生成</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7502279037948313651">第一章：RAG 开发入门与基础概念</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/647646322">文本 Embedding 基本概念和应用实现原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://weaviate.io/blog/distance-metrics-in-vector-search">Distance Metrics in Vector Search</a></li>
+<li><a target="_blank" rel="noopener" href="https://datacream.substack.com/p/rag-explained-understanding-embeddings">RAG Explained: Understanding Embeddings, Similarity, and Retrieval</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3237,224 +3687,6 @@
 <li><a target="_blank" rel="noopener" href="https://github.com/facebook/react-native/issues/29144">Appearance.getColorScheme() always returns ‘light’</a></li>
 <li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61124229/react-native-0-62-2-appearance-return-wrong-color-scheme">React Native 0.62.2 Appearance return wrong color scheme</a></li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://youfindme.top/2021/08/18/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E6%8A%80%E5%B7%A7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="冰河">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="冰河">
-      <meta itemprop="description" content="冰河的个人网站">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 冰河">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/08/18/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E6%8A%80%E5%B7%A7/" class="post-title-link" itemprop="url">Jest单元测试中常用的方法和技巧</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-08-18 09:49:00" itemprop="dateCreated datePublished" datetime="2021-08-18T09:49:00+08:00">2021-08-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-04-21 10:47:55" itemprop="dateModified" datetime="2025-04-21T10:47:55+08:00">2025-04-21</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>本文首次发布于<a target="_blank" rel="noopener" href="https://juejin.cn/post/6997581158670630948">掘金</a>，转载请注明来源。</p>
-</blockquote>
-<h2 id="一、mock模块"><a href="#一、mock模块" class="headerlink" title="一、mock模块"></a>一、mock模块</h2><p>在Jest中，对模块进行mock非常简单，只需要使用<code>jest.mock</code>即可，对于模块的mock主要有两种情况：</p>
-<ol>
-<li><p>只mock模块中的非<code>default</code>导出</p>
-<p> 对于只有非<code>default</code>导出的情况（如<code>export const</code>、<code>export class</code>等），只需要使用<code>jest.mock</code>，返回一个对象即可，对象中包含有你想要mock的函数或者变量：</p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mock &#x27;moduleName&#x27; 中的 foo 函数</span></span><br><span class="line">jest.mock(<span class="string">&#x27;../moduleName&#x27;</span>, <span class="function">() =&gt;</span> (&#123;</span><br><span class="line">  <span class="attr">foo</span>: jest.fn().mockReturnValue(<span class="string">&#x27;mockValue&#x27;</span>),</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure></li>
-<li><p>mock模块中的<code>default</code>导出</p>
-<p> 对于<code>default</code>导出的mock，则不能返回一个简单的对象，而是需要在对象中包含一个<code>default</code>属性，同时添加<code>__esModule: true</code>。</p>
-<blockquote>
-<p>When using the factory parameter for an ES6 module with a default export, the __esModule: true property needs to be specified. This property is normally generated by Babel / TypeScript, but here it needs to be set manually. When importing a default export, it’s an instruction to import the property named default from the export object</p>
-</blockquote>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> moduleName, &#123; foo &#125; <span class="keyword">from</span> <span class="string">&#x27;../moduleName&#x27;</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">&#x27;../moduleName&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">__esModule</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">default</span>: jest.fn(<span class="function">() =&gt;</span> <span class="number">42</span>),</span><br><span class="line">    <span class="attr">foo</span>: jest.fn(<span class="function">() =&gt;</span> <span class="number">43</span>),</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">moduleName(); <span class="comment">// Will return 42</span></span><br><span class="line">foo(); <span class="comment">// Will return 43</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="二、mock模块部分内容"><a href="#二、mock模块部分内容" class="headerlink" title="二、mock模块部分内容"></a>二、mock模块部分内容</h2><p>如果只想mock模块中的部分内容，对于其他部分保持原样，可以使用<code>jest.requireActual</code>来引入真实的模块：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; getRandom &#125; <span class="keyword">from</span> <span class="string">&#x27;../myModule&#x27;</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">&#x27;../myModule&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// Require the original module to not be mocked...</span></span><br><span class="line">  <span class="keyword">const</span> originalModule = jest.requireActual(<span class="string">&#x27;../myModule&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">__esModule</span>: <span class="literal">true</span>, <span class="comment">// Use it when dealing with esModules</span></span><br><span class="line">    ...originalModule,</span><br><span class="line">    <span class="attr">getRandom</span>: jest.fn().mockReturnValue(<span class="number">10</span>),</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">getRandom(); <span class="comment">// Always returns 10</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="三、mock模块内部函数"><a href="#三、mock模块内部函数" class="headerlink" title="三、mock模块内部函数"></a>三、mock模块内部函数</h2><p>设想一种情况，有一个<code>utils.ts</code>文件，内部导出了两个函数<code>funcA</code>和<code>funcB</code>，然后在<code>funcB</code>中引用了<code>funcA</code>:</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// utils.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcA = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcB = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  funcA();</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个时候在对<code>funcB</code>进行单元测试时，如果想要对<code>funcA</code>进行mock，会发现mock失败：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; funcA, funcB &#125; <span class="keyword">from</span> <span class="string">&#x27;../src/utils&#x27;</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">&#x27;../src/utils&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> originalModule = jest.requireActual(<span class="string">&#x27;../src/utils&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    ...originalModule,</span><br><span class="line">    <span class="attr">funcA</span>: jest.fn(),</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">describe(<span class="string">&#x27;utils.ts 单元测试&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  test(<span class="string">&#x27;测试 funcB&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    funcB();</span><br><span class="line">    expect(funcA).toBeCalled();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>运行单测会得到一个报错</p>
-<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/get_error_for_test.png" alt="jest单测报错"></p>
-<p>很明显，我们对<code>funcA</code>的mock失败了，为什么会有这样的结果呢，因为我们从模块外部导入的<code>funcA</code>引用和模块内部直接使用的<code>funcA</code>引用并不是同一个，通过<code>jest.mock</code>修改<code>funcA</code>并不会影响内部的调用。对于这种情况，建议的解决方法有两种：</p>
-<ul>
-<li>拆分文件，将<code>funcA</code>拆分到不同的文件。这种做法可能会造成文件过多且分散的问题。</li>
-<li>将相互调用的函数，作为一个工具类的方法来实现。即将互相调用的函数，放到同一个工具类中。</li>
-</ul>
-<h2 id="四、mock类（class）构造函数中对其他成员函数的调用"><a href="#四、mock类（class）构造函数中对其他成员函数的调用" class="headerlink" title="四、mock类（class）构造函数中对其他成员函数的调用"></a>四、mock类（<code>class</code>）构造函数中对其他成员函数的调用</h2><p>当我们在mock一个<code>class</code>的方法的时候，很简单地将类对象的对应方法赋值为<code>jest.fn()</code>即可，但是对于在构造函数中调用的成员方法，却不能这样做。因为类里面的方法只能在实例化完成之后再进行mock，不能阻止<code>constructor</code>中执行原函数。</p>
-<p>这时，我们可以考虑一下，<code>class</code>的本质是什么，<code>class</code>是ES6中的语法糖，本质上还是ES5中的原型<code>prototype</code>，所以类的成员方法本质上也是挂载到类原型上的方法，所以我们只需要mock类构造函数的原型上的方法即可：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.init();</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">init</span>(<span class="params"></span>)</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.init = jest.fn();</span><br></pre></td></tr></table></figure>
-
-<h2 id="五、mock类中的私有函数（针对TypeScript而言）"><a href="#五、mock类中的私有函数（针对TypeScript而言）" class="headerlink" title="五、mock类中的私有函数（针对TypeScript而言）"></a>五、mock类中的私有函数（针对TypeScript而言）</h2><p>对于ts中类的私有函数（<code>private</code>），无法直接获取（虽然说可以<code>ts-ignore</code>忽略ts报错，不过不建议这样做），这时只需使用同样的方法，在类的原型上直接mock即可：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="title">funcA</span>(<span class="params"></span>)</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.funcA = jest.fn();</span><br></pre></td></tr></table></figure>
-
-<h2 id="六、mock对象的只读属性（getter）"><a href="#六、mock对象的只读属性（getter）" class="headerlink" title="六、mock对象的只读属性（getter）"></a>六、mock对象的只读属性（<code>getter</code>）</h2><p>在单测中，对于可读可写属性我们可以比较方便地进行mock，直接赋值为对应的mocK值即可，如<code>Platform.OS</code>。但是对于只读属性（<code>getter</code>）的mock却不能直接这样写。通常对于只读属性（此处以<code>document.body.clientWidth</code>为例）有以下两种mock方式：</p>
-<ol>
-<li><p>通过<code>Object.defineProperty</code></p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(<span class="built_in">document</span>.body, <span class="string">&#x27;clientWidth&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">value</span>: <span class="number">10</span>,</span><br><span class="line">  <span class="attr">set</span>: jest.fn(),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
-<li><p>通过<code>jest.spyOn</code></p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mockClientWidth = jest.spyOn(<span class="built_in">document</span>.body, <span class="string">&#x27;clientWidth&#x27;</span>, <span class="string">&#x27;get&#x27;</span>);</span><br><span class="line">mockClientWidth.mockReturnValue(<span class="number">10</span>);</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="七、使用toBeCalledWith对参数中的匿名函数进行断言"><a href="#七、使用toBeCalledWith对参数中的匿名函数进行断言" class="headerlink" title="七、使用toBeCalledWith对参数中的匿名函数进行断言"></a>七、使用<code>toBeCalledWith</code>对参数中的匿名函数进行断言</h2><p>我们需要对于某个方法测试时，有时需要断言这个方法以具体参数被调用，<code>toBeCalledWith</code>可以实现这个功能，但是设想下面一种情况</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> func = (): <span class="function"><span class="params">void</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="comment">/* condition 1 */</span>) &#123;</span><br><span class="line">    moduleA.method1(<span class="number">1</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// do something</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    moduleA.method1(<span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在某种情况下，<code>moduleA.method1</code>将会被传入参数<code>1</code>和一个匿名函数，要怎么用<code>toBeCalledWith</code>断言<code>moduleA.method1</code>被以这些参数调用了呢？因为第二个参数是一个匿名函数，外部没办法mock。这个时候，我们可以使用<code>expect.any(Function)</code>来断言：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">moduleA.method1 = jest.fn();</span><br><span class="line"><span class="comment">// 构造出 condition 1</span></span><br><span class="line">func();</span><br><span class="line">expect(moduleA.method1).toBeCalledWith(<span class="number">1</span>, expect.any(<span class="built_in">Function</span>));</span><br></pre></td></tr></table></figure>
-
-<p>因为这里其实只关心<code>moduleA.method1</code>是否被传入第二个参数且参数是否为一个函数，而不关心函数的具体内容，所以可以用<code>expect.any(Function)</code>来断言。</p>
-<h2 id="八、mock-localStorage"><a href="#八、mock-localStorage" class="headerlink" title="八、mock localStorage"></a>八、mock <code>localStorage</code></h2><p><code>localStorage</code>是浏览器环境下的一个全局变量，挂载在<code>window</code>下，在单测运行时（Node环境）是获取不到的，对于<code>localStorage</code>，我们可以实现一个简单的mock：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LocalStorageMock</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> store: Record&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">setItem</span>(<span class="params">key: <span class="built_in">string</span>, value: <span class="built_in">string</span></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.store[key] = <span class="built_in">String</span>(value);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> getItem(key: <span class="built_in">string</span>): <span class="built_in">string</span> | <span class="literal">null</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.store[key] || <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">removeItem</span>(<span class="params">key: <span class="built_in">string</span></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">delete</span> <span class="built_in">this</span>.store[key];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="title">clear</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.store = &#123;&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> key(index: <span class="built_in">number</span>): <span class="built_in">string</span> | <span class="literal">null</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Object</span>.keys(<span class="built_in">this</span>.store)[index] || <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">get</span> <span class="title">length</span>(): <span class="title">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Object</span>.keys(<span class="built_in">this</span>.store).length;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">global</span>.localStorage = <span class="keyword">new</span> LocalStorageMock();</span><br></pre></td></tr></table></figure>
-
-<p>建议把mock放到单独的mocks文件中，在需要测试的地方，单独引入即可：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;./__mocks__/localStorage&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<h2 id="九、mock-indexedDB"><a href="#九、mock-indexedDB" class="headerlink" title="九、mock indexedDB"></a>九、mock <code>indexedDB</code></h2><p>对于indexedDB，情况和<code>localStorage</code>类似，它是浏览器环境下的一个事务型数据库系统，同样在Node环境中无法获取，但是由于indexedDB接口、类型较多，实现起来较为复杂，不建议自己实现，比较常见的做法是使用<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/fake-indexeddb">fake-indexeddb</a>这个库，这个库使用纯js在内存中实现了indexedDB的各种接口，主要用于在Node环境中对依赖indexedDB的代码进行测试。</p>
-<p>对于需要测试的文件，只需要在文件开头引入<code>fake-indexeddb/auto</code>即可：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;fake-indexeddb/auto&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>如果需要对所有的文件都引入<code>fake-indexeddb</code>，那么只需要在jest配置中添加如下配置：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// jest.config.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">setupFiles</span>: [<span class="string">&#x27;fake-indexeddb/auto&#x27;</span>],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>或在<code>package.json</code>中</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;jest&quot;</span>: &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="attr">&quot;setupFiles&quot;</span>: [<span class="string">&quot;fake-indexeddb/auto&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="十、测试异步函数"><a href="#十、测试异步函数" class="headerlink" title="十、测试异步函数"></a>十、测试异步函数</h2><p>在单测中，如果需要对异步函数进行测试，针对不同情况有如下操作：</p>
-<ol>
-<li><p><code>callback</code>回调函数异步</p>
-<p> 对于回调函数异步（如<code>setTimeout</code>回调），如果像同步函数一样进行测试，是没办法获取正确的断言结果的：</p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcA = (callback: <span class="function">(<span class="params">data: <span class="built_in">number</span></span>) =&gt;</span> <span class="built_in">void</span>): <span class="function"><span class="params">void</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    callback(<span class="number">1</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcA&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  funcA(<span class="function">(<span class="params">data</span>) =&gt;</span> expect(data).toEqual(<span class="number">2</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p> 像上面那样，<code>funcA</code>会在回调里传入1，单测里就算是直接断言结果为2，也是可以直接通过单测的：</p>
-<p> <img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/callback_async_unit_test.png" alt="callback异步单测"></p>
-<p> 这是因为jest在运行完<code>funcA</code>后就直接结束了，不会等待<code>setTimeout</code>的回调，自然也就没有执行<code>expect</code>断言。正确的做法是，传入一个<code>done</code>参数：</p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcA&#x27;</span>, <span class="function">(<span class="params">done</span>) =&gt;</span> &#123;</span><br><span class="line">  funcA(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    expect(data).toEqual(<span class="number">2</span>);</span><br><span class="line">    done();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p> 在回调执行完之后显式地告诉jest异步函数执行完毕，jest会等到执行了<code>done()</code>之后再结束，这样就能得到预期的结果了。</p>
-</li>
-<li><p><code>Promise</code>异步</p>
-<p> 除了回调函数外，另外一种很常见的异步场景就是<code>Promise</code>了，对于<code>Promise</code>异步，不用像上面那么复杂，只需要在<code>test</code>用例结束时，把<code>Promise</code>返回即可：</p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcB = (): <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt; =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt;(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      resolve(<span class="number">1</span>);</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcB&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> funcB().then(<span class="function">(<span class="params">data</span>) =&gt;</span> expect(data).toEqual(<span class="number">1</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p> 如果使用了<code>async/await</code>语法，就更简洁了，<code>Promise</code>都不需要返回，像测试同步代码一样直接书写即可：</p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcB&#x27;</span>, <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> funcB();</span><br><span class="line">  expect(data).toEqual(<span class="number">1</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p> 对于<code>Promise</code>抛出的异常，测试方法也和上面类似：</p>
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 抛出异常的方法</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> funcC = (): <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt; =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>&lt;<span class="built_in">number</span>&gt;(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      reject(<span class="string">&#x27;something wrong&#x27;</span>);</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
- <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;funcC promise&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> funcC().catch(<span class="function">(<span class="params">error</span>) =&gt;</span> expect(error).toEqual(<span class="string">&#x27;something wrong&#x27;</span>));</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">test(<span class="string">&#x27;funcC await&#x27;</span>, <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> funcC();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    expect(error).toEqual(<span class="string">&#x27;something wrong&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="十一、不执行jest-spyOn-mock的函数"><a href="#十一、不执行jest-spyOn-mock的函数" class="headerlink" title="十一、不执行jest.spyOn mock的函数"></a>十一、不执行<code>jest.spyOn</code> mock的函数</h2><p>我们知道，<code>jest.fn</code>和<code>jest.spyOn</code>都可以用来mock一个函数，区别是<code>jest.fn</code> mock的函数不会去执行，而<code>jest.spyOn</code> mock的函数是会去正常执行的。那么有没有什么办法让<code>jest.spyOn</code> mock的函数不执行呢？其实上面已经用到了，在“mock对象的只读属性（<code>getter</code>）”中，通过<code>jest.spyOn</code> mock了一个<code>getter</code>，然后使用<code>mockReturnValue</code>来mock一个返回值，这个时候原函数就不会执行。</p>
-<p>除此之外，使用<code>mockImplementation</code>也有同样的效果：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mockFn.mockImplementation(<span class="function">() =&gt;</span> &#123;&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>总结下来就是可以使用<code>mockReturnValue</code>和<code>mockImplementation</code>不执行<code>jest.spyOn</code>mock的函数。</p>
-<p>另外多说一个建议就是，能使用<code>jest.fn</code>就尽量不要用<code>jest.spyOn</code>，因为<code>jest.spyOn</code>会执行原始代码，在统计单测覆盖率时会被统计进去，导致单测覆盖率看起来很高实际上却又很多代码没有相应单测。</p>
-<h2 id="十二、使用test-each"><a href="#十二、使用test-each" class="headerlink" title="十二、使用test.each"></a>十二、使用<code>test.each</code></h2><p>有时我们会遇到这种情况，要写大量单测用例，但是每个用例结构一样或相似，只有细微不同，比如测试某个<code>format</code>函数对于不同的字符串的返回结果，或者调用一个类不同的成员方法但返回的结果类似（如都抛出错误或<code>return null</code>等），对于这些情况，有时我们可以在单测内写一个数组然后遍历执行一下，但其实jest已经提供了应对这种情况的方法，即<code>test.each</code>，举几个例子：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// each.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> checkString = (str: <span class="built_in">string</span>): <span class="function"><span class="params">boolean</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (str.length &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;mockError 1&#x27;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (str.length &gt; <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;mockError 2&#x27;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// each.test.ts</span></span><br><span class="line">describe(<span class="string">&#x27;each.ts 单元测试&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  test.each&lt;&#123; <span class="attr">param</span>: <span class="built_in">string</span>; expectRes: <span class="built_in">boolean</span> | <span class="built_in">string</span> &#125;&gt;([</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">param</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">      <span class="attr">expectRes</span>: <span class="string">&#x27;mockError 1&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">param</span>: <span class="string">&#x27;123456&#x27;</span>,</span><br><span class="line">      <span class="attr">expectRes</span>: <span class="string">&#x27;mockError 2&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">param</span>: <span class="string">&#x27;1234&#x27;</span>,</span><br><span class="line">      <span class="attr">expectRes</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  ])(<span class="string">&#x27;checkString&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; param, expectRes &#125; = data;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> result = checkString(param);</span><br><span class="line">      expect(result).toEqual(expectRes);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">      expect(error.message).toEqual(expectRes);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>又比如在某种情况下，某个对象<code>store</code>的所有方法都会抛出异常：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">test.each&lt;&#123;</span><br><span class="line">  <span class="attr">func</span>: <span class="string">&#x27;get&#x27;</span> | <span class="string">&#x27;delete&#x27;</span> | <span class="string">&#x27;add&#x27;</span> | <span class="string">&#x27;update&#x27;</span>;</span><br><span class="line">  param?: <span class="built_in">any</span>;</span><br><span class="line">&#125;&gt;([</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;get&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>] &#125;,</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;delete&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>] &#125;,</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;add&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>, <span class="string">&#x27;mockValue&#x27;</span>] &#125;,</span><br><span class="line">  &#123; <span class="attr">func</span>: <span class="string">&#x27;update&#x27;</span>, <span class="attr">param</span>: [<span class="string">&#x27;mockKey&#x27;</span>, <span class="string">&#x27;mockValue&#x27;</span>] &#125;,</span><br><span class="line">])(<span class="string">&#x27;调用 store 的方法抛出异常&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> store[data.func](...data.param).catch(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    expect(err).toEqual(<span class="string">&#x27;mockError&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>除了<code>test.each</code>外，还有<code>describe.each</code>，更多具体用法可以参考<a target="_blank" rel="noopener" href="https://jestjs.io/docs/api#testeachtablename-fn-timeout">test.each</a>和<a target="_blank" rel="noopener" href="https://jestjs.io/docs/api#describeeachtablename-fn-timeout">describe.each</a></p>
-<h2 id="十三、使用-test-js、-test-ts、-test-tsx"><a href="#十三、使用-test-js、-test-ts、-test-tsx" class="headerlink" title="十三、使用.test.js、.test.ts、.test.tsx"></a>十三、使用<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code></h2><p>这点是一个建议，建议单测文件以<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>命名，如对于<code>utils.ts</code>，建议对应的单测以<code>utils.test.ts</code>命名，这样每个单测文件单单从文件名来说就具有清晰的语义，即这是一个单测文件，而不是一个具有具体功能的源码文件。</p>
-<p>同时，在搜索文件或者全局搜索字符串时，列表里的文件更清晰可见容易辨认。更进一步来说，现在很多IDE的文件图片icon插件，针对不同的文件名结尾，都有不同的渲染，更加方便辨认：<br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/search_file.png" alt="search_file"><br><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/global_search.png" alt="global_search"></p>
-<h2 id="十四、配合使用Jest-Runner插件"><a href="#十四、配合使用Jest-Runner插件" class="headerlink" title="十四、配合使用Jest Runner插件"></a>十四、配合使用<code>Jest Runner</code>插件</h2><p>另外推荐一个VSCode插件，<code>Jest Runner</code>，这个插件会在<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>中，渲染几个按钮选项：</p>
-<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/run_debug.png" alt="run_debug"></p>
-<p>点击<code>Run</code>或<code>Debug</code>，可以只运行或调试某一个<code>test</code>或者<code>describe</code>，不需要重新全局<code>npm run test</code>也不用单独<code>jest</code>执行这个文件，极大提高写单测的效率：</p>
-<p><img src="https://youfindme-1254464911.cos.ap-hongkong.myqcloud.com/blog/jest_techniques/run_debug_result.png" alt="run_debug_result"></p>
-<p>这个插件只针对<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>这几个文件类型有效，所以这也是上面建议单测文件使用使用<code>.test.js</code>、<code>.test.ts</code>、<code>.test.tsx</code>命名的原因之一。</p>
-<p>同时，插件提供的<code>Debug</code>，也省去了繁琐的<code>launch.json</code>配置，可以方便地进行断点调试。</p>
-<h2 id="十五、其他技巧"><a href="#十五、其他技巧" class="headerlink" title="十五、其他技巧"></a>十五、其他技巧</h2><h3 id="1-jest配合enzyme对React-forwardRef组件进行测试"><a href="#1-jest配合enzyme对React-forwardRef组件进行测试" class="headerlink" title="1. jest配合enzyme对React.forwardRef组件进行测试"></a>1. jest配合enzyme对React.forwardRef组件进行测试</h3><p>对于React.forwardRef组件，假设有如下用例</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">test(<span class="string">&#x27;render&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> wrapper = mount(<span class="xml"><span class="tag">&lt;<span class="name">Wrapper</span> &#123;<span class="attr">...props</span>&#125; /&gt;</span></span>);</span><br><span class="line">  expect(wrapper.find(<span class="comment">/** ComponentName */</span>).exists()).toBeTruthy();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>对于普通的组件，“ComponentName”只需要填入对应组件的名字即可，如”Text”</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">expect(wrapper.find(<span class="string">&#x27;Text&#x27;</span>).exists()).toBeTruthy();</span><br></pre></td></tr></table></figure></li>
-<li><p>但是对于使用了React.forwardRef来进行ref转发的组件，“ComponentName”则需要加上“ForwardRef”，如“ForwardRef(MyComponent)”</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">expect(wrapper.find(<span class="string">&#x27;ForwardRef(MyComponent)&#x27;</span>).exists()).toBeTruthy();</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="2-收集单元测试覆盖率"><a href="#2-收集单元测试覆盖率" class="headerlink" title="2. 收集单元测试覆盖率"></a>2. 收集单元测试覆盖率</h3><p>有以下几种方式收集单元测试覆盖率：</p>
-<ol>
-<li><p>命令行执行全部单测并收集覆盖率</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx jest --coverage</span><br></pre></td></tr></table></figure></li>
-<li><p>命令行执行单个单测文件并收集覆盖率</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx jest src/utils/__tests__/utils.test.ts --coverage</span><br></pre></td></tr></table></figure></li>
-<li><p>在<code>jest.config.js</code>中配置<code>collectCoverage</code>，同时设置<code>collectCoverageFrom</code>来收集指定文件的覆盖率</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="attr">collectCoverage</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">collectCoverageFrom</span>: [</span><br><span class="line">    <span class="string">&#x27;src/**/*.&#123;js,jsx,ts,tsx&#125;&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;!src/**/*.d.ts&#x27;</span>,</span><br><span class="line">  ],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>这样在命令行执行<code>npx jest</code>时，就会自动收集覆盖率了。</p>
-</li>
-</ol>
 
       
     </div>
